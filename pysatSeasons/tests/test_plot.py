@@ -6,7 +6,7 @@ import matplotlib as mpl
 import matplotlib.pyplot as plt
 
 import pysat
-from pysat.ssnl import plot
+from pysatSeasons import plot
 
 
 class TestBasics():

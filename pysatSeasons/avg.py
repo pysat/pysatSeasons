@@ -6,11 +6,11 @@ Instrument independent seasonal averaging routine. Supports averaging
 1D and 2D data.
 """
 
-import pysat
 import numpy as np
 import pandas as pds
 import collections
-
+import pysat
+import pysatSeasons as ssnl
 
 def median1D(const, bin1, label1, data_label, auto_bin=True, returnData=False):
     """Return a 1D median of data_label over a season and label1
@@ -387,9 +387,8 @@ def _core_mean(inst, data_label, by_orbit=False, by_day=False, by_file=False):
             else:
                 date = inst.date
             # perform average
-            mean_val[date] = \
-                pysat.ssnl.computational_form(data).mean(axis=0,
-                                                          skipna=True)
+            mean_val[date] = ssnl.computational_form(data).mean(axis=0,
+                                                                skipna=True)
 
     del iterator
     return mean_val

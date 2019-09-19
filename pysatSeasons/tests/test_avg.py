@@ -7,7 +7,7 @@ from nose.tools import raises
 import pandas as pds
 
 import pysat
-from pysat.ssnl import avg
+from pysatSeasons import avg
 
 
 class TestBasics():
@@ -539,6 +539,5 @@ class TestInstMed1D():
     def test_bin_data_type(self):
         """Test failure when median 1D is given non array-like bins
         """
-        pysat.ssnl.avg.median2D(self.testInst, ['0', 'd', '24', 'c'],
-                                self.test_label, self.test_data,
-                                auto_bin=False)
+        avg.median2D(self.testInst, ['0', 'd', '24', 'c'], self.test_label,
+                     self.test_data, auto_bin=False)

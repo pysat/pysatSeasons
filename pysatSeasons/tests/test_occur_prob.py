@@ -5,7 +5,7 @@ tests the pysat occur_prob object and code
 from nose.tools import raises
 
 import pysat
-from pysat.ssnl import occur_prob
+from pysatSeasons import occur_prob
 
 
 class TestBasics():
