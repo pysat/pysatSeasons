@@ -10,7 +10,7 @@ from setuptools import setup, find_packages
 
 
 here = os.path.abspath(os.path.dirname(__file__))
-with open(os.path.join(here, 'README.md'), encoding='utf-8') as f:
+with open(os.path.join(here, 'description.txt'), encoding='utf-8') as f:
     long_description = f.read()
 version_filename = os.path.join('pysatSeasons', 'version.txt')
 with open(os.path.join(here, version_filename)) as version_file:
