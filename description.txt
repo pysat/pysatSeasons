@@ -2,10 +2,7 @@ pysatSeasons allows users to run basic seasonal analysis over N-dimensional data
 
 Main Features
 -------------
-- Instrument independent analysis routines.
-
-Documentation
----------------------
-`Full Documentation <http://pysat.readthedocs.io/en/latest/>`_
-
-`JGR-Space Physics Publication <https://doi.org/10.1029/2018JA025297>`_
+- Seasonal averaging routine for 1D and 2D data.
+- Occurrence probability routines, daily or by orbit.
+- Scatterplot of data_label(s) as functions of labelx,y
+    over a season.
