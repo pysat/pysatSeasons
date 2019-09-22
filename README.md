@@ -13,10 +13,24 @@ pysatSeasons allows users to run basic seasonal analysis over N-dimensional data
 
 Main Features
 -------------
-- Instrument independent analysis routines.
+- Seasonal averaging routine for 1D and 2D data.
+- Occurrence probability routines, daily or by orbit.
+- Scatterplot of data_label(s) as functions of labelx,y
+    over a season.
 
-Documentation
----------------------
-`Full Documentation <http://pysat.readthedocs.io/en/latest/>`_
 
-`JGR-Space Physics Publication <https://doi.org/10.1029/2018JA025297>`_
+# Installation
+
+First, checkout the repository:
+
+```
+  git clone https://github.com/pysat/pysatSeasons.git
+```
+
+Change directories into the repository folder and run the setup.py file.  For
+a local install use the "--user" flag after "install".
+
+```
+  cd pysatSeasons/
+  python setup.py install
+```
