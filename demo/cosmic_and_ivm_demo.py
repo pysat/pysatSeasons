@@ -180,7 +180,8 @@ ivm.custom.add(restrictMLAT, 'modify', maxMLAT=25.)
 # perform seasonal average
 ivm.bounds = (startDate, stopDate)
 ivmResults = pysatSeasons.avg.median2D(ivm, [0, 360, 24], 'alon',
-                                       [0, 24, 24], 'mlt', ['ionVelmeridional'])
+                                       [0, 24, 24], 'mlt',
+                                       ['ionVelmeridional'])
 
 # create COSMIC instrument object
 cosmic = pysat.Instrument(platform='cosmic2013',

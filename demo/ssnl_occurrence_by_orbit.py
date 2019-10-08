@@ -5,6 +5,7 @@ the occurrent probability of an event occurring.
 
 import os
 import pysat
+import pysatSeasons
 import matplotlib.pyplot as plt
 import numpy as np
 
@@ -41,9 +42,9 @@ vefi.bounds = (start, stop)
 
 # perform occurrence probability calculation
 # any data added by custom functions is available within routine below
-ans = pysat.ssnl.occur_prob.by_orbit2D(vefi, [0, 360, 144], 'longitude',
-                                       [-13, 13, 104], 'latitude', ['dB_mer'],
-                                       [0.], returnBins=True)
+ans = pysatSeasons.occur_prob.by_orbit2D(vefi, [0, 360, 144], 'longitude',
+                                         [-13, 13, 104], 'latitude',
+                                         ['dB_mer'], [0.], returnBins=True)
 
 # a dict indexed by data_label is returned
 # in this case, only one, we'll pull it out
