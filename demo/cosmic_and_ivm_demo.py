@@ -1,4 +1,5 @@
 import pysat
+import pysatSeasons
 import pandas as pds
 import numpy as np
 import numpy.ma as ma
@@ -178,8 +179,8 @@ ivm = pysat.Instrument(platform='cnofs',
 ivm.custom.add(restrictMLAT, 'modify', maxMLAT=25.)
 # perform seasonal average
 ivm.bounds = (startDate, stopDate)
-ivmResults = pysat.ssnl.avg.median2D(ivm, [0, 360, 24], 'alon',
-                                     [0, 24, 24], 'mlt', ['ionVelmeridional'])
+ivmResults = pysatSeasons.avg.median2D(ivm, [0, 360, 24], 'alon',
+                                       [0, 24, 24], 'mlt', ['ionVelmeridional'])
 
 # create COSMIC instrument object
 cosmic = pysat.Instrument(platform='cosmic2013',
@@ -199,10 +200,10 @@ cosmic.custom.add(addTopsideScaleHeight, 'add')
 # from startDate through stopDate
 # a mixture of 1D and 2D data is averaged
 cosmic.bounds = (startDate, stopDate)
-cosmicResults = pysat.ssnl.avg.median2D(cosmic, [0, 360, 24], 'apex_long',
-                                        [0, 24, 24], 'edmaxlct',
-                                        ['profiles', 'edmaxalt',
-                                         'lognm', 'thf2'])
+cosmicResults = pysatSeasons.avg.median2D(cosmic, [0, 360, 24], 'apex_long',
+                                          [0, 24, 24], 'edmaxlct',
+                                          ['profiles', 'edmaxalt',
+                                           'lognm', 'thf2'])
 
 
 # the work is done, plot the results
