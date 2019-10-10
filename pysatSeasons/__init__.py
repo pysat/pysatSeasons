@@ -13,7 +13,7 @@ Main Features
 
 """
 
-from . import occur_prob
-from . import avg
-from . import plot
-from ._core import computational_form
+from pysatSeasons import occur_prob
+from pysatSeasons import avg
+from pysatSeasons import plot
+from pysatSeasons._core import computational_form
