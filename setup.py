@@ -30,6 +30,7 @@ setup(name='pysatSeasons',
       author_email='rstoneba@utdallas.edu',
       description='Seasonal analysis routines for pysat',
       long_description=long_description,
+      long_description_content_type='text/markdown',
       packages=find_packages(),
       classifiers=[
           "Development Status :: 4 - Beta",

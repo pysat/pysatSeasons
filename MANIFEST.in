@@ -1,0 +1,11 @@
+include *.py
+recursive-include pysatSeasons *.py
+include *.md
+include description.txt
+include LICENSE
+include pysatSeasons/version.txt
+prune pysatSeasons/tests
+prune docs
+prune demo
+exclude *.pdf
+exclude *.png
