@@ -6,6 +6,9 @@
 # pysatSeasons
 [![Build Status](https://travis-ci.org/pysat/pysatSeasons.svg?branch=master)](https://travis-ci.org/pysat/pysatSeasons)
 [![Coverage Status](https://coveralls.io/repos/github/pysat/pysatSeasons/badge.svg?branch=master)](https://coveralls.io/github/pysat/pysatSeasons?branch=master)
+[![DOI](https://zenodo.org/badge/209365329.svg)](https://zenodo.org/badge/latestdoi/209365329)
+
+
 
 This code will handle the seasonal analysis routines for pysat.  It is currently a work in progress, and will eventually replace the pysat.ssnl module in pysat.
 

@@ -13,7 +13,14 @@ Main Features
 
 """
 
-from . import occur_prob
-from . import avg
-from . import plot
-from ._core import computational_form
+import os
+
+from pysatSeasons import occur_prob
+from pysatSeasons import avg
+from pysatSeasons import plot
+from pysatSeasons._core import computational_form
+
+# set version
+here = os.path.abspath(os.path.dirname(__file__))
+with open(os.path.join(here, 'version.txt')) as version_file:
+    __version__ = version_file.read().strip()
