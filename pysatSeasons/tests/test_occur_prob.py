@@ -12,7 +12,7 @@ class TestBasics():
     def setup(self):
         """Runs before every method to create a clean testing setup."""
         orbit_info = {'index': 'longitude', 'kind': 'longitude'}
-        self.testInst = pysat.Instrument('pysat', 'testing',
+        self.testInst = pysat.Instrument(platform='pysat', name='testing',
                                          clean_level='clean',
                                          orbit_info=orbit_info)
         self.testInst.bounds = (pysat.datetime(2008, 1, 1),

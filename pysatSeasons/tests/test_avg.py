@@ -13,7 +13,7 @@ from pysatSeasons import avg
 class TestBasics():
     def setup(self):
         """Runs before every method to create a clean testing setup."""
-        self.testInst = pysat.Instrument('pysat', 'testing',
+        self.testInst = pysat.Instrument(platform='pysat', name='testing',
                                          clean_level='clean')
         self.bounds1 = (pysat.datetime(2008, 1, 1), pysat.datetime(2008, 1, 3))
         self.bounds2 = (pysat.datetime(2009, 1, 1), pysat.datetime(2009, 1, 2))
@@ -73,7 +73,7 @@ class TestBasics():
     def test_basic_orbit_mean(self):
         """Test basic orbital mean"""
         orbit_info = {'kind': 'local time', 'index': 'mlt'}
-        self.testInst = pysat.Instrument('pysat', 'testing',
+        self.testInst = pysat.Instrument(platform='pysat', name='testing',
                                          clean_level='clean',
                                          orbit_info=orbit_info)
         self.testInst.bounds = self.bounds2
@@ -93,7 +93,7 @@ class TestBasics():
 class TestFrameProfileAverages():
     def setup(self):
         """Runs before every method to create a clean testing setup."""
-        self.testInst = pysat.Instrument('pysat', 'testing2D',
+        self.testInst = pysat.Instrument(platform='pysat', name='testing2D',
                                          clean_level='clean')
         self.testInst.bounds = (pysat.datetime(2008, 1, 1),
                                 pysat.datetime(2008, 1, 3))
@@ -143,7 +143,7 @@ class TestFrameProfileAverages():
 class TestSeriesProfileAverages():
     def setup(self):
         """Runs before every method to create a clean testing setup."""
-        self.testInst = pysat.Instrument('pysat', 'testing2D',
+        self.testInst = pysat.Instrument(platform='pysat', name='testing2D',
                                          clean_level='clean')
         self.testInst.bounds = (pysat.datetime(2008, 1, 1),
                                 pysat.datetime(2008, 2, 1))
@@ -188,10 +188,11 @@ class TestConstellation:
     def setup(self):
         insts = []
         for i in range(5):
-            insts.append(pysat.Instrument('pysat', 'testing',
+            insts.append(pysat.Instrument(platform='pysat', name='testing',
                                           clean_level='clean'))
         self.testC = pysat.Constellation(instruments=insts)
-        self.testI = pysat.Instrument('pysat', 'testing', clean_level='clean')
+        self.testI = pysat.Instrument(platform='pysat', name='testing',
+                                      clean_level='clean')
         self.bounds = (pysat.datetime(2008, 1, 1), pysat.datetime(2008, 1, 3))
 
     def teardown(self):
@@ -245,7 +246,7 @@ class TestHeterogenousConstellation:
         insts = []
         for i in range(2):
             r_date = pysat.datetime(2009, 1, i+1)
-            insts.append(pysat.Instrument('pysat', 'testing',
+            insts.append(pysat.Instrument(platform='pysat', name='testing',
                                           clean_level='clean',
                                           root_date=r_date))
         self.testC = pysat.Constellation(instruments=insts)
@@ -316,7 +317,7 @@ class TestHeterogenousConstellation:
 class Test2DConstellation:
     def setup(self):
         insts = []
-        insts.append(pysat.Instrument('pysat', 'testing2d',
+        insts.append(pysat.Instrument(platform='pysat', name='testing2d',
                      clean_level='clean'))
         self.testC = pysat.Constellation(insts)
         self.bounds = (pysat.datetime(2008, 1, 1), pysat.datetime(2008, 1, 3))
@@ -367,7 +368,7 @@ class Test2DConstellation:
 class TestSeasonalAverageUnevenBins:
     def setup(self):
         """Runs before every method to create a clean testing setup."""
-        self.testInst = pysat.Instrument('pysat', 'testing',
+        self.testInst = pysat.Instrument(platform='pysat', name='testing',
                                          clean_level='clean')
         self.testInst.bounds = (pysat.datetime(2008, 1, 1),
                                 pysat.datetime(2008, 1, 3))
@@ -444,7 +445,7 @@ class TestSeasonalAverageUnevenBins:
 class TestInstMed1D():
     def setup(self):
         """Runs before every method to create a clean testing setup"""
-        self.testInst = pysat.Instrument('pysat', 'testing',
+        self.testInst = pysat.Instrument(platform='pysat', name='testing',
                                          clean_level='clean',
                                          update_files=True)
         self.testInst.bounds = (pysat.datetime(2008, 1, 1),

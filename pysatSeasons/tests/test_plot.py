@@ -12,7 +12,7 @@ from pysatSeasons import plot
 class TestBasics():
     def setup(self):
         """Runs before every method to create a clean testing setup."""
-        self.testInst = pysat.Instrument('pysat', 'testing',
+        self.testInst = pysat.Instrument(platform='pysat', name='testing',
                                          clean_level='clean')
         self.testInst.bounds = (pysat.datetime(2008, 1, 1),
                                 pysat.datetime(2008, 1, 1))
