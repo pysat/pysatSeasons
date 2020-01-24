@@ -9,7 +9,11 @@ jobs:
     - python: 3.8
 
 services: xvfb
-
+addons:
+  apt:
+    packages:
+    - gfortran
+    
 before_install:
   - pip install pytest-cov
   - pip install coveralls
