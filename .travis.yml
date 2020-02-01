@@ -2,10 +2,10 @@ language: python
 dist: xenial
 matrix:
   include:
-    - python: 2.7
     - python: 3.5
     - python: 3.6
     - python: 3.7
+    - python: 3.8
 
 services: xvfb
 addons:
@@ -30,7 +30,7 @@ before_install:
   - git clone https://github.com/pysat/pysat.git >/dev/null
   - echo 'installing pysat'
   - cd ./pysat
-  - git checkout develop
+  - git checkout develop-3
   # set up data directory
   - mkdir /home/travis/build/pysatData
   # install pysat
@@ -43,10 +43,6 @@ install:
 before_script:
   # set up display screen
   - export DISPLAY=:99.0
-  - if [[ $TRAVIS_PYTHON_VERSION < "3.0" ]]; then
-      sh -e /etc/init.d/xvfb start;
-      sleep 3;
-    fi
 
 script:
   - pytest -vs --cov=pysatSeasons/
