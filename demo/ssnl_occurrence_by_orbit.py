@@ -3,11 +3,14 @@ Demonstrates iterating over an instrument data set by orbit and determining
 the occurrent probability of an event occurring.
 """
 
+import datetime as dt
+import numpy as np
 import os
+
+import matplotlib.pyplot as plt
+
 import pysat
 import pysatSeasons
-import matplotlib.pyplot as plt
-import numpy as np
 
 # set the directory to save plots to
 results_dir = ''
@@ -28,8 +31,8 @@ def filter_vefi(inst):
 
 vefi.custom.add(filter_vefi, 'modify')
 # set limits on dates analysis will cover, inclusive
-start = pysat.datetime(2010, 5, 9)
-stop = pysat.datetime(2010, 5, 15)
+start = dt.datetime(2010, 5, 9)
+stop = dt.datetime(2010, 5, 15)
 
 # if there is no vefi dc magnetometer data on your system, then run command
 # below where start and stop are pandas datetimes (from above)

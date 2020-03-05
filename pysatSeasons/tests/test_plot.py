@@ -1,6 +1,7 @@
 """
 tests the pysat averaging code
 """
+import datetime as dt
 
 import matplotlib as mpl
 import matplotlib.pyplot as plt
@@ -14,8 +15,8 @@ class TestBasics():
         """Runs before every method to create a clean testing setup."""
         self.testInst = pysat.Instrument('pysat', 'testing',
                                          clean_level='clean')
-        self.testInst.bounds = (pysat.datetime(2008, 1, 1),
-                                pysat.datetime(2008, 1, 1))
+        self.testInst.bounds = (dt.datetime(2008, 1, 1),
+                                dt.datetime(2008, 1, 1))
 
     def teardown(self):
         """Runs after every method to clean up previous testing."""

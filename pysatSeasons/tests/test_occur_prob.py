@@ -1,6 +1,7 @@
 """
 tests the pysat occur_prob object and code
 """
+import datetime as dt
 
 from nose.tools import raises
 
@@ -15,8 +16,8 @@ class TestBasics():
         self.testInst = pysat.Instrument('pysat', 'testing',
                                          clean_level='clean',
                                          orbit_info=orbit_info)
-        self.testInst.bounds = (pysat.datetime(2008, 1, 1),
-                                pysat.datetime(2008, 1, 31))
+        self.testInst.bounds = (dt.datetime(2008, 1, 1),
+                                dt.datetime(2008, 1, 31))
 
     def teardown(self):
         """Runs after every method to clean up previous testing."""
