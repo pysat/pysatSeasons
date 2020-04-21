@@ -1,14 +1,16 @@
-import pysat
-import pysatSeasons
-import pandas as pds
+import datetime as dt
 import numpy as np
 import numpy.ma as ma
 import matplotlib.pyplot as plt
+import pandas as pds
+
+import pysat
+import pysatSeasons
 
 # dates for demo
 ssnDays = 67
-startDate = pds.datetime(2009, 12, 21) - pds.DateOffset(days=ssnDays)
-stopDate = pds.datetime(2009, 12, 21) + pds.DateOffset(days=ssnDays)
+startDate = dt.datetime(2009, 12, 21) - pds.DateOffset(days=ssnDays)
+stopDate = dt.datetime(2009, 12, 21) + pds.DateOffset(days=ssnDays)
 
 
 # define functions to customize data for application
