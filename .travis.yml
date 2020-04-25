@@ -47,6 +47,7 @@ install:
   - mkdir /home/travis/build/pysatData
   # install pysat
   - python setup.py install
+  - export PYTHONPATH=$PYTHONPATH:$(pwd)
   # install pysatSeasons
   - cd ../pysatSeasons
   - python setup.py install
