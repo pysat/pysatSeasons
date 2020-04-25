@@ -43,8 +43,6 @@ install:
   # Dependencies not available through conda, install through pip
   - pip install PyForecastTools
   - pip install pysatCDF >/dev/null
-  # set up data directory
-  - mkdir /home/travis/build/pysatData
   # Prepare pysat install from git
   - cd ..
   - git clone https://github.com/pysat/pysat.git >/dev/null
