@@ -16,36 +16,36 @@ addons:
     packages:
     - gfortran
 
-before_install:
+install:
+  - sudo apt-get update
+  # We do this conditionally because it saves us some downloading if the
+  # version is the same.
+  - wget https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh -O miniconda.sh
+  - bash miniconda.sh -b -p $HOME/miniconda
+  - source "$HOME/miniconda/etc/profile.d/conda.sh"
+  - hash -r
+  - conda config --set always_yes True --set changeps1 False
+  - conda update -q conda
+  # Useful for debugging any issues with conda
+  - conda info -a
+  # Create conda test environment
+  - conda create -q -n test-environment python=$TRAVIS_PYTHON_VERSION numpy scipy pandas xarray requests beautifulsoup4 lxml netCDF4 nose pytest-cov pytest-ordering coveralls future
+  - conda activate test-environment
+  # check for custom version of numpy
   - if [ -z ${NUMPY_VER} ]; then
       echo 'Using latest numpy';
     else
-      pip install -q numpy==$NUMPY_VER;
+      conda install -q numpy==$NUMPY_VER;
     fi
-  - pip install pytest-cov
-  - pip install coveralls
-  - pip install future
-  # Install version specific packages for 2.7 and 3.5
-  - pip install 'pandas<0.25'
-  - pip install 'xarray<0.15'
-  - pip install matplotlib
-  # Install pysatCDF and dump output
+  # Dependencies not available through conda, install through pip
+  - pip install PyForecastTools
   - pip install pysatCDF >/dev/null
-  # Prepare modified pysat install
-  - pip install numpy
-  - cd ..
-  - echo 'cloning pysat'
-  - git clone https://github.com/pysat/pysat.git >/dev/null
-  - echo 'installing pysat'
-  - cd ./pysat
-  - git checkout develop-3
   # set up data directory
   - mkdir /home/travis/build/pysatData
   # install pysat
-  - python setup.py install >/dev/null
+  - python setup.py install
+  # install pysatSeasons
   - cd ../pysatSeasons
-
-install:
   - python setup.py install
 
 before_script:
