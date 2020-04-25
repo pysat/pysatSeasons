@@ -39,7 +39,7 @@ install:
     fi
   # Enforce version limits due to use of Panel
   - conda install pandas==0.24.2
-  - conda install xarray<0.15
+  - conda install 'xarray<0.15'
   # Dependencies not available through conda, install through pip
   - pip install PyForecastTools
   - pip install pysatCDF >/dev/null
