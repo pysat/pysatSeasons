@@ -1,14 +1,16 @@
-import pysat
-import pysatSeasons
-import pandas as pds
+import datetime as dt
 import numpy as np
 import numpy.ma as ma
 import matplotlib.pyplot as plt
+import pandas as pds
+
+import pysat
+import pysatSeasons
 
 # dates for demo
 ssnDays = 67
-startDate = pds.datetime(2009, 12, 21) - pds.DateOffset(days=ssnDays)
-stopDate = pds.datetime(2009, 12, 21) + pds.DateOffset(days=ssnDays)
+startDate = dt.datetime(2009, 12, 21) - pds.DateOffset(days=ssnDays)
+stopDate = dt.datetime(2009, 12, 21) + pds.DateOffset(days=ssnDays)
 
 
 # define functions to customize data for application
@@ -176,7 +178,7 @@ ivm = pysat.Instrument(platform='cnofs',
                        name='ivm', tag='',
                        clean_level='clean')
 # restrict meausurements to those near geomagnetic equator
-ivm.custom.add(restrictMLAT, 'modify', maxMLAT=25.)
+ivm.custom.attach(restrictMLAT, 'modify', maxMLAT=25.)
 # perform seasonal average
 ivm.bounds = (startDate, stopDate)
 ivmResults = pysatSeasons.avg.median2D(ivm, [0, 360, 24], 'alon',
@@ -189,13 +191,13 @@ cosmic = pysat.Instrument(platform='cosmic2013',
                           clean_level='clean',
                           altitude_bin=3)
 # apply custom functions to all data that is loaded through cosmic
-cosmic.custom.add(addApexLong, 'add')
+cosmic.custom.attach(addApexLong, 'add')
 # select locations near the magnetic equator
-cosmic.custom.add(filterMLAT, 'modify', mlatRange=(0., 10.))
+cosmic.custom.attach(filterMLAT, 'modify', mlatRange=(0., 10.))
 # take the log of NmF2 and add to the dataframe
-cosmic.custom.add(addlogNm, 'add')
+cosmic.custom.attach(addlogNm, 'add')
 # calculates the height above hmF2 to reach Ne < NmF2/e
-cosmic.custom.add(addTopsideScaleHeight, 'add')
+cosmic.custom.attach(addTopsideScaleHeight, 'add')
 
 # do an average of multiple COSMIC data products
 # from startDate through stopDate

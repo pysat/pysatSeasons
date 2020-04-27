@@ -29,7 +29,7 @@ def filter_vefi(inst):
     return
 
 
-vefi.custom.add(filter_vefi, 'modify')
+vefi.custom.attach(filter_vefi, 'modify')
 # set limits on dates analysis will cover, inclusive
 start = dt.datetime(2010, 5, 9)
 stop = dt.datetime(2010, 5, 15)

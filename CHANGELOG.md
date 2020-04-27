@@ -3,6 +3,8 @@ All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [0.1.2] - 2020-04-25
+- Updates demo codes to import objects from datetime and pandas for pysat 3.0.0 compatibility
+- Fixed a bug where test routines used float where numpy 1.18 expects an int
 - Import objects from datetime and pandas for pysat 3.0.0 compatibility
 - Use conda to manage Travis CI
 

@@ -8,7 +8,6 @@ jobs:
     # Versions with latest numpy
     - python: 3.6
     - python: 3.7
-    - python: 3.8
 
 services: xvfb
 addons:
@@ -29,21 +28,30 @@ install:
   # Useful for debugging any issues with conda
   - conda info -a
   # Create conda test environment
-  - conda create -q -n test-environment python=$TRAVIS_PYTHON_VERSION numpy scipy pandas xarray requests beautifulsoup4 lxml netCDF4 nose pytest-cov pytest-ordering coveralls future
+  - conda create -q -n test-environment python=$TRAVIS_PYTHON_VERSION numpy scipy requests beautifulsoup4 lxml netCDF4 nose pytest-cov pytest-ordering coveralls future
   - conda activate test-environment
   # check for custom version of numpy
   - if [ -z ${NUMPY_VER} ]; then
       echo 'Using latest numpy';
     else
-      conda install -q numpy==$NUMPY_VER;
+      conda install numpy==$NUMPY_VER;
     fi
+  # Enforce version limits due to use of Panel
+  - conda install pandas==0.24.2
+  - conda install 'xarray<0.15'
   # Dependencies not available through conda, install through pip
   - pip install PyForecastTools
   - pip install pysatCDF >/dev/null
+  # Prepare pysat install from git
+  - cd ..
+  - git clone https://github.com/pysat/pysat.git >/dev/null
+  - cd ./pysat
   # set up data directory
   - mkdir /home/travis/build/pysatData
   # install pysat
-  - python setup.py install
+  - git checkout develop-3
+  - python setup.py install >/dev/null
+  - export PYTHONPATH=$PYTHONPATH:$(pwd)
   # install pysatSeasons
   - cd ../pysatSeasons
   - python setup.py install

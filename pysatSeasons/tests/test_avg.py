@@ -26,8 +26,8 @@ class TestBasics():
     def test_basic_seasonal_median2D(self):
         """ Test the basic seasonal 2D median"""
         self.testInst.bounds = self.bounds1
-        results = avg.median2D(self.testInst, [0., 360., 24.], 'longitude',
-                               [0., 24, 24], 'mlt',
+        results = avg.median2D(self.testInst, [0., 360., 24], 'longitude',
+                               [0., 24., 24], 'mlt',
                                ['dummy1', 'dummy2', 'dummy3'])
         dummy_val = results['dummy1']['median']
         dummy_dev = results['dummy1']['avg_abs_dev']
@@ -109,8 +109,8 @@ class TestFrameProfileAverages():
     def test_basic_seasonal_2Dmedian(self):
         """ Test the basic seasonal 2D median"""
 
-        results = avg.median2D(self.testInst, [0., 360., 24.], 'longitude',
-                               [0., 24, 24], 'mlt', [self.dname])
+        results = avg.median2D(self.testInst, [0., 360., 24], 'longitude',
+                               [0., 24., 24], 'mlt', [self.dname])
 
         # iterate over all
         # no variation in the median, all values should be the same
@@ -156,8 +156,8 @@ class TestSeriesProfileAverages():
 
     def test_basic_seasonal_median2D(self):
         """ Test basic seasonal 2D median"""
-        results = avg.median2D(self.testInst, [0., 360., 24.], 'longitude',
-                               [0., 24, 24], 'mlt', [self.dname])
+        results = avg.median2D(self.testInst, [0., 360., 24], 'longitude',
+                               [0., 24., 24], 'mlt', [self.dname])
 
         # iterate over all
         # no variation in the median, all values should be the same
@@ -172,7 +172,7 @@ class TestSeriesProfileAverages():
 
     def test_basic_seasonal_median1D(self):
         """ Test basic seasonal 1D median"""
-        results = avg.median1D(self.testInst, [0., 24, 24], 'mlt',
+        results = avg.median1D(self.testInst, [0., 24., 24], 'mlt',
                                [self.dname])
 
         # iterate over all
@@ -203,11 +203,11 @@ class TestConstellation:
         for i in self.testC.instruments:
             i.bounds = self.bounds
         self.testI.bounds = self.bounds
-        resultsC = avg.median2D(self.testC, [0., 360., 24.], 'longitude',
-                                [0., 24, 24], 'mlt',
+        resultsC = avg.median2D(self.testC, [0., 360., 24], 'longitude',
+                                [0., 24., 24], 'mlt',
                                 ['dummy1', 'dummy2', 'dummy3'])
-        resultsI = avg.median2D(self.testI, [0., 360., 24.], 'longitude',
-                                [0., 24, 24], 'mlt',
+        resultsI = avg.median2D(self.testI, [0., 360., 24], 'longitude',
+                                [0., 24., 24], 'mlt',
                                 ['dummy1', 'dummy2', 'dummy3'])
         medC1 = resultsC['dummy1']['median']
         medI1 = resultsI['dummy1']['median']
@@ -259,8 +259,8 @@ class TestHeterogenousConstellation:
         """ Test the seasonal 2D median of a heterogeneous constellation """
         for inst in self.testC:
             inst.bounds = self.bounds
-        results = avg.median2D(self.testC, [0., 360., 24.], 'longitude',
-                               [0., 24, 24], 'mlt',
+        results = avg.median2D(self.testC, [0., 360., 24], 'longitude',
+                               [0., 24., 24], 'mlt',
                                ['dummy1', 'dummy2', 'dummy3'])
         dummy_val = results['dummy1']['median']
         dummy_dev = results['dummy1']['avg_abs_dev']
@@ -462,7 +462,7 @@ class TestInstMed1D():
                                     112023., 111562., 112023., 111412.,
                                     111780., 111320., 111780., 111320.],
                           'avg_abs_dev': np.zeros(shape=24),
-                          'median': np.linspace(0.0, 23.0, 24.0)},
+                          'median': np.linspace(0.0, 23.0, 24)},
                          'dummy2':
                          {'count': [111780., 111320., 111780., 111320.,
                                     111780., 111320., 111780., 111320.,
