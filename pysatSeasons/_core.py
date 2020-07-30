@@ -24,6 +24,7 @@ def computational_form(data):
     -------
     pandas.Series, DataFrame, or Panel
         repacked data, aligned by indices, ready for calculation
+
     """
 
     if isinstance(data.iloc[0], pds.DataFrame):

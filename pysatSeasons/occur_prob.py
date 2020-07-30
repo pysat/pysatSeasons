@@ -31,12 +31,13 @@ def daily2D(inst, bin1, label1, bin2, label2, data_label, gate,
 
     Parameters
     ----------
-    inst: pysat.Instrument()
+    inst: pysat.Instrument
         Instrument to use for calculating occurrence probability
-    binx: list
-        [min, max, number of bins]
-    labelx: string
-        name for data product for binx
+    binX: array-like
+        List holding [min, max, number of bins] or array-like containing
+        bin edges, where X = 1, 2
+    labelX: string
+        identifies data product for binX, where X = 1, 2
     data_label: list of strings
         identifies data product(s) to calculate occurrence probability
         e.g. inst[data_label]
@@ -75,12 +76,13 @@ def by_orbit2D(inst, bin1, label1, bin2, label2, data_label, gate,
 
     Parameters
     ----------
-    inst: pysat.Instrument()
+    inst: pysat.Instrument
         Instrument to use for calculating occurrence probability
-    binx: list
-        [min value, max value, number of bins]
-    labelx: string
-        identifies data product for binx
+    binX: array-like
+        List holding [min, max, number of bins] or array-like containing
+        bin edges, where X = 1, 2
+    labelX: string
+        identifies data product for binX, where X = 1, 2
     data_label: list of strings
         identifies data product(s) to calculate occurrence probability
     gate: list of values
@@ -186,10 +188,11 @@ def daily3D(inst, bin1, label1, bin2, label2, bin3, label3,
     ----------
     inst: pysat.Instrument()
         Instrument to use for calculating occurrence probability
-    binx: list
-        [min, max, number of bins]
-    labelx: string
-        name for data product for binx
+    binX: array-like
+        List holding [min, max, number of bins] or array-like containing
+        bin edges, where X = 1, 2
+    labelX: string
+        identifies data product for binX, where X = 1, 2
     data_label: list of strings
         identifies data product(s) to calculate occurrence probability
     gate: list of values
@@ -229,10 +232,11 @@ def by_orbit3D(inst, bin1, label1, bin2, label2, bin3, label3,
     ----------
     inst: pysat.Instrument()
         Instrument to use for calculating occurrence probability
-    binx: list
-        [min value, max value, number of bins]
-    labelx: string
-        identifies data product for binx
+    binX: array-like
+        List holding [min, max, number of bins] or array-like containing
+        bin edges, where X = 1, 2
+    labelX: string
+        identifies data product for binX, where X = 1, 2
     data_label: list of strings
         identifies data product(s) to calculate occurrence probability
     gate: list of values

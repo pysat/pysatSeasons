@@ -20,16 +20,17 @@ def median1D(const, bin1, label1, data_label, auto_bin=True, returnData=False):
     ----------
     const: Constellation or Instrument
         Constellation or Instrument object
-    bin1: (array-like)
+    binX: array-like
         List holding [min, max, number of bins] or array-like containing
-        bin edges
-    label1: (string)
-        data column name that the binning will be performed over (i.e., lat)
-    data_label: (list-like )
+        bin edges, where X = 1, 2
+    labelX: string
+        identifies data product for binX, where X = 1, 2
+    data_label: list-like
         contains strings identifying data product(s) to be averaged
-    auto_bin: if True, function will create bins from the min, max and
-              number of bins. If false, bin edges must be manually entered
-    returnData : (boolean)
+    auto_bin: boolean
+        if True, function will create bins from the min, max and
+        number of bins. If false, bin edges must be manually entered
+    returnData : boolean
         Return data in output dictionary as well as statistics
 
     Returns
@@ -106,14 +107,16 @@ def median2D(const, bin1, label1, bin2, label2, data_label,
 
     Parameters
     ----------
-        const: Constellation or Instrument
-        bin#: [min, max, number of bins], or array-like containing bin edges
-        label#: string
-            identifies data product for bin#
-        data_label: list-like
-            contains strings identifying data product(s) to be averaged
-        auto_bin: if True, function will create bins from the min, max and
-                  number of bins. If false, bin edges must be manually entered
+    const: Constellation or Instrument
+    binX: array-like
+        List holding [min, max, number of bins] or array-like containing
+        bin edges, where X = 1, 2
+    labelX: string
+        identifies data product for binX, where X = 1, 2
+    data_label: list-like
+        contains strings identifying data product(s) to be averaged
+    auto_bin: if True, function will create bins from the min, max and
+              number of bins. If false, bin edges must be manually entered
 
     Returns
     -------
