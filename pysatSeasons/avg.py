@@ -12,6 +12,7 @@ import collections
 import pysat
 import pysatSeasons as ssnl
 
+
 def median1D(const, bin1, label1, data_label, auto_bin=True, returnData=False):
     """Return a 1D median of data_label over a season and label1
 
@@ -452,8 +453,8 @@ def _calc_1d_median(ans, data_label, binx, xarr, zarr, numx, numz,
                     medianAns[zk][xi] = pds.DataFrame(ans[zk][xi]).median(axis=0)
                     countAns[zk][xi] = len(ans[zk][xi])
                     devAns[zk][xi] = pds.DataFrame([abs(temp
-                                                        - medianAns[zk][xi]) \
-                                    for temp in ans[zk][xi] ]).median(axis=0)
+                                                        - medianAns[zk][xi])
+                                                    for temp in ans[zk][xi]]).median(axis=0)
 
     # if some pandas DataFrames are returned in average, return a list
     objidx, = np.where(objArray == 'F')
@@ -463,7 +464,7 @@ def _calc_1d_median(ans, data_label, binx, xarr, zarr, numx, numz,
                 if len(ans[zk][xi]) > 0:
                     ans[zk][xi] = list(ans[zk][xi])
                     countAns[zk][xi] = len(ans[zk][xi])
-                    test = pds.Panel.from_dict(dict([(i, temp) for i, temp \
+                    test = pds.Panel.from_dict(dict([(i, temp) for i, temp
                                                     in enumerate(ans[zk][xi])]))
                     medianAns[zk][xi] = test.median(axis=0)
                     devAns[zk][xi] = \
