@@ -3,7 +3,7 @@ from __future__ import absolute_import
 
 import matplotlib as mpl
 import matplotlib.pyplot as plt
-from mpl_toolkits.mplot3d import Axes3D
+from mpl_toolkits.mplot3d import Axes3D  # noqa: F401
 import numpy as np
 
 

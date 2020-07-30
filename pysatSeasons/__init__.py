@@ -15,10 +15,11 @@ Main Features
 
 import os
 
-from pysatSeasons import occur_prob
-from pysatSeasons import avg
-from pysatSeasons import plot
-from pysatSeasons._core import computational_form
+# Import key modules and skip F401 testing in flake8
+from pysatSeasons import occur_prob  # noqa: F401
+from pysatSeasons import avg  # noqa: F401
+from pysatSeasons import plot  # noqa: F401
+from pysatSeasons._core import computational_form  # noqa: F401
 
 # set version
 here = os.path.abspath(os.path.dirname(__file__))

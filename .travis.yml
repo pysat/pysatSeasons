@@ -42,6 +42,9 @@ install:
   # Dependencies not available through conda, install through pip
   - pip install PyForecastTools
   - pip install pysatCDF >/dev/null
+  # Get latest coveralls from pip, not conda
+  - pip install coveralls
+  - pip install pytest-flake8
   # Prepare pysat install from git
   - cd ..
   - git clone https://github.com/pysat/pysat.git >/dev/null
@@ -61,7 +64,7 @@ before_script:
   - export DISPLAY=:99.0
 
 script:
-  - pytest -vs --cov=pysatSeasons/
+  - pytest -vs --cov=pysatSeasons/ --flake8
 
 after_success:
   - coveralls
