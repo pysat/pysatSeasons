@@ -56,12 +56,12 @@ def median1D(const, bin1, label1, data_label, auto_bin=True, returnData=False):
     # create bins
     # seems to create the boundaries used for sorting into bins
     if auto_bin:
-        binx = np.linspace(bin1[0], bin1[1], bin1[2]+1)
+        binx = np.linspace(bin1[0], bin1[1], bin1[2] + 1)
     else:
         binx = np.array(bin1)
 
     # how many bins are used
-    numx = len(binx)-1
+    numx = len(binx) - 1
     # how many different data products
     numz = len(data_label)
 
@@ -141,15 +141,15 @@ def median2D(const, bin1, label1, bin2, label2, data_label,
     # create bins
     # seems to create the boundaries used for sorting into bins
     if auto_bin:
-        binx = np.linspace(bin1[0], bin1[1], bin1[2]+1)
-        biny = np.linspace(bin2[0], bin2[1], bin2[2]+1)
+        binx = np.linspace(bin1[0], bin1[1], bin1[2] + 1)
+        biny = np.linspace(bin2[0], bin2[1], bin2[2] + 1)
     else:
         binx = np.array(bin1)
         biny = np.array(bin2)
 
     # how many bins are used
-    numx = len(binx)-1
-    numy = len(biny)-1
+    numx = len(binx) - 1
+    numy = len(biny) - 1
     # how many different data products
     numz = len(data_label)
 
@@ -172,7 +172,7 @@ def median2D(const, bin1, label1, bin2, label2, data_label,
             if len(inst.data) != 0:
                 # sort the data into bins (x) based on label 1
                 # (stores bin indexes in xind)
-                xind = np.digitize(inst.data[label1], binx)-1
+                xind = np.digitize(inst.data[label1], binx) - 1
                 # for each possible x index
                 for xi in xarr:
                     # get the indicies of those pieces of data in that bin
@@ -183,7 +183,7 @@ def median2D(const, bin1, label1, bin2, label2, data_label,
                         yData = inst.data.iloc[xindex]
                         # digitize that, to sort data into bins along y
                         # (label2) (get bin indexes)
-                        yind = np.digitize(yData[label2], biny)-1
+                        yind = np.digitize(yData[label2], biny) - 1
                         # for each possible y index
                         for yj in yarr:
                             # select data with this y index (and we already
@@ -281,9 +281,9 @@ def _calc_2d_median(ans, data_label, binx, biny, xarr, yarr, zarr, numx,
     objidx, = np.where(objArray == 'R')
     if len(objidx) > 0:
         for zk in zarr[objidx]:
-            medianAns[zk] = np.zeros((numy, numx))*np.nan
-            countAns[zk] = np.zeros((numy, numx))*np.nan
-            devAns[zk] = np.zeros((numy, numx))*np.nan
+            medianAns[zk] = np.zeros((numy, numx)) * np.nan
+            countAns[zk] = np.zeros((numy, numx)) * np.nan
+            devAns[zk] = np.zeros((numy, numx)) * np.nan
             for yj in yarr:
                 for xi in xarr:
                     # convert deque storing data into numpy array
@@ -295,8 +295,8 @@ def _calc_2d_median(ans, data_label, binx, biny, xarr, yarr, zarr, numx,
                     if len(idx) > 0:
                         medianAns[zk][yj, xi] = np.median(ans[zk][yj][xi])
                         countAns[zk][yj, xi] = len(ans[zk][yj][xi])
-                        devAns[zk][yj, xi] = np.median(abs(ans[zk][yj][xi] -
-                                                       medianAns[zk][yj, xi]))
+                        devAns[zk][yj, xi] = np.median(abs(ans[zk][yj][xi]
+                                                       - medianAns[zk][yj, xi]))
 
     # prepare output
     output = {}
@@ -491,8 +491,8 @@ def _calc_1d_median(ans, data_label, binx, xarr, zarr, numx, numz,
                 if len(idx) > 0:
                     medianAns[zk][xi] = np.median(ans[zk][xi])
                     countAns[zk][xi] = len(ans[zk][xi])
-                    devAns[zk][xi] = np.median(abs(ans[zk][xi] -
-                                                   medianAns[zk][xi]))
+                    devAns[zk][xi] = np.median(abs(ans[zk][xi]
+                                                   - medianAns[zk][xi]))
 
     # prepare output
     output = {}

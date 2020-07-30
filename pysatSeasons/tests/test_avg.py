@@ -50,18 +50,18 @@ class TestBasics():
             assert np.all(dummy_dev[i, :] == 0)
 
         for i, x in enumerate(dummy_x[:-1]):
-            assert np.all(dummy2_val[:, i] == x/15.0)
+            assert np.all(dummy2_val[:, i] == x / 15.0)
             assert np.all(dummy2_dev[:, i] == 0)
 
         for i, x in enumerate(dummy_x[:-1]):
-            check.append(np.all(dummy3_val[:, i] == x/15.0 * 1000.0
+            check.append(np.all(dummy3_val[:, i] == x / 15.0 * 1000.0
                                 + dummy_y[:-1]))
             check.append(np.all(dummy3_dev[:, i] == 0))
 
         # holds here because there are 32 days, no data is discarded,
         # each day holds same amount of data
-        assert(self.testInst.data['dummy1'].size*3 ==
-               sum([sum(i) for i in results['dummy1']['count']]))
+        assert (self.testInst.data['dummy1'].size * 3
+                == sum([sum(i) for i in results['dummy1']['count']]))
 
         assert np.all(check)
 
@@ -69,7 +69,7 @@ class TestBasics():
         """ Test basic daily mean"""
         self.testInst.bounds = self.bounds1
         ans = avg.mean_by_day(self.testInst, 'dummy4')
-        assert np.all(ans == 86399/2.0)
+        assert np.all(ans == 86399 / 2.0)
 
     def test_basic_orbit_mean(self):
         """Test basic orbital mean"""
@@ -80,15 +80,16 @@ class TestBasics():
         self.testInst.bounds = self.bounds2
         ans = avg.mean_by_orbit(self.testInst, 'mlt')
         # note last orbit is incomplete thus not expected to satisfy relation
-        assert np.allclose(ans[:-1], np.ones(len(ans)-1)*12.0, 1.0E-2)
+        assert np.allclose(ans[:-1], np.ones(len(ans) - 1) * 12.0, 1.0E-2)
 
     def test_basic_file_mean(self):
         """Test basic file mean"""
         index = pds.date_range(*self.bounds1)
-        names = [date.strftime('%Y-%m-%d')+'.nofile' for date in index]
+        names = [''.join((date.strftime('%Y-%m-%d'), '.nofile'))
+                 for date in index]
         self.testInst.bounds = (names[0], names[-1])
         ans = avg.mean_by_file(self.testInst, 'dummy4')
-        assert np.all(ans == 86399/2.0)
+        assert np.all(ans == 86399 / 2.0)
 
 
 class TestFrameProfileAverages():
@@ -245,7 +246,7 @@ class TestHeterogenousConstellation:
     def setup(self):
         insts = []
         for i in range(2):
-            r_date = dt.datetime(2009, 1, i+1)
+            r_date = dt.datetime(2009, 1, i + 1)
             insts.append(pysat.Instrument('pysat', 'testing',
                                           clean_level='clean',
                                           root_date=r_date))
@@ -283,11 +284,11 @@ class TestHeterogenousConstellation:
             check.append(np.all(dummy_dev[i, :] == 0))
 
         for i, x in enumerate(dummy_x[:-1]):
-            check.append(np.all(dummy2_val[:, i] == x/15.0))
+            check.append(np.all(dummy2_val[:, i] == x / 15.0))
             check.append(np.all(dummy2_dev[:, i] == 0))
 
         for i, x in enumerate(dummy_x[:-1]):
-            check.append(np.all(dummy3_val[:, i] == x/15.0 * 1000.0
+            check.append(np.all(dummy3_val[:, i] == x / 15.0 * 1000.0
                                 + dummy_y[:-1]))
             check.append(np.all(dummy3_dev[:, i] == 0))
 
@@ -403,18 +404,18 @@ class TestSeasonalAverageUnevenBins:
             assert np.all(dummy_dev[i, :] == 0)
 
         for i, x in enumerate(dummy_x[:-1]):
-            assert np.all(dummy2_val[:, i] == x/15.0)
+            assert np.all(dummy2_val[:, i] == x / 15.0)
             assert np.all(dummy2_dev[:, i] == 0)
 
         for i, x in enumerate(dummy_x[:-1]):
-            check.append(np.all(dummy3_val[:, i] == x/15.0 * 1000.0
+            check.append(np.all(dummy3_val[:, i] == x / 15.0 * 1000.0
                                 + dummy_y[:-1]))
             check.append(np.all(dummy3_dev[:, i] == 0))
 
         # holds here because there are 32 days, no data is discarded,
         # each day holds same amount of data
-        assert(self.testInst.data['dummy1'].size*3 ==
-               sum([sum(i) for i in results['dummy1']['count']]))
+        assert (self.testInst.data['dummy1'].size*3
+                == um([sum(i) for i in results['dummy1']['count']]))
 
         assert np.all(check)
 
@@ -502,10 +503,11 @@ class TestInstMed1D():
                 assert np.all(med_dict[kk][jj] == self.out_data[kk][jj])
 
             jj = self.out_keys[-1]
-            assert len(med_dict[kk][jj]) == self.test_bins[-1]+1
+            assert len(med_dict[kk][jj]) == self.test_bins[-1] + 1
             assert np.all(med_dict[kk][jj] == np.linspace(self.test_bins[0],
                                                           self.test_bins[1],
-                                                          self.test_bins[2]+1))
+                                                          self.test_bins[2]
+                                                          + 1))
         del med_dict, kk, jj
 
     @raises(KeyError)
