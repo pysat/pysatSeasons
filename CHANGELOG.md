@@ -8,6 +8,8 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 - Import objects from datetime and pandas for pysat 3.0.0 compatibility
 - Use conda to manage Travis CI
 - Rename default branch as `main`
+- Update to pysat documentation standards
+- Add flake8 testing for code
 
 ## [0.1.1] - 2019-10-09
 - Add demo code
