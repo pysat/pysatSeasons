@@ -415,7 +415,7 @@ class TestSeasonalAverageUnevenBins:
         # holds here because there are 32 days, no data is discarded,
         # each day holds same amount of data
         assert (self.testInst.data['dummy1'].size*3
-                == um([sum(i) for i in results['dummy1']['count']]))
+                == sum([sum(i) for i in results['dummy1']['count']]))
 
         assert np.all(check)
 
