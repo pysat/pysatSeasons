@@ -1,3 +1,6 @@
+import pandas as pds
+
+
 def computational_form(data):
     """
     Repackages numbers, Series, or DataFrames
@@ -21,15 +24,14 @@ def computational_form(data):
     -------
     pandas.Series, DataFrame, or Panel
         repacked data, aligned by indices, ready for calculation
+
     """
 
-    from pysat import DataFrame, Series, Panel
-
-    if isinstance(data.iloc[0], DataFrame):
-        dslice = Panel.from_dict(dict([(i, data.iloc[i])
-                                       for i in range(len(data))]))
-    elif isinstance(data.iloc[0], Series):
-        dslice = DataFrame(data.tolist())
+    if isinstance(data.iloc[0], pds.DataFrame):
+        dslice = pds.Panel.from_dict(dict([(i, data.iloc[i])
+                                     for i in range(len(data))]))
+    elif isinstance(data.iloc[0], pds.Series):
+        dslice = pds.DataFrame(data.tolist())
         dslice.index = data.index
     else:
         dslice = data

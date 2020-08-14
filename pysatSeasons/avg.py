@@ -12,6 +12,7 @@ import collections
 import pysat
 import pysatSeasons as ssnl
 
+
 def median1D(const, bin1, label1, data_label, auto_bin=True, returnData=False):
     """Return a 1D median of data_label over a season and label1
 
@@ -19,16 +20,17 @@ def median1D(const, bin1, label1, data_label, auto_bin=True, returnData=False):
     ----------
     const: Constellation or Instrument
         Constellation or Instrument object
-    bin1: (array-like)
+    binX: array-like
         List holding [min, max, number of bins] or array-like containing
-        bin edges
-    label1: (string)
-        data column name that the binning will be performed over (i.e., lat)
-    data_label: (list-like )
+        bin edges, where X = 1, 2
+    labelX: string
+        identifies data product for binX, where X = 1, 2
+    data_label: list-like
         contains strings identifying data product(s) to be averaged
-    auto_bin: if True, function will create bins from the min, max and
-              number of bins. If false, bin edges must be manually entered
-    returnData : (boolean)
+    auto_bin: boolean
+        if True, function will create bins from the min, max and
+        number of bins. If false, bin edges must be manually entered
+    returnData : boolean
         Return data in output dictionary as well as statistics
 
     Returns
@@ -54,12 +56,12 @@ def median1D(const, bin1, label1, data_label, auto_bin=True, returnData=False):
     # create bins
     # seems to create the boundaries used for sorting into bins
     if auto_bin:
-        binx = np.linspace(bin1[0], bin1[1], bin1[2]+1)
+        binx = np.linspace(bin1[0], bin1[1], bin1[2] + 1)
     else:
         binx = np.array(bin1)
 
     # how many bins are used
-    numx = len(binx)-1
+    numx = len(binx) - 1
     # how many different data products
     numz = len(data_label)
 
@@ -105,14 +107,16 @@ def median2D(const, bin1, label1, bin2, label2, data_label,
 
     Parameters
     ----------
-        const: Constellation or Instrument
-        bin#: [min, max, number of bins], or array-like containing bin edges
-        label#: string
-            identifies data product for bin#
-        data_label: list-like
-            contains strings identifying data product(s) to be averaged
-        auto_bin: if True, function will create bins from the min, max and
-                  number of bins. If false, bin edges must be manually entered
+    const: Constellation or Instrument
+    binX: array-like
+        List holding [min, max, number of bins] or array-like containing
+        bin edges, where X = 1, 2
+    labelX: string
+        identifies data product for binX, where X = 1, 2
+    data_label: list-like
+        contains strings identifying data product(s) to be averaged
+    auto_bin: if True, function will create bins from the min, max and
+              number of bins. If false, bin edges must be manually entered
 
     Returns
     -------
@@ -137,15 +141,15 @@ def median2D(const, bin1, label1, bin2, label2, data_label,
     # create bins
     # seems to create the boundaries used for sorting into bins
     if auto_bin:
-        binx = np.linspace(bin1[0], bin1[1], bin1[2]+1)
-        biny = np.linspace(bin2[0], bin2[1], bin2[2]+1)
+        binx = np.linspace(bin1[0], bin1[1], bin1[2] + 1)
+        biny = np.linspace(bin2[0], bin2[1], bin2[2] + 1)
     else:
         binx = np.array(bin1)
         biny = np.array(bin2)
 
     # how many bins are used
-    numx = len(binx)-1
-    numy = len(biny)-1
+    numx = len(binx) - 1
+    numy = len(biny) - 1
     # how many different data products
     numz = len(data_label)
 
@@ -168,7 +172,7 @@ def median2D(const, bin1, label1, bin2, label2, data_label,
             if len(inst.data) != 0:
                 # sort the data into bins (x) based on label 1
                 # (stores bin indexes in xind)
-                xind = np.digitize(inst.data[label1], binx)-1
+                xind = np.digitize(inst.data[label1], binx) - 1
                 # for each possible x index
                 for xi in xarr:
                     # get the indicies of those pieces of data in that bin
@@ -179,7 +183,7 @@ def median2D(const, bin1, label1, bin2, label2, data_label,
                         yData = inst.data.iloc[xindex]
                         # digitize that, to sort data into bins along y
                         # (label2) (get bin indexes)
-                        yind = np.digitize(yData[label2], biny)-1
+                        yind = np.digitize(yData[label2], biny) - 1
                         # for each possible y index
                         for yj in yarr:
                             # select data with this y index (and we already
@@ -277,9 +281,9 @@ def _calc_2d_median(ans, data_label, binx, biny, xarr, yarr, zarr, numx,
     objidx, = np.where(objArray == 'R')
     if len(objidx) > 0:
         for zk in zarr[objidx]:
-            medianAns[zk] = np.zeros((numy, numx))*np.nan
-            countAns[zk] = np.zeros((numy, numx))*np.nan
-            devAns[zk] = np.zeros((numy, numx))*np.nan
+            medianAns[zk] = np.zeros((numy, numx)) * np.nan
+            countAns[zk] = np.zeros((numy, numx)) * np.nan
+            devAns[zk] = np.zeros((numy, numx)) * np.nan
             for yj in yarr:
                 for xi in xarr:
                     # convert deque storing data into numpy array
@@ -291,8 +295,8 @@ def _calc_2d_median(ans, data_label, binx, biny, xarr, yarr, zarr, numx,
                     if len(idx) > 0:
                         medianAns[zk][yj, xi] = np.median(ans[zk][yj][xi])
                         countAns[zk][yj, xi] = len(ans[zk][yj][xi])
-                        devAns[zk][yj, xi] = np.median(abs(ans[zk][yj][xi] -
-                                                       medianAns[zk][yj, xi]))
+                        devAns[zk][yj, xi] = np.median(abs(ans[zk][yj][xi]
+                                                       - medianAns[zk][yj, xi]))
 
     # prepare output
     output = {}
@@ -452,8 +456,8 @@ def _calc_1d_median(ans, data_label, binx, xarr, zarr, numx, numz,
                     medianAns[zk][xi] = pds.DataFrame(ans[zk][xi]).median(axis=0)
                     countAns[zk][xi] = len(ans[zk][xi])
                     devAns[zk][xi] = pds.DataFrame([abs(temp
-                                                        - medianAns[zk][xi]) \
-                                    for temp in ans[zk][xi] ]).median(axis=0)
+                                                        - medianAns[zk][xi])
+                                                    for temp in ans[zk][xi]]).median(axis=0)
 
     # if some pandas DataFrames are returned in average, return a list
     objidx, = np.where(objArray == 'F')
@@ -463,7 +467,7 @@ def _calc_1d_median(ans, data_label, binx, xarr, zarr, numx, numz,
                 if len(ans[zk][xi]) > 0:
                     ans[zk][xi] = list(ans[zk][xi])
                     countAns[zk][xi] = len(ans[zk][xi])
-                    test = pds.Panel.from_dict(dict([(i, temp) for i, temp \
+                    test = pds.Panel.from_dict(dict([(i, temp) for i, temp
                                                     in enumerate(ans[zk][xi])]))
                     medianAns[zk][xi] = test.median(axis=0)
                     devAns[zk][xi] = \
@@ -487,8 +491,8 @@ def _calc_1d_median(ans, data_label, binx, xarr, zarr, numx, numz,
                 if len(idx) > 0:
                     medianAns[zk][xi] = np.median(ans[zk][xi])
                     countAns[zk][xi] = len(ans[zk][xi])
-                    devAns[zk][xi] = np.median(abs(ans[zk][xi] -
-                                                   medianAns[zk][xi]))
+                    devAns[zk][xi] = np.median(abs(ans[zk][xi]
+                                                   - medianAns[zk][xi]))
 
     # prepare output
     output = {}

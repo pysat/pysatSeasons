@@ -31,12 +31,13 @@ def daily2D(inst, bin1, label1, bin2, label2, data_label, gate,
 
     Parameters
     ----------
-    inst: pysat.Instrument()
+    inst: pysat.Instrument
         Instrument to use for calculating occurrence probability
-    binx: list
-        [min, max, number of bins]
-    labelx: string
-        name for data product for binx
+    binX: array-like
+        List holding [min, max, number of bins] or array-like containing
+        bin edges, where X = 1, 2
+    labelX: string
+        identifies data product for binX, where X = 1, 2
     data_label: list of strings
         identifies data product(s) to calculate occurrence probability
         e.g. inst[data_label]
@@ -75,12 +76,13 @@ def by_orbit2D(inst, bin1, label1, bin2, label2, data_label, gate,
 
     Parameters
     ----------
-    inst: pysat.Instrument()
+    inst: pysat.Instrument
         Instrument to use for calculating occurrence probability
-    binx: list
-        [min value, max value, number of bins]
-    labelx: string
-        identifies data product for binx
+    binX: array-like
+        List holding [min, max, number of bins] or array-like containing
+        bin edges, where X = 1, 2
+    labelX: string
+        identifies data product for binX, where X = 1, 2
     data_label: list of strings
         identifies data product(s) to calculate occurrence probability
     gate: list of values
@@ -110,11 +112,11 @@ def by_orbit2D(inst, bin1, label1, bin2, label2, data_label, gate,
 def _occurrence2D(inst, bin1, label1, bin2, label2, data_label, gate,
                   by_orbit=False, returnBins=False):
     if not hasattr(data_label, '__iter__'):
-        raise ValueError('Data label must be list-like group of variable ' +
-                         'names.')
+        raise ValueError(' '.join(('Data label must be list-like group of',
+                                   'variable names.')))
     if not hasattr(gate, '__iter__'):
-        raise ValueError('Gate levels must be list-like group of variable ' +
-                         'names.')
+        raise ValueError(' '.join(('Gate levels must be list-like group of',
+                                   'variable names.')))
     if len(gate) != len(data_label):
         raise ValueError('Must have a gate value for each data_label')
 
@@ -160,7 +162,7 @@ def _occurrence2D(inst, bin1, label1, bin2, label2, data_label, gate,
 
     # all of the loading and storing data is done
     # get probability
-    prob = hits/total
+    prob = hits / total
     # make nicer dictionary output
     output = {}
     for i, label in enumerate(data_label):
@@ -186,10 +188,11 @@ def daily3D(inst, bin1, label1, bin2, label2, bin3, label3,
     ----------
     inst: pysat.Instrument()
         Instrument to use for calculating occurrence probability
-    binx: list
-        [min, max, number of bins]
-    labelx: string
-        name for data product for binx
+    binX: array-like
+        List holding [min, max, number of bins] or array-like containing
+        bin edges, where X = 1, 2
+    labelX: string
+        identifies data product for binX, where X = 1, 2
     data_label: list of strings
         identifies data product(s) to calculate occurrence probability
     gate: list of values
@@ -229,10 +232,11 @@ def by_orbit3D(inst, bin1, label1, bin2, label2, bin3, label3,
     ----------
     inst: pysat.Instrument()
         Instrument to use for calculating occurrence probability
-    binx: list
-        [min value, max value, number of bins]
-    labelx: string
-        identifies data product for binx
+    binX: array-like
+        List holding [min, max, number of bins] or array-like containing
+        bin edges, where X = 1, 2
+    labelX: string
+        identifies data product for binX, where X = 1, 2
     data_label: list of strings
         identifies data product(s) to calculate occurrence probability
     gate: list of values
@@ -263,11 +267,11 @@ def _occurrence3D(inst, bin1, label1, bin2, label2, bin3, label3,
                   data_label, gate, returnBins=False, by_orbit=False):
 
     if not hasattr(data_label, '__iter__'):
-        raise ValueError('Data label must be list-like group of variable ' +
-                         'names.')
+        raise ValueError(' '.join(('Data label must be list-like group of',
+                         'variable names.')))
     if not hasattr(gate, '__iter__'):
-        raise ValueError('Gate levels must be list-like group of variable ' +
-                         'names.')
+        raise ValueError(' '.join(('Gate levels must be list-like group of',
+                                   'variable names.')))
     if len(gate) != len(data_label):
         raise ValueError('Must have a gate value for each data_label')
 
@@ -323,8 +327,7 @@ def _occurrence3D(inst, bin1, label1, bin2, label2, bin3, label3,
                                                 hits[di, zk, yj, xi] += 1
 
     # all of the loading and storing data is done
-    # prob = np.zeros((numz, numy, numx))
-    prob = hits/total
+    prob = hits / total
 
     # make nicer dictionary output
     output = {}
