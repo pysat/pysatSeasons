@@ -320,7 +320,7 @@ class Test2DConstellation:
         insts = []
         insts.append(pysat.Instrument('pysat', 'testing2d',
                      clean_level='clean'))
-        self.testC = pysat.Constellation(insts)
+        self.testC = pysat.Constellation(instruments=insts)
         self.bounds = (dt.datetime(2008, 1, 1), dt.datetime(2008, 1, 3))
 
     def teardown(self):
