@@ -3,10 +3,9 @@ dist: xenial
 jobs:
   include:
     - name: Minimum NEP 029 versions
-      python: 3.6
-      env: NUMPY_VER=1.15
+      python: 3.7
+      env: NUMPY_VER=1.17
     # Versions with latest numpy
-    - python: 3.6
     - python: 3.7
 
 services: xvfb
@@ -45,18 +44,11 @@ install:
   # Get latest coveralls from pip, not conda
   - pip install coveralls
   - pip install pytest-flake8
-  # Prepare pysat install from git
-  - cd ..
-  - git clone https://github.com/pysat/pysat.git >/dev/null
-  - cd ./pysat
   # set up data directory
   - mkdir /home/travis/build/pysatData
   # install pysat
-  - git checkout develop-3
-  - python setup.py install >/dev/null
-  - export PYTHONPATH=$PYTHONPATH:$(pwd)
+  - pip install pysat>=3.0
   # install pysatSeasons
-  - cd ../pysatSeasons
   - python setup.py install
 
 before_script:
