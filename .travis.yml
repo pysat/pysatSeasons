@@ -44,18 +44,11 @@ install:
   # Get latest coveralls from pip, not conda
   - pip install coveralls
   - pip install pytest-flake8
-  # Prepare pysat install from git
-  - cd ..
-  - git clone https://github.com/pysat/pysat.git >/dev/null
-  - cd ./pysat
   # set up data directory
   - mkdir /home/travis/build/pysatData
   # install pysat
-  - git checkout v3-0-rc1
-  - python setup.py install >/dev/null
-  - export PYTHONPATH=$PYTHONPATH:$(pwd)
+  - pip install pysat>=3.0
   # install pysatSeasons
-  - cd ../pysatSeasons
   - python setup.py install
 
 before_script:
