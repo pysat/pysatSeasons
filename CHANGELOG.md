@@ -2,7 +2,7 @@
 All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
-## [0.1.3] - 2021-03-16
+## [0.1.3] - 2021-05-07
 - Updates style to match pysat 3.0.0 release candidate
 - Migrates CI tests to github actions
 
