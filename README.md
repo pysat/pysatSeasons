@@ -4,7 +4,8 @@
 </div>
 
 # pysatSeasons
-[![Build Status](https://travis-ci.org/pysat/pysatSeasons.svg?branch=main)](https://travis-ci.org/pysat/pysatSeasons)
+[![PyPI Package latest release](https://img.shields.io/pypi/v/pysatSeasons.svg)](https://pypi.python.org/pypi/pysatSeasons)
+[![Build Status](https://github.com/github/docs/actions/workflows/main.yml/badge.svg)](https://github.com/github/docs/actions/workflows/main.yml/badge.svg)
 [![Coverage Status](https://coveralls.io/repos/github/pysat/pysatSeasons/badge.svg?branch=main)](https://coveralls.io/github/pysat/pysatSeasons?branch=main)
 [![DOI](https://zenodo.org/badge/209365329.svg)](https://zenodo.org/badge/latestdoi/209365329)
 
