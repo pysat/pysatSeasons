@@ -25,6 +25,25 @@ Main Features
 
 # Installation
 
+### Prerequisites
+
+pysatSeasons uses common Python modules, as well as modules developed by
+and for the Space Physics community.  This module officially supports
+Python 3.7.  Note that the current release is based on archived routines from
+pysat 2.0.  This currently requires the deprecated `Panel` from pandas.
+The caps on numpy and python stem from compatibility with the maximum
+supported pandas version.  Future versions will update the code to remove
+`Panel`.
+
+| Common modules | Community modules |
+| -------------- | ----------------- |
+| matplotlib     | pysat             |
+| numpy<1.20     |                   |
+| pandas<0.24    |                   |
+
+
+## GitHub Installation
+
 First, checkout the repository:
 
 ```
