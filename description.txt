@@ -1,4 +1,5 @@
-pysatSeasons allows users to run basic seasonal analysis over N-dimensional datasets managed through the pysat code.
+pysatSeasons allows users to run basic seasonal analysis over N-dimensional
+datasets managed through the pysat code.
 
 Main Features
 -------------
