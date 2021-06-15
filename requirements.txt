@@ -1,4 +1,4 @@
-pysat
+matplotlib
 numpy<1.20
 pandas<0.25
-matplotlib
+pysat>=3.0

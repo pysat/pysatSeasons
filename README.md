@@ -1,6 +1,6 @@
 <div align="left">
         <img height="0" width="0px">
-        <img width="20%" src="/poweredbypysat.png" alt="pysat" title="pysat"</img>
+        <img width="20%" src="https://raw.githubusercontent.com/pysat/pysatSeasons/main/poweredbypysat.png" alt="pysat" title="pysat"</img>
 </div>
 
 # pysatSeasons
@@ -32,7 +32,7 @@ and for the Space Physics community.  This module officially supports
 Python 3.7.  Note that the current release is based on archived routines from
 pysat 2.0.  This currently requires the deprecated `Panel` from pandas.
 The caps on numpy and python stem from compatibility with the maximum
-supported pandas version.  Future versions will update the code to remove
+supported pandas version.  Version 0.2.0 will rewrite the routines to remove
 `Panel`.
 
 | Common modules | Community modules |
