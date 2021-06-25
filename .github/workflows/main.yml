@@ -28,6 +28,10 @@ jobs:
         pip install -r test_requirements.txt
         pip install -r requirements.txt
 
+        # Temporary install commands to test RC
+        pip install -r pysat_requirements.txt
+        pip install -i https://test.pypi.org/simple/ pysat==3.0.1rc1
+
     - name: Set up pysat
       run: |
         mkdir pysatData
