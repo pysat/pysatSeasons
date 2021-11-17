@@ -1,4 +1,5 @@
 import pandas as pds
+import xarray as xr
 
 
 def computational_form(data):
@@ -17,22 +18,33 @@ def computational_form(data):
 
     Parameters
     ----------
-    data : pandas.Series
-        Series of numbers, Series, DataFrames
+    data : array-like
+        Series of numbers, Series, or DataFrames
 
     Returns
     -------
-    pandas.Series, DataFrame, or Panel
+    pandas.Series, DataFrame, or xarray.Dataset
         repacked data, aligned by indices, ready for calculation
 
     """
 
     if isinstance(data.iloc[0], pds.DataFrame):
-        dslice = pds.Panel.from_dict(dict([(i, data.iloc[i])
-                                     for i in range(len(data))]))
+        # Convert data to xarray
+        info = [xr.Dataset.from_dataframe(temp)
+                for temp in data]
+
+        vars = info[0].data_vars.keys()
+        dslice = xr.Dataset()
+
+        # Combine all info for each variable into a single data
+        # array.
+        for var in vars:
+            dslice[var] = xr.concat([item[var] for item in info],
+                                    'pysat_binning')
     elif isinstance(data.iloc[0], pds.Series):
         dslice = pds.DataFrame(data.tolist())
         dslice.index = data.index
     else:
         dslice = data
+
     return dslice
