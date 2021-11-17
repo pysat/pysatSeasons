@@ -161,13 +161,13 @@ def median2D(const, bin1, label1, bin2, label2, data_label,
     # 3d array:  stores the data that is sorted into each bin? - in a deque
     ans = [[[collections.deque() for i in xarr] for j in yarr] for k in zarr]
 
-    for inst in const:
+    for inst1 in const:
         # do loop to iterate over instrument season
         # probably iterates by date but that all depends on the
         # configuration of that particular instrument.
         # either way, it iterates over the instrument, loading successive
         # data between start and end bounds
-        for inst in inst:
+        for inst in inst1:
             # collect data in bins for averaging
             if len(inst.data) != 0:
                 # sort the data into bins (x) based on label 1
