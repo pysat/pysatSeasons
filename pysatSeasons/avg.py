@@ -9,6 +9,8 @@ Instrument independent seasonal averaging routine. Supports averaging
 import collections
 import numpy as np
 import pandas as pds
+import xarray as xr
+
 import pysat
 import pysatSeasons as ssnl
 
@@ -263,14 +265,26 @@ def _calc_2d_median(ans, data_label, binx, biny, xarr, yarr, zarr, numx,
                     if len(ans[zk][yj][xi]) > 0:
                         ans[zk][yj][xi] = list(ans[zk][yj][xi])
                         countAns[zk][yj][xi] = len(ans[zk][yj][xi])
-                        test = pds.Panel.from_dict(dict([(i, temp)
-                                                   for i, temp in
-                                                   enumerate(ans[zk][yj][xi])]))
-                        medianAns[zk][yj][xi] = test.median(axis=0)
-                        devAns[zk][yj][xi] = \
-                            (test.subtract(medianAns[zk][yj][xi],
-                                           axis=0)).abs().median(axis=0,
-                                                                 skipna=True)
+
+                        # Convert data to xarray
+                        info = [xr.Dataset.from_dataframe(temp)
+                                for temp in ans[zk][yj][xi]]
+
+                        vars = info[0].data_vars.keys()
+                        test = xr.Dataset()
+                        # Combine all info for each variable into a single data
+                        # array.
+                        for var in vars:
+                            test[var] = xr.concat([item[var] for item in info],
+                                                  'pysat_binning')
+
+                        # All data is prepped. Perform calculations.
+                        medianAns[zk][yj][xi] = test.median(dim='pysat_binning')
+
+                        devAns[zk][yj][xi] = test - medianAns[zk][yj][xi]
+                        devAns[zk][yj][xi] = devAns[zk][yj][xi].apply(np.abs)
+                        devAns[zk][yj][xi] = devAns[zk][yj][xi].median(
+                            dim='pysat_binning')
 
     objidx, = np.where(objArray == 'R')
     if len(objidx) > 0:
@@ -384,9 +398,13 @@ def _core_mean(inst, data_label, by_orbit=False, by_day=False, by_file=False):
                 date = inst.data.index[0]
             else:
                 date = inst.date
-            # perform average
-            mean_val[date] = ssnl.computational_form(data).mean(axis=0,
-                                                                skipna=True)
+
+            # Perform average
+            data = ssnl.computational_form(data)
+            if isinstance(data, xr.Dataset):
+                mean_val[date] = data.mean(dims='pysat_binning')
+            else:
+                mean_val[date] = data.mean(axis=0, skipna=True)
 
     del iterator
     return mean_val
@@ -461,13 +479,26 @@ def _calc_1d_median(ans, data_label, binx, xarr, zarr, numx, numz,
                 if len(ans[zk][xi]) > 0:
                     ans[zk][xi] = list(ans[zk][xi])
                     countAns[zk][xi] = len(ans[zk][xi])
-                    test = pds.Panel.from_dict(dict([(i, temp) for i, temp
-                                                    in enumerate(ans[zk][xi])]))
-                    medianAns[zk][xi] = test.median(axis=0)
-                    devAns[zk][xi] = \
-                        (test.subtract(medianAns[zk][xi],
-                                       axis=0)).abs().median(axis=0,
-                                                             skipna=True)
+
+                    # Convert data to xarray
+                    info = [xr.Dataset.from_dataframe(temp)
+                            for temp in ans[zk][xi]]
+
+                    vars = info[0].data_vars.keys()
+                    test = xr.Dataset()
+                    # Combine all info for each variable into a single data
+                    # array.
+                    for var in vars:
+                        test[var] = xr.concat([item[var] for item in info],
+                                              'pysat_binning')
+
+                    # All data is prepped. Perform calculations.
+                    medianAns[zk][xi] = test.median(dim='pysat_binning')
+
+                    devAns[zk][xi] = test - medianAns[zk][xi]
+                    devAns[zk][xi] = devAns[zk][xi].apply(np.abs)
+                    devAns[zk][xi] = devAns[zk][xi].median(
+                        dim='pysat_binning')
 
     objidx, = np.where(objArray == 'R')
     if len(objidx) > 0:
