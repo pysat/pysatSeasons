@@ -1,6 +1,3 @@
-from __future__ import print_function
-from __future__ import absolute_import
-
 """Occurrence probability routines, daily or by orbit.
 
 Routines calculate the occurrence of an event greater than a supplied gate
@@ -16,6 +13,8 @@ The included routines use the bounds attached to the supplied instrument
 object as the season of interest.
 
 """
+from __future__ import print_function
+from __future__ import absolute_import
 
 import numpy as np
 
