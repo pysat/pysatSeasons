@@ -4,13 +4,14 @@ tests the pysat _core code
 import xarray as xr
 
 import pysat
+from pysat import pinsts
 import pysatSeasons as ps
 
 
 class TestCore(object):
     def setup(self):
         """Runs before every method to create a clean testing setup."""
-        self.testInst = pysat.Instrument('pysat', 'testing',
+        self.testInst = pysat.Instrument(inst_mod=pinsts.pysat_testing,
                                          clean_level='clean')
         self.bounds1 = self.testInst.inst_module._test_dates['']['']
 
@@ -59,7 +60,7 @@ class TestCore(object):
 class TestCoreXarray(TestCore):
     def setup(self):
         """Runs before every method to create a clean testing setup."""
-        self.testInst = pysat.Instrument('pysat', 'testing_xarray',
+        self.testInst = pysat.Instrument(inst_mod=pinsts.pysat_testing_xarray,
                                          clean_level='clean')
         self.bounds1 = self.testInst.inst_module._test_dates['']['']
 
