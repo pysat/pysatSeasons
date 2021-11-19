@@ -4,10 +4,10 @@ import xarray as xr
 
 def computational_form(data):
     """
-    Repackages numbers, Series, or DataFrames
+    Repackages input data into xarray.Dataset
 
     Regardless of input format, mathematical operations may be performed on the
-    output via the same pandas mechanisms.
+    output via the same xarray mechanisms.
 
     This method may be particularly useful in analysis methods that aim to be
     instrument independent. pysat.Instrument objects can package data in a
@@ -18,20 +18,51 @@ def computational_form(data):
 
     Parameters
     ----------
-    data : array-like
-        Series of numbers, Series, or DataFrames
+    data : pds.Series, pds.DataFrame, xr.DataArray, xr.DataSet, or list-like
+        List-like of numbers, Series, DataFrames, or Datasets
 
     Returns
     -------
-    pandas.Series, DataFrame, or xarray.Dataset
+    xarray.Dataset
         repacked data, aligned by indices, ready for calculation
 
     """
+    if isinstance(data, pds.DataFrame):
+        dslice = data.to_xarray()
+    elif isinstance(data, pds.Series):
+        dslice = xr.Dataset()
+        dslice[data.name] = data.to_xarray()
+    elif isinstance(data, xr.Dataset):
+        dslice = data
+    elif isinstance(data, xr.DataArray):
+        dslice = xr.Dataset()
+        dslice[data.name] = data
 
-    if isinstance(data.iloc[0], pds.DataFrame):
+    elif isinstance(data[0], xr.Dataset):
+        # Combine multiple datasets into one
+        vars = data[0].data_vars.keys()
+        dslice = xr.Dataset()
+
+        # Combine all info for each variable into a single data
+        # array.
+        for var in vars:
+            dslice[var] = xr.concat([item[var] for item in data],
+                                    'pysat_binning')
+
+    elif isinstance(data[0], xr.DataArray):
+        # Combine multiple datasets into one
+        vars = [data[0].name]
+        dslice = xr.Dataset()
+
+        # Combine all info for each variable into a single data
+        # array.
+        for var in vars:
+            dslice[var] = xr.concat([item[var] for item in data],
+                                    'pysat_binning')
+
+    elif isinstance(data[0], pds.DataFrame):
         # Convert data to xarray
-        info = [xr.Dataset.from_dataframe(temp)
-                for temp in data]
+        info = [xr.Dataset.from_dataframe(item) for item in data]
 
         vars = info[0].data_vars.keys()
         dslice = xr.Dataset()
@@ -41,9 +72,18 @@ def computational_form(data):
         for var in vars:
             dslice[var] = xr.concat([item[var] for item in info],
                                     'pysat_binning')
-    elif isinstance(data.iloc[0], pds.Series):
-        dslice = pds.DataFrame(data.tolist())
-        dslice.index = data.index
+
+    elif isinstance(data[0], pds.Series):
+        # Combine multiple datasets into one
+        vars = [data[0].name]
+        dslice = xr.Dataset()
+
+        # Combine all info for each variable into a single data
+        # array.
+        for var in vars:
+            dslice[var] = xr.concat([xr.DataArray.from_series(item)
+                                     for item in data], 'pysat_binning')
+
     else:
         dslice = data
 
