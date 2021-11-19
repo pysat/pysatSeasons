@@ -33,6 +33,7 @@ def computational_form(data):
         Otherwise, variable names are retained from the input data.
 
     """
+
     if isinstance(data, pds.DataFrame):
         output = data.to_xarray()
     elif isinstance(data, pds.Series):
