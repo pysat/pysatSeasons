@@ -19,72 +19,78 @@ def computational_form(data):
     Parameters
     ----------
     data : pds.Series, pds.DataFrame, xr.DataArray, xr.DataSet, or list-like
-        List-like of numbers, Series, DataFrames, or Datasets
+           of the same or numbers.
+        List-like of numbers, Series, DataFrames, or Datasets to be combined
+        into a single Dataset. 
 
     Returns
     -------
-    xarray.Dataset
-        repacked data, aligned by indices, ready for calculation
+    output : xr.Dataset
+        Repacked data, aligned by indices. If data is a list of multidimensional
+        objects then output will have a corresponding new dimension
+        'pysat_binning' to reflect that organization. If data is a list of
+        numbers, then output will have a single associated variable, `data`.
+        Otherwise, variable names are retained from the input data.
 
     """
     if isinstance(data, pds.DataFrame):
-        dslice = data.to_xarray()
+        output = data.to_xarray()
     elif isinstance(data, pds.Series):
-        dslice = xr.Dataset()
-        dslice[data.name] = data.to_xarray()
+        output = xr.Dataset()
+        output[data.name] = data.to_xarray()
     elif isinstance(data, xr.Dataset):
-        dslice = data
+        output = data
     elif isinstance(data, xr.DataArray):
-        dslice = xr.Dataset()
-        dslice[data.name] = data
+        output = xr.Dataset()
+        output[data.name] = data
 
     elif isinstance(data[0], xr.Dataset):
         # Combine multiple datasets into one
         vars = data[0].data_vars.keys()
-        dslice = xr.Dataset()
+        output = xr.Dataset()
 
         # Combine all info for each variable into a single data
         # array.
         for var in vars:
-            dslice[var] = xr.concat([item[var] for item in data],
+            output[var] = xr.concat([item[var] for item in data],
                                     'pysat_binning')
 
     elif isinstance(data[0], xr.DataArray):
         # Combine multiple datasets into one
         vars = [data[0].name]
-        dslice = xr.Dataset()
+        output = xr.Dataset()
 
         # Combine all info for each variable into a single data
         # array.
         for var in vars:
-            dslice[var] = xr.concat([item[var] for item in data],
-                                    'pysat_binning')
+            output[var] = xr.concat(data, 'pysat_binning')
 
     elif isinstance(data[0], pds.DataFrame):
         # Convert data to xarray
         info = [xr.Dataset.from_dataframe(item) for item in data]
 
         vars = info[0].data_vars.keys()
-        dslice = xr.Dataset()
+        output = xr.Dataset()
 
         # Combine all info for each variable into a single data
         # array.
         for var in vars:
-            dslice[var] = xr.concat([item[var] for item in info],
+            output[var] = xr.concat([item[var] for item in info],
                                     'pysat_binning')
 
     elif isinstance(data[0], pds.Series):
         # Combine multiple datasets into one
         vars = [data[0].name]
-        dslice = xr.Dataset()
+        output = xr.Dataset()
 
         # Combine all info for each variable into a single data
         # array.
         for var in vars:
-            dslice[var] = xr.concat([xr.DataArray.from_series(item)
+            output[var] = xr.concat([xr.DataArray.from_series(item)
                                      for item in data], 'pysat_binning')
 
     else:
-        dslice = data
+        output = xr.Dataset()
+        output['data'] = data
 
-    return dslice
+    return output
