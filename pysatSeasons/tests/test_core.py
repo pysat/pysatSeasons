@@ -46,7 +46,7 @@ class TestCore(object):
         assert 'pysat_binning' in self.out.dims
         return
 
-    def test_comp_form_list_vars(self):
+    def test_comp_form_list_data(self):
         """Test computational_form with [inst.data, inst.data, ...]"""
         self.testInst.load(date=self.bounds1)
         self.out = ps.computational_form([self.testInst.data,
