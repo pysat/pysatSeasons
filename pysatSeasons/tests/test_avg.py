@@ -79,8 +79,10 @@ class TestBasics():
                                          orbit_info=orbit_info)
         self.testInst.bounds = self.bounds2
         ans = avg.mean_by_orbit(self.testInst, 'mlt')
-        # note last orbit is incomplete thus not expected to satisfy relation
-        assert np.allclose(ans[:-1], np.ones(len(ans) - 1) * 12.0, 1.0E-2)
+        # Note last orbit is incomplete thus not expected to satisfy relation
+        ans = ans[:-1]
+
+        assert np.allclose(ans.values.tolist(), np.full(len(ans), 12.), 1.0E-2)
 
     def test_basic_file_mean(self):
         """Test basic file mean"""
@@ -90,6 +92,19 @@ class TestBasics():
         self.testInst.bounds = (names[0], names[-1])
         ans = avg.mean_by_file(self.testInst, 'dummy4')
         assert np.all(ans == 86399 / 2.0)
+
+
+# class TestBasicsXarray(TestBasics):
+#     def setup(self):
+#         """Runs before every method to create a clean testing setup."""
+#         self.testInst = pysat.Instrument('pysat', 'testing_xarray',
+#                                          clean_level='clean')
+#         self.bounds1 = (dt.datetime(2008, 1, 1), dt.datetime(2008, 1, 3))
+#         self.bounds2 = (dt.datetime(2009, 1, 1), dt.datetime(2009, 1, 2))
+#
+#     def teardown(self):
+#         """Runs after every method to clean up previous testing."""
+#         del self.testInst, self.bounds1, self.bounds2
 
 
 class TestFrameProfileAverages():
