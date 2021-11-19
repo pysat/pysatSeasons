@@ -21,7 +21,7 @@ def computational_form(data):
     data : pds.Series, pds.DataFrame, xr.DataArray, xr.DataSet, or list-like
            of the same or numbers.
         List-like of numbers, Series, DataFrames, or Datasets to be combined
-        into a single Dataset. 
+        into a single Dataset.
 
     Returns
     -------
