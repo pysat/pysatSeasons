@@ -1,10 +1,10 @@
 # -*- coding: utf-8 -*-
-from __future__ import print_function
-from __future__ import absolute_import
 """
 Instrument independent seasonal averaging routine. Supports averaging
 1D and 2D data.
 """
+from __future__ import print_function
+from __future__ import absolute_import
 
 import collections
 import numpy as np
@@ -92,7 +92,7 @@ def median1D(const, bin1, label1, data_label, auto_bin=True, returnData=False):
                         for zk in zarr:
                             # Take the data (already filtered by x), select the
                             # data, put it in a list, and extend the deque.
-                            idata = inst.data.iloc[xindex]
+                            idata = inst[xindex]
                             ans[zk][xi].extend(idata[data_label[zk]].tolist())
 
     # Calculate the 1D median
@@ -165,7 +165,7 @@ def median2D(const, bin1, label1, bin2, label2, data_label,
         # data between start and end bounds.
         for inst in inst1:
             # Collect data in bins for averaging
-            if len(inst.data) != 0:
+            if not inst.empty:
                 # Sort the data into bins (x) based on label 1
                 # (stores bin indexes in xind)
                 xind = np.digitize(inst.data[label1], binx) - 1
@@ -176,7 +176,7 @@ def median2D(const, bin1, label1, bin2, label2, data_label,
                     if len(xindex) > 0:
                         # Look up the data along y (label2) at that set of
                         # indices (a given x).
-                        yData = inst.data.iloc[xindex]
+                        yData = inst[xindex]
                         # digitize that, to sort data into bins along y
                         # (label2) (get bin indexes)
                         yind = np.digitize(yData[label2], biny) - 1
@@ -384,27 +384,25 @@ def _core_mean(inst, data_label, by_orbit=False, by_day=False, by_file=False):
         raise ValueError('A choice must be made, by day, file, or orbit')
 
     # create empty series to hold result
-    mean_val = pds.Series()
+    mean_val = pds.Series(dtype=np.float64)
     # iterate over season, calculate the mean
-    for inst in iterator:
-        if not inst.data.empty:
+    for linst in iterator:
+        if not linst.empty:
             # compute mean absolute using pandas functions and store
             # data could be an image, or lower dimension, account for 2D
             # and lower
-            data = inst[data_label]
-            data.dropna(inplace=True)
+            data = linst[data_label]
+            data = data.dropna()
 
             if by_orbit or by_file:
-                date = inst.data.index[0]
+                date = linst.index[0]
             else:
-                date = inst.date
+                date = linst.date
 
             # Perform average
             data = ssnl.computational_form(data)
-            if isinstance(data, xr.Dataset):
-                mean_val[date] = data.mean(dims='pysat_binning')
-            else:
-                mean_val[date] = data.mean(axis=0, skipna=True)
+            mean_val[date] = data.mean(dim=data[data_label].dims[0],
+                                       skipna=True)[data_label].values
 
     del iterator
     return mean_val
