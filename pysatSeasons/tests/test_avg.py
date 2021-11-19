@@ -94,19 +94,6 @@ class TestBasics():
         assert np.all(ans == 86399 / 2.0)
 
 
-# class TestBasicsXarray(TestBasics):
-#     def setup(self):
-#         """Runs before every method to create a clean testing setup."""
-#         self.testInst = pysat.Instrument('pysat', 'testing_xarray',
-#                                          clean_level='clean')
-#         self.bounds1 = (dt.datetime(2008, 1, 1), dt.datetime(2008, 1, 3))
-#         self.bounds2 = (dt.datetime(2009, 1, 1), dt.datetime(2009, 1, 2))
-#
-#     def teardown(self):
-#         """Runs after every method to clean up previous testing."""
-#         del self.testInst, self.bounds1, self.bounds2
-
-
 class TestFrameProfileAverages():
     def setup(self):
         """Runs before every method to create a clean testing setup."""
