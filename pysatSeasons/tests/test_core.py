@@ -4,7 +4,7 @@ tests the pysat _core code
 import xarray as xr
 
 import pysat
-from pysat import pinsts
+from pysat import instruments as pinsts
 import pysatSeasons as ps
 
 
