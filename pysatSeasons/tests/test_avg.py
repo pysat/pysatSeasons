@@ -79,6 +79,7 @@ class TestBasics():
                                          orbit_info=orbit_info)
         self.testInst.bounds = self.bounds2
         ans = avg.mean_by_orbit(self.testInst, 'mlt')
+
         # Note last orbit is incomplete thus not expected to satisfy relation
         ans = ans[:-1]
 
