@@ -52,17 +52,13 @@ def to_xarray_dataset(data):
         for var in vars:
             output[var] = xr.concat([item[var] for item in data],
                                     'pysat_binning')
-
     elif isinstance(data[0], xr.DataArray):
         # Combine list-like of DataArrays
         vars = [data[0].name]
         output = xr.Dataset()
 
-        # Combine all info for each variable into a single data
-        # array.
         for var in vars:
             output[var] = xr.concat(data, 'pysat_binning')
-
     elif isinstance(data[0], pds.DataFrame):
         # Convert list-like of DataFrames
         info = [xr.Dataset.from_dataframe(item) for item in data]
@@ -70,23 +66,17 @@ def to_xarray_dataset(data):
         vars = info[0].data_vars.keys()
         output = xr.Dataset()
 
-        # Combine all info for each variable into a single data
-        # array.
         for var in vars:
             output[var] = xr.concat([item[var] for item in info],
                                     'pysat_binning')
-
     elif isinstance(data[0], pds.Series):
         # Convert list-like of pds.Series
         vars = [data[0].name]
         output = xr.Dataset()
 
-        # Combine all info for each variable into a single data
-        # array.
         for var in vars:
             output[var] = xr.concat([xr.DataArray.from_series(item)
                                      for item in data], 'pysat_binning')
-
     else:
         output = xr.Dataset()
         output['data'] = data
