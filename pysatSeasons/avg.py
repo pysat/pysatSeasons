@@ -3,8 +3,6 @@
 Instrument independent seasonal averaging routine. Supports averaging
 1D and 2D data.
 """
-from __future__ import print_function
-from __future__ import absolute_import
 
 import collections
 import numpy as np
