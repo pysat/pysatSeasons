@@ -60,6 +60,7 @@ def median1D(const, bin1, label1, data_label, auto_bin=True, returnData=False):
 
     # How many bins are used
     numx = len(binx) - 1
+
     # How many different data products
     numz = len(data_label)
 
@@ -67,6 +68,7 @@ def median1D(const, bin1, label1, data_label, auto_bin=True, returnData=False):
     # The indices of the bins used for looping.
     xarr = np.arange(numx)
     zarr = np.arange(numz)
+
     # 3d array:  stores the data that is sorted into each bin - in a deque
     ans = [[collections.deque() for i in xarr] for k in zarr]
 
@@ -81,10 +83,12 @@ def median1D(const, bin1, label1, data_label, auto_bin=True, returnData=False):
                 # Sort the data into bins (x) based on `label1`
                 # (stores bin indexes in xind)
                 xind = np.digitize(inst.data[label1], binx) - 1
+
                 # For each possible x index
                 for xi in xarr:
                     # Get the indices of those pieces of data in that bin
                     xindex, = np.where(xind == xi)
+
                     if len(xindex) > 0:
                         # For each data product label zk
                         for zk in zarr:
@@ -145,6 +149,7 @@ def median2D(const, bin1, label1, bin2, label2, data_label,
     # How many bins are used
     numx = len(binx) - 1
     numy = len(biny) - 1
+
     # How many different data products
     numz = len(data_label)
 
@@ -153,6 +158,7 @@ def median2D(const, bin1, label1, bin2, label2, data_label,
     yarr = np.arange(numy)
     xarr = np.arange(numx)
     zarr = np.arange(numz)
+
     # 3d array:  stores the data that is sorted into each bin - in a deque
     ans = [[[collections.deque() for i in xarr] for j in yarr] for k in zarr]
 
@@ -167,22 +173,27 @@ def median2D(const, bin1, label1, bin2, label2, data_label,
                 # Sort the data into bins (x) based on label 1
                 # (stores bin indexes in xind)
                 xind = np.digitize(inst.data[label1], binx) - 1
+
                 # For each possible x index
                 for xi in xarr:
                     # Get the indices of those pieces of data in that bin.
                     xindex, = np.where(xind == xi)
+
                     if len(xindex) > 0:
                         # Look up the data along y (label2) at that set of
                         # indices (a given x).
                         yData = inst[xindex]
+
                         # digitize that, to sort data into bins along y
                         # (label2) (get bin indexes)
                         yind = np.digitize(yData[label2], biny) - 1
+
                         # For each possible y index
                         for yj in yarr:
                             # Select data with this y index (and we already
                             # filtered for this x index)
                             yindex, = np.where(yind == yj)
+
                             if len(yindex) > 0:
                                 # For each data product label zk
                                 for zk in zarr:
@@ -211,6 +222,7 @@ def _calc_2d_median(ans, data_label, binx, biny, xarr, yarr, zarr, numx,
     # if the data is a more generalized object, use lists to store data
     # need to find first bin with data
     dataType = [None for i in np.arange(numz)]
+
     # for each data product label, find the first nonempty bin
     # and select its type
     for zk in zarr:
@@ -270,6 +282,7 @@ def _calc_2d_median(ans, data_label, binx, biny, xarr, yarr, zarr, numx,
 
                         vars = info[0].data_vars.keys()
                         test = xr.Dataset()
+
                         # Combine all info for each variable into a single data
                         # array.
                         for var in vars:
@@ -294,9 +307,11 @@ def _calc_2d_median(ans, data_label, binx, biny, xarr, yarr, zarr, numx,
                 for xi in xarr:
                     # convert deque storing data into numpy array
                     ans[zk][yj][xi] = np.array(ans[zk][yj][xi])
+
                     # filter out an NaNs in the arrays
                     idx, = np.where(np.isfinite(ans[zk][yj][xi]))
                     ans[zk][yj][xi] = (ans[zk][yj][xi])[idx]
+
                     # perform median averaging
                     if len(idx) > 0:
                         medianAns[zk][yj, xi] = np.median(ans[zk][yj][xi])
@@ -421,18 +436,18 @@ def _calc_1d_median(ans, data_label, binx, xarr, zarr, numx, numz,
     This is an overcomplicated way of doing this.  Try and simplify later
 
     """
-    # set up output arrays
+    # Set up output arrays
     medianAns = [[None for i in xarr] for k in zarr]
     countAns = [[None for i in xarr] for k in zarr]
     devAns = [[None for i in xarr] for k in zarr]
 
-    # all of the loading and storing data is done
-    # determine what kind of data is stored
-    # if just numbers, then use numpy arrays to store data
-    # if the data is a more generalized object, use lists to store data
-    # need to find first bin with data
+    # All of the loading and storing data is done, determine what kind of data
+    # is stored. If just numbers, then use numpy arrays to store data.
+    # If the data is a more generalized object, use lists to store data
+    # need to find first bin with data.
     dataType = [None for i in np.arange(numz)]
-    # for each data product label, find the first nonempty bin
+
+    # For each data product label, find the first nonempty bin
     # and select its type
     for zk in zarr:
         for xi in xarr:
@@ -440,7 +455,7 @@ def _calc_1d_median(ans, data_label, binx, xarr, zarr, numx, numz,
                 dataType[zk] = type(ans[zk][xi][0])
                 break
 
-    # determine if normal number objects are being used or if there
+    # Determine if normal number objects are being used or if there
     # are more complicated objects
     objArray = [False] * len(zarr)
     for i, thing in enumerate(dataType):
@@ -449,12 +464,12 @@ def _calc_1d_median(ans, data_label, binx, xarr, zarr, numx, numz,
         elif thing == pds.core.frame.DataFrame:
             objArray[i] = 'F'
         else:
-            # other, simple scalaRs
+            # Other, simple scalars
             objArray[i] = 'R'
 
     objArray = np.array(objArray)
 
-    # if some pandas data series are returned in average, return a list
+    # If some pandas data series are returned in average, return a list
     objidx, = np.where(objArray == 'S')
     if len(objidx) > 0:
         for zk in zarr[objidx]:
@@ -467,7 +482,7 @@ def _calc_1d_median(ans, data_label, binx, xarr, zarr, numx, numz,
                                                         - medianAns[zk][xi])
                                                     for temp in ans[zk][xi]]).median(axis=0)
 
-    # if some pandas DataFrames are returned in average, return a list
+    # If some pandas DataFrames are returned in average, return a list
     objidx, = np.where(objArray == 'F')
     if len(objidx) > 0:
         for zk in zarr[objidx]:
@@ -503,19 +518,21 @@ def _calc_1d_median(ans, data_label, binx, xarr, zarr, numx, numz,
             countAns[zk] = np.full(numx, fill_value=np.nan)
             devAns[zk] = np.full(numx, fill_value=np.nan)
             for xi in xarr:
-                # convert deque storing data into numpy array
+                # Convert deque storing data into numpy array
                 ans[zk][xi] = np.array(ans[zk][xi])
-                # filter out an NaNs in the arrays
+
+                # Filter out an NaNs in the arrays
                 idx, = np.where(np.isfinite(ans[zk][xi]))
                 ans[zk][xi] = (ans[zk][xi])[idx]
-                # perform median averaging
+
+                # Perform median averaging
                 if len(idx) > 0:
                     medianAns[zk][xi] = np.median(ans[zk][xi])
                     countAns[zk][xi] = len(ans[zk][xi])
                     devAns[zk][xi] = np.median(abs(ans[zk][xi]
                                                    - medianAns[zk][xi]))
 
-    # prepare output
+    # Prepare output
     output = {}
     for i, label in enumerate(data_label):
         output[label] = {'median': medianAns[i],
