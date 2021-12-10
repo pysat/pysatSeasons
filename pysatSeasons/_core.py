@@ -3,18 +3,16 @@ import xarray as xr
 
 
 def to_xarray_dataset(data):
-    """
-    Repackage input data into xarray.Dataset
+    """Repackage input data into xarray.Dataset
 
     Regardless of input format, mathematical operations may be performed on the
-    output via the same xarray mechanisms.
-
-    This method may be particularly useful in analysis methods that aim to be
-    instrument independent. pysat.Instrument objects can package data in a
-    variety of ways within a DataFrame, depending upon the scientific data
-    source. Thus, a variety of data types will be encountered by instrument
-    independent methods and to_xarray_dataset method may reduce the effort
-    required to support more generalized processing.
+    output via the same xarray mechanisms. This method may be particularly
+    useful in analysis methods that aim to be instrument independent.
+    pysat.Instrument objects can package data in a variety of ways within a
+    DataFrame, depending upon the scientific data source. Thus, a variety of
+    data types will be encountered by instrument independent methods and
+    `to_xarray_dataset` method may reduce the effort required to support more
+    generalized processing.
 
     Parameters
     ----------
