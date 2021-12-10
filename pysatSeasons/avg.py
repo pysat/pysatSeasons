@@ -20,11 +20,11 @@ def median1D(const, bin1, label1, data_label, auto_bin=True, returnData=False):
     ----------
     const: Constellation or Instrument
         Constellation or Instrument object
-    binX: array-like
+    bin1: array-like
         List holding [min, max, number of bins] or array-like containing
-        bin edges, where X = 1, 2
-    labelX: str
-        identifies data product for binX, where X = 1, 2
+        bin edges
+    label1: str
+        identifies data product for bin1
     data_label: list-like
         contains strings identifying data product(s) to be averaged
     auto_bin: bool
@@ -105,11 +105,11 @@ def median2D(const, bin1, label1, bin2, label2, data_label,
     Parameters
     ----------
     const: Constellation or Instrument
-    binX: array-like
+    bin*: array-like
         List holding [min, max, number of bins] or array-like containing
-        bin edges, where X = 1, 2
-    labelX: string
-        identifies data product for binX, where X = 1, 2
+        bin edges, where * = 1, 2
+    label*: string
+        identifies data product for bin*, where * = 1, 2
     data_label: list-like
         contains strings identifying data product(s) to be averaged
     auto_bin: if True, function will create bins from the min, max and
