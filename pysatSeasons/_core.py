@@ -2,7 +2,7 @@ import pandas as pds
 import xarray as xr
 
 
-def computational_form(data):
+def to_xarray_dataset(data):
     """
     Repackage input data into xarray.Dataset
 
@@ -13,7 +13,7 @@ def computational_form(data):
     instrument independent. pysat.Instrument objects can package data in a
     variety of ways within a DataFrame, depending upon the scientific data
     source. Thus, a variety of data types will be encountered by instrument
-    independent methods and computational_form method may reduce the effort
+    independent methods and to_xarray_dataset method may reduce the effort
     required to support more generalized processing.
 
     Parameters

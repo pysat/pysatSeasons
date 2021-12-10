@@ -400,7 +400,7 @@ def _core_mean(inst, data_label, by_orbit=False, by_day=False, by_file=False):
                 date = linst.date
 
             # Perform average
-            data = ssnl.computational_form(data)
+            data = ssnl.to_xarray_dataset(data)
             mean_val[date] = data.mean(dim=data[data_label].dims[0],
                                        skipna=True)[data_label].values
 

@@ -20,48 +20,48 @@ class TestCore(object):
         del self.testInst, self.bounds1
 
     def test_comp_form_simple_data(self):
-        """Test computational_form with inst.data"""
+        """Test to_xarray_dataset with inst.data"""
         self.testInst.load(date=self.bounds1)
 
-        self.out = ps.computational_form(self.testInst.data)
+        self.out = ps.to_xarray_dataset(self.testInst.data)
         assert isinstance(self.out, xr.Dataset)
         assert 'pysat_binning' not in self.out.dims
         return
 
     def test_comp_form_instrument_variable(self):
-        """Test computational_form with inst[var]"""
+        """Test to_xarray_dataset with inst[var]"""
 
         self.testInst.load(date=self.bounds1)
 
-        self.out = ps.computational_form(self.testInst['mlt'])
+        self.out = ps.to_xarray_dataset(self.testInst['mlt'])
         assert isinstance(self.out, xr.Dataset)
         assert 'pysat_binning' not in self.out.dims
         return
 
     def test_comp_form_numbers(self):
-        """Test computational_form with [float1, float2, ...., floatn]"""
+        """Test to_xarray_dataset with [float1, float2, ...., floatn]"""
 
         self.testInst.load(date=self.bounds1)
 
-        self.out = ps.computational_form(self.testInst['mlt'].values.tolist())
+        self.out = ps.to_xarray_dataset(self.testInst['mlt'].values.tolist())
         assert isinstance(self.out, xr.Dataset)
         assert 'pysat_binning' not in self.out.dims
         return
 
     def test_comp_form_list_vars(self):
-        """Test computational_form with [inst[var], inst[var2], ...]"""
+        """Test to_xarray_dataset with [inst[var], inst[var2], ...]"""
         self.testInst.load(date=self.bounds1)
-        self.out = ps.computational_form([self.testInst['mlt'],
-                                          self.testInst['longitude']])
+        self.out = ps.to_xarray_dataset([self.testInst['mlt'],
+                                         self.testInst['longitude']])
         assert isinstance(self.out, xr.Dataset)
         assert 'pysat_binning' in self.out.dims
         return
 
     def test_comp_form_list_data(self):
-        """Test computational_form with [inst.data, inst.data, ...]"""
+        """Test to_xarray_dataset with [inst.data, inst.data, ...]"""
         self.testInst.load(date=self.bounds1)
-        self.out = ps.computational_form([self.testInst.data,
-                                          self.testInst.data])
+        self.out = ps.to_xarray_dataset([self.testInst.data,
+                                         self.testInst.data])
         assert isinstance(self.out, xr.Dataset)
         assert 'pysat_binning' in self.out.dims
         return
