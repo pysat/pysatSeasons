@@ -4,7 +4,7 @@ import xarray as xr
 
 def computational_form(data):
     """
-    Repackages input data into xarray.Dataset
+    Repackage input data into xarray.Dataset
 
     Regardless of input format, mathematical operations may be performed on the
     output via the same xarray mechanisms.
@@ -44,9 +44,8 @@ def computational_form(data):
     elif isinstance(data, xr.DataArray):
         output = xr.Dataset()
         output[data.name] = data
-
     elif isinstance(data[0], xr.Dataset):
-        # Combine multiple datasets into one
+        # Combine list-like of Datasets
         vars = data[0].data_vars.keys()
         output = xr.Dataset()
 
@@ -57,7 +56,7 @@ def computational_form(data):
                                     'pysat_binning')
 
     elif isinstance(data[0], xr.DataArray):
-        # Combine multiple datasets into one
+        # Combine list-like of DataArrays
         vars = [data[0].name]
         output = xr.Dataset()
 
@@ -67,7 +66,7 @@ def computational_form(data):
             output[var] = xr.concat(data, 'pysat_binning')
 
     elif isinstance(data[0], pds.DataFrame):
-        # Convert data to xarray
+        # Convert list-like of DataFrames
         info = [xr.Dataset.from_dataframe(item) for item in data]
 
         vars = info[0].data_vars.keys()
@@ -80,7 +79,7 @@ def computational_form(data):
                                     'pysat_binning')
 
     elif isinstance(data[0], pds.Series):
-        # Combine multiple datasets into one
+        # Convert list-like of pds.Series
         vars = [data[0].name]
         output = xr.Dataset()
 
