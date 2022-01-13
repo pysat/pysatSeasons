@@ -3,7 +3,7 @@ import xarray as xr
 
 
 def to_xarray_dataset(data):
-    """Repackage input data into xarray.Dataset
+    """Repackage input data into `xarray.Dataset`.
 
     Regardless of input format, mathematical operations may be performed on the
     output via the same xarray mechanisms. This method may be particularly
