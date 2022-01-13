@@ -61,7 +61,6 @@ def median1D(const, bin1, label1, data_label, auto_bin=True, returnData=False):
     # How many bins are used
     numx = len(binx) - 1
 
-
     # How many different data products
     numz = len(data_label)
 
