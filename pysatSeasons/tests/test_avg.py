@@ -79,8 +79,11 @@ class TestBasics():
                                          orbit_info=orbit_info)
         self.testInst.bounds = self.bounds2
         ans = avg.mean_by_orbit(self.testInst, 'mlt')
-        # note last orbit is incomplete thus not expected to satisfy relation
-        assert np.allclose(ans[:-1], np.ones(len(ans) - 1) * 12.0, 1.0E-2)
+
+        # Note last orbit is incomplete thus not expected to satisfy relation
+        ans = ans[:-1]
+
+        assert np.allclose(ans.values.tolist(), np.full(len(ans), 12.), 1.0E-2)
 
     def test_basic_file_mean(self):
         """Test basic file mean"""

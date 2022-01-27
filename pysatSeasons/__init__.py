@@ -19,7 +19,7 @@ import os
 from pysatSeasons import occur_prob  # noqa: F401
 from pysatSeasons import avg  # noqa: F401
 from pysatSeasons import plot  # noqa: F401
-from pysatSeasons._core import computational_form  # noqa: F401
+from pysatSeasons._core import to_xarray_dataset  # noqa: F401
 
 # set version
 here = os.path.abspath(os.path.dirname(__file__))

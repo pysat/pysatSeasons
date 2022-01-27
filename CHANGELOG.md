@@ -2,6 +2,11 @@
 All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+## [0.2.0] - 2022-XX-XX
+- Removed deprecated `pandas.Panel` from functions.
+- Renamed `computational_form` to `to_xarray_dataset` and refocused.
+- Removed old __future__ imports.
+
 ## [0.1.3] - 2021-06-18
 - Updates style to match pysat 3.0.0 release candidate
 - Improves discussion of rationale for version caps on readme page
