@@ -2,7 +2,7 @@
 All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
-## [0.1.4] - 2021-XX-XX
+## [0.2.0] - 2022-XX-XX
 - Removed deprecated `pandas.Panel` from functions.
 - Renamed `computational_form` to `to_xarray_dataset` and refocused.
 - Removed old __future__ imports.
