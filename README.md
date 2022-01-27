@@ -11,9 +11,8 @@
 
 
 
-This code will handle the seasonal analysis routines for pysat.  It is currently a work in progress, and will eventually replace the pysat.ssnl module in pysat.
-
-pysatSeasons allows users to run basic seasonal analysis over N-dimensional datasets managed through the pysat code.
+pysatSeasons allows users to run seasonal data analyses over N-dimensional 
+datasets managed through the pysat code.
 
 Main Features
 -------------
