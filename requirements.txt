@@ -2,3 +2,4 @@ matplotlib
 numpy
 pandas
 pysat>=3.0
+xarray
