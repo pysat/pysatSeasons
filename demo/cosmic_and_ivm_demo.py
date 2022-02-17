@@ -35,7 +35,7 @@ def add_magnetic_coordinates(inst):
     lons[idx] += 360.
 
     # Add data and metadata to Instrument object
-    inst['qd_lat'] = lats
+    inst['edmax_qd_lat'] = lats
     notes_str = ''.join(['Obtained from apexpy by transforming ',
                          '`edmaxlat` and `edmaxlon` into quasi-dipole ',
                          'coordinates.'])
@@ -45,16 +45,16 @@ def add_magnetic_coordinates(inst):
                  inst.meta.labels.fill_val: np.nan,
                  inst.meta.labels.min_val: -90.,
                  inst.meta.labels.max_val: 90.}
-    inst.meta['qd_lat'] = meta_data
+    inst.meta['edmax_qd_lat'] = meta_data
 
-    inst['qd_lon'] = lons
+    inst['edmax_qd_lon'] = lons
     meta_data = {inst.meta.labels.units: 'degrees',
                  inst.meta.labels.name: 'Quasi-Dipole Longitude',
                  inst.meta.labels.notes: notes_str,
                  inst.meta.labels.fill_val: np.nan,
                  inst.meta.labels.min_val: 0.,
                  inst.meta.labels.max_val: 360.}
-    inst.meta['qd_lon'] = meta_data
+    inst.meta['edmax_qd_lon'] = meta_data
 
     return
 
@@ -70,7 +70,7 @@ def restrict_abs_values(inst, label, max_val):
         Label for variable to restrict.
     max_val : float
         Absolute maximum value of `label`. Values greater
-        than `max_val` are removed from `inst`. (default=25.)
+        than `max_val` are removed from `inst`.
 
     """
     inst.data = inst.data[np.abs(inst[label]) <= max_val]
@@ -123,16 +123,24 @@ def add_log_density(inst):
     return
 
 
-def add_scale_height(cosmic):
+def add_scale_height(inst):
+    """Calculate topside scale height using observed electron density profiles.
+
+    Parameters
+    ----------
+    inst : pysat.Instrument
+        'COSMIC' 'GPS' Instrument.
+
+    """
     from scipy.stats import mode
 
-    output = cosmic['edmaxlon'].copy()
+    output = inst['edmaxlon'].copy()
     output.name = 'thf2'
 
-    for i, profile in enumerate(cosmic['profiles']):
+    for i, profile in enumerate(inst['profiles']):
         profile = profile[(profile['ELEC_dens']
-                          >= (1. / np.e) * cosmic['edmax'].iloc[i])
-                          & (profile.index >= cosmic['edmaxalt'].iloc[i])]
+                          >= (1. / np.e) * inst['edmax'].iloc[i])
+                          & (profile.index >= inst['edmaxalt'].iloc[i])]
         # Want the first altitude where density drops below NmF2/e.
         # First, resample such that we know all altitudes in between samples
         # are there.
@@ -161,7 +169,9 @@ def add_scale_height(cosmic):
         else:
             output[i] = np.nan
 
-    return output
+    inst['thf2'] = output
+
+    return
 
 
 # Instantiate IVM Object
