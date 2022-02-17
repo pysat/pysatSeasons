@@ -4,6 +4,7 @@
 </div>
 
 # pysatSeasons
+[![Documentation Status](https://readthedocs.org/projects/pysatseasons/badge/?version=latest)](https://pysatseasons.readthedocs.io/en/latest/?badge=latest)
 [![PyPI Package latest release](https://img.shields.io/pypi/v/pysatSeasons.svg)](https://pypi.python.org/pypi/pysatSeasons)
 [![Build Status](https://github.com/pysat/pysatSeasons/actions/workflows/main.yml/badge.svg)](https://github.com/pysat/pysatSeasons/actions/workflows/main.yml/badge.svg)
 [![Coverage Status](https://coveralls.io/repos/github/pysat/pysatSeasons/badge.svg?branch=main)](https://coveralls.io/github/pysat/pysatSeasons?branch=main)
