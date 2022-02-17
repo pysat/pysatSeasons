@@ -59,37 +59,41 @@ def add_magnetic_coordinates(inst):
     return
 
 
-def restrictMLAT(inst, max_mlat=25.):
-    """Restrict absolute MLAT values.
+def restrict_abs_values(inst, label, max_val):
+    """Restrict absolute qd_lat values.
 
     Parameters
     ----------
     inst : pysat.Instrument
         'COSMIC' Instrument object
-    max_mlat : float
-        Absolute value of maximum magnetic latitude. Positions greater
-        than `max_mlat` are removed from `inst`. (default=25.)
+    label : str
+        Label for variable to restrict.
+    max_val : float
+        Absolute maximum value of `label`. Values greater
+        than `max_val` are removed from `inst`. (default=25.)
 
     """
-    inst.data = inst.data[np.abs(inst['mlat']) <= max_mlat]
+    inst.data = inst.data[np.abs(inst[label]) <= max_val]
     return
 
 
-def filterMLAT(inst, mlat_range=(0., 15.)):
+def filter_values(inst, label, val_range=(0., 15.)):
     """Filter absolute MLAT values to those >=, or <= values in `mlat_range`.
 
     Parameters
     ----------
     inst : pysat.Instrument
         'COSMIC' Instrument object
-    mlat_range : tuple/list of floats
+    label : str
+        Label for variable to restrict.
+    val_range : tuple/list of floats
         Absolute value of minimum and maximum magnetic latitudes. Positions
         outside `mlat_range` are removed from `inst`. (default=(0., 15.))
 
     """
 
-    inst.data = inst.data[(np.abs(inst['mlat']) >= mlat_range[0])
-                          & (np.abs(inst['mlat']) <= mlat_range[1])]
+    inst.data = inst.data[(inst[label] >= val_range[0])
+                          & (inst[label] <= val_range[1])]
     return
 
 
@@ -103,7 +107,18 @@ def add_log_density(inst):
 
     """
 
+    # Assign data
     inst['lognm'] = np.log10(inst['edmax'])
+
+    # Assign metadata
+    notes_str = ''.join(['Log base 10 of `edmax` variable.'])
+    meta_data = {inst.meta.labels.units: 'Log(N/cc)',
+                 inst.meta.labels.name: 'Log Density',
+                 inst.meta.labels.notes: notes_str,
+                 inst.meta.labels.fill_val: np.nan,
+                 inst.meta.labels.min_val: -np.inf,
+                 inst.meta.labels.max_val: np.inf}
+    inst.meta['lognm'] = meta_data
 
     return
 
