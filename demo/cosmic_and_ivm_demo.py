@@ -6,12 +6,9 @@ import pandas as pds
 
 import apexpy
 import pysat
+import pysatCDAAC
+import pysatNASA
 import pysatSeasons
-
-# dates for demo
-ssnDays = 67
-startDate = dt.datetime(2009, 12, 21) - pds.DateOffset(days=ssnDays)
-stopDate = dt.datetime(2009, 12, 21) + pds.DateOffset(days=ssnDays)
 
 
 def add_magnetic_coordinates(inst):
@@ -135,35 +132,36 @@ def add_scale_height(inst):
     from scipy.stats import mode
 
     output = inst['edmaxlon'].copy()
-    output.name = 'thf2'
 
-    for i, profile in enumerate(inst['profiles']):
-        profile = profile[(profile['ELEC_dens']
-                          >= (1. / np.e) * inst['edmax'].iloc[i])
-                          & (profile.index >= inst['edmaxalt'].iloc[i])]
+    for i, profile in enumerate(inst['ELEC_dens']):
+        profile = profile[(profile
+                          >= (1. / np.e) * inst[i, 'edmax'])
+                          & (profile.coords["MSL_alt"] >= inst[i, 'edmaxalt'])]
+
         # Want the first altitude where density drops below NmF2/e.
-        # First, resample such that we know all altitudes in between samples
-        # are there.
         if len(profile) > 10:
-            i1 = profile.index[1:]
-            i2 = profile.index[0:-1]
+            i1 = profile.coords["MSL_alt"][1:]
+            i2 = profile.coords["MSL_alt"][0:-1]
             modeDiff = mode(i1.values - i2.values)[0][0]
-            profile = profile.reindex(np.arange(profile.index[0],
-                                                profile.index[-1] + modeDiff,
-                                                modeDiff))
+
             # Ensure there are no gaps, if so, remove all data above gap
-            idx, = np.where(profile['ELEC_dens'].isnull())
+            idx, = np.where((i1.values - i2.values) > 2 * modeDiff)
             if len(idx) > 0:
-                profile = profile.iloc[0:idx[0]]
+                profile = profile[0:idx[0]]
+
+            # Ensure there are no null values in the middle of profile.
+            idx, = np.where(profile.isnull())
+            if len(idx) > 0:
+                profile = profile[0:idx[0]]
 
         if len(profile) > 10:
             # Make sure density at highest altitude is near Nm/e
-            if (profile['ELEC_dens'].iloc[-1] / profile['ELEC_dens'].iloc[0]
-                    < 0.4):
-                altDiff = profile.index.values[-1] - profile.index.values[0]
-                if altDiff >= 500:
-                    altDiff = np.nan
-                output[i] = altDiff
+            if profile[-1] / profile[0] < 0.4:
+                alt = profile.coords["MSL_alt"]
+                alt_diff = alt[-1] - alt["MSL_alt"][0]
+                if alt_diff >= 500:
+                    alt_diff = np.nan
+                output[i] = alt_diff
             else:
                 output[i] = np.nan
         else:
@@ -173,13 +171,22 @@ def add_scale_height(inst):
 
     return
 
+# Register all instruments in pysatCDAAC and pysatNASA. Only required once
+# per install.
+pysat.utils.registry.register_by_module(pysatCDAAC.instruments)
+pysat.utils.registry.register_by_module(pysatNASA.instruments)
+
+# Dates for demo
+ssnDays = 67
+startDate = dt.datetime(2009, 12, 21) - pds.DateOffset(days=ssnDays)
+stopDate = dt.datetime(2009, 12, 21) + pds.DateOffset(days=ssnDays)
 
 # Instantiate IVM Object
 ivm = pysat.Instrument(platform='cnofs', name='ivm', tag='',
                        clean_level='clean')
 
 # Restrict measurements to those near geomagnetic equator.
-ivm.custom_attach(restrictMLAT, kwargs={'max_mlat': 25.})
+ivm.custom_attach(restrict_abs_values, args=['mlat', 25.])
 
 # Perform seasonal average
 ivm.bounds = (startDate, stopDate)
@@ -196,20 +203,20 @@ cosmic = pysat.Instrument(platform='cosmic', name='gps', tag='ionprf',
 cosmic.custom_attach(add_magnetic_coordinates)
 
 # Select locations near the magnetic equator
-cosmic.custom_attach(filterMLAT, kwargs={'mlatRange': (0., 10.)})
+cosmic.custom_attach(filter_values, args=['edmax_qd_lat', (-10., 10.)])
 
 # Take the log of NmF2 and add to the dataframe
-cosmic.custom_attach(addlogNm)
+cosmic.custom_attach(add_log_density)
 
 # Calculates the height above hmF2 to reach Ne < NmF2/e
-cosmic.custom_attach(addTopsideScaleHeight)
+cosmic.custom_attach(add_scale_height)
 
 # Perform a bin average of multiple COSMIC data products, from startDate
 # through stopDate. A mixture of 1D and 2D data is averaged.
 cosmic.bounds = (startDate, stopDate)
-cosmicResults = pysatSeasons.avg.median2D(cosmic, [0, 360, 24], 'apex_long',
+cosmicResults = pysatSeasons.avg.median2D(cosmic, [0, 360, 24], 'edmax_qd_long',
                                           [0, 24, 24], 'edmaxlct',
-                                          ['profiles', 'edmaxalt',
+                                          ['ELEC_dens', 'edmaxalt',
                                            'lognm', 'thf2'])
 
 # The work is done, plot the results!
