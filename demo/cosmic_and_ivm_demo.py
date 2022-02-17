@@ -4,6 +4,7 @@ import numpy.ma as ma
 import matplotlib.pyplot as plt
 import pandas as pds
 
+import apexpy
 import pysat
 import pysatSeasons
 
@@ -13,126 +14,101 @@ startDate = dt.datetime(2009, 12, 21) - pds.DateOffset(days=ssnDays)
 stopDate = dt.datetime(2009, 12, 21) + pds.DateOffset(days=ssnDays)
 
 
-# define functions to customize data for application
-def geo2mag(incoord):
-    """geographic coordinate to magnetic coordinate (coarse):
+def add_magnetic_coordinates(inst):
+    """Add magnetic longitude and latitude for COSMIC density maximum location.
+
+    Adds 'qd_lon' and 'qd_lat' to `inst`.
 
     Parameters
     ----------
-    incoord : numpy.array of shape (2,*)
-        array([[glat0,glat1,glat2,...],[glon0,glon1,glon2,...]),
-        where glat, glon are geographic latitude and longitude
-        (or if you have only one point it is [[glat,glon]]).
+    inst : pysat.Instrument
+        'COSMIC' Instrument object
 
-    Warnings
-    --------
-    Calculation of geomagnetic coordinates is approximate.
-    Coordinates are for a geomagnetic dipole, not the full field.
-    Location of geomagnetic dipole set for 2010.
+    """
+    apex = apexpy.Apex(date=inst.date)
 
-    Returns
-    -------
-    array([mlat0,mlat1,...],[mlon0,mlon1,...]])
+    # Convert geographic profile location to magnetic location
+    lats, lons = apex(inst['edmaxlat'], inst['edmaxlon'])
 
-    Note
-    ----
-    Routine is generally verified as coarsely correct using 2010 values from
-    http://wdc.kugi.kyoto-u.ac.jp/igrf/gggm/index.html.
+    # Longitudes between 0 - 360.
+    idx, = np.where(lons < 0)
+    lons[idx] += 360.
 
-    Copied from https://stackoverflow.com/a/7949249
+    # Add data and metadata to Instrument object
+    inst['qd_lat'] = lats
+    notes_str = ''.join(['Obtained from apexpy by transforming ',
+                         '`edmaxlat` and `edmaxlon` into quasi-dipole ',
+                         'coordinates.'])
+    meta_data = {inst.meta.labels.units: 'degrees',
+                 inst.meta.labels.name: 'Quasi-Dipole Latitude',
+                 inst.meta.labels.notes: notes_str,
+                 inst.meta.labels.fill_val: np.nan,
+                 inst.meta.labels.min_val: -90.,
+                 inst.meta.labels.max_val: 90.}
+    inst.meta['qd_lat'] = meta_data
 
-    Examples
-    --------
-    mag =  geo2mag(np.array([[80.08],[287.789]]))
-    print(mag)
-    print('We should get [90,0]')
+    inst['qd_lon'] = lons
+    meta_data = {inst.meta.labels.units: 'degrees',
+                 inst.meta.labels.name: 'Quasi-Dipole Longitude',
+                 inst.meta.labels.notes: notes_str,
+                 inst.meta.labels.fill_val: np.nan,
+                 inst.meta.labels.min_val: 0.,
+                 inst.meta.labels.max_val: 360.}
+    inst.meta['qd_lon'] = meta_data
 
-    mag =  geo2mag(np.array([[90],[0]]))
-    print(mag)
-    print('We should get something close to [80.02, 180]')
+    return
 
 
-    # kyoto, japan
-    mag =  geo2mag(np.array([[35.],[135.45]]))
-    print(mag)
-    print('We should get something close to [25.87, -154.94]')
+def restrictMLAT(inst, max_mlat=25.):
+    """Restrict absolute MLAT values.
+
+    Parameters
+    ----------
+    inst : pysat.Instrument
+        'COSMIC' Instrument object
+    max_mlat : float
+        Absolute value of maximum magnetic latitude. Positions greater
+        than `max_mlat` are removed from `inst`. (default=25.)
+
+    """
+    inst.data = inst.data[np.abs(inst['mlat']) <= max_mlat]
+    return
+
+
+def filterMLAT(inst, mlat_range=(0., 15.)):
+    """Filter absolute MLAT values to those >=, or <= values in `mlat_range`.
+
+    Parameters
+    ----------
+    inst : pysat.Instrument
+        'COSMIC' Instrument object
+    mlat_range : tuple/list of floats
+        Absolute value of minimum and maximum magnetic latitudes. Positions
+        outside `mlat_range` are removed from `inst`. (default=(0., 15.))
 
     """
 
-    from numpy import pi, cos, sin, arctan2, sqrt, dot
-
-    # SOME 'constants' for location of northern mag pole
-    lat = 80.08  # 79.3
-    lon = -72.211 + 360.  # 287.789 or 71.41W
-    r = 1.0
-
-    # convert first to radians
-    lon, lat = [x * pi / 180 for x in [lon, lat]]
-
-    glat = incoord[0] * pi / 180.0
-    glon = incoord[1] * pi / 180.0
-    galt = glat * 0. + r
-
-    coord = np.vstack([glat, glon, galt])
-
-    # convert to rectangular coordinates
-    x = coord[2] * cos(coord[0]) * cos(coord[1])
-    y = coord[2] * cos(coord[0]) * sin(coord[1])
-    z = coord[2] * sin(coord[0])
-    xyz = np.vstack((x, y, z))
-
-    # computer 1st rotation matrix:
-    geo2maglon = np.zeros((3, 3), dtype='float64')
-    geo2maglon[0, 0] = cos(lon)
-    geo2maglon[0, 1] = sin(lon)
-    geo2maglon[1, 0] = -sin(lon)
-    geo2maglon[1, 1] = cos(lon)
-    geo2maglon[2, 2] = 1.
-    out = dot(geo2maglon, xyz)
-
-    tomaglat = np.zeros((3, 3), dtype='float64')
-    tomaglat[0, 0] = cos(.5 * pi - lat)
-    tomaglat[0, 2] = -sin(.5 * pi - lat)
-    tomaglat[2, 0] = sin(.5 * pi - lat)
-    tomaglat[2, 2] = cos(.5 * pi - lat)
-    tomaglat[1, 1] = 1.
-    out = dot(tomaglat, out)
-
-    mlat = arctan2(out[2], sqrt((out[0] * out[0]) + (out[1] * out[1])))
-    mlat = mlat * 180 / pi
-    mlon = arctan2(out[1], out[0])
-    mlon = mlon * 180 / pi
-
-    outcoord = np.vstack((mlat, mlon))
-    return outcoord
-
-
-def addApexLong(inst, *arg, **kwarg):
-    magCoords = geo2mag(np.array([inst.data.edmaxlat, inst.data.edmaxlon]))
-    idx, = np.where(magCoords[1, :] < 0)
-    magCoords[1, idx] += 360.
-    return(['mlat', 'apex_long'], [magCoords[0, :], magCoords[1, :]])
-
-
-def restrictMLAT(inst, maxMLAT=None):
-    inst.data = inst.data[np.abs(inst.data.mlat) < maxMLAT]
+    inst.data = inst.data[(np.abs(inst['mlat']) >= mlat_range[0])
+                          & (np.abs(inst['mlat']) <= mlat_range[1])]
     return
 
 
-def filterMLAT(inst, mlatRange=None):
-    if mlatRange is not None:
-        inst.data = inst.data[(np.abs(inst['mlat']) >= mlatRange[0])
-                              & (np.abs(inst['mlat']) <= mlatRange[1])]
+def add_log_density(inst):
+    """Add the log of COSMIC maximum density, 'edmax'.
+
+    Parameters
+    ----------
+    inst : pysat.Instrument
+        'COSMIC' 'GPS' object.
+
+    """
+
+    inst['lognm'] = np.log10(inst['edmax'])
+
     return
 
 
-def addlogNm(inst, *arg, **kwarg):
-    lognm = np.log10(inst['edmax'])
-    lognm.name = 'lognm'
-    return lognm
-
-
-def addTopsideScaleHeight(cosmic):
+def add_scale_height(cosmic):
     from scipy.stats import mode
 
     output = cosmic['edmaxlon'].copy()
@@ -142,9 +118,9 @@ def addTopsideScaleHeight(cosmic):
         profile = profile[(profile['ELEC_dens']
                           >= (1. / np.e) * cosmic['edmax'].iloc[i])
                           & (profile.index >= cosmic['edmaxalt'].iloc[i])]
-        # want the first altitude where density drops below NmF2/e
-        # first, resample such that we know all altitudes in between samples
-        # are there
+        # Want the first altitude where density drops below NmF2/e.
+        # First, resample such that we know all altitudes in between samples
+        # are there.
         if len(profile) > 10:
             i1 = profile.index[1:]
             i2 = profile.index[0:-1]
@@ -152,13 +128,13 @@ def addTopsideScaleHeight(cosmic):
             profile = profile.reindex(np.arange(profile.index[0],
                                                 profile.index[-1] + modeDiff,
                                                 modeDiff))
-            # ensure there are no gaps, if so, remove all data above gap
+            # Ensure there are no gaps, if so, remove all data above gap
             idx, = np.where(profile['ELEC_dens'].isnull())
             if len(idx) > 0:
                 profile = profile.iloc[0:idx[0]]
 
         if len(profile) > 10:
-            # make sure density at highest altitude is near Nm/e
+            # Make sure density at highest altitude is near Nm/e
             if (profile['ELEC_dens'].iloc[-1] / profile['ELEC_dens'].iloc[0]
                     < 0.4):
                 altDiff = profile.index.values[-1] - profile.index.values[0]
@@ -173,57 +149,60 @@ def addTopsideScaleHeight(cosmic):
     return output
 
 
-# instantiate IVM Object
-ivm = pysat.Instrument(platform='cnofs',
-                       name='ivm', tag='',
+# Instantiate IVM Object
+ivm = pysat.Instrument(platform='cnofs', name='ivm', tag='',
                        clean_level='clean')
-# restrict meausurements to those near geomagnetic equator
-ivm.custom.attach(restrictMLAT, 'modify', maxMLAT=25.)
-# perform seasonal average
+
+# Restrict measurements to those near geomagnetic equator.
+ivm.custom_attach(restrictMLAT, kwargs={'max_mlat': 25.})
+
+# Perform seasonal average
 ivm.bounds = (startDate, stopDate)
 ivmResults = pysatSeasons.avg.median2D(ivm, [0, 360, 24], 'alon',
                                        [0, 24, 24], 'mlt',
                                        ['ionVelmeridional'])
 
-# create COSMIC instrument object
-cosmic = pysat.Instrument(platform='cosmic2013',
-                          name='gps', tag='ionprf',
-                          clean_level='clean',
-                          altitude_bin=3)
-# apply custom functions to all data that is loaded through cosmic
-cosmic.custom.attach(addApexLong, 'add')
-# select locations near the magnetic equator
-cosmic.custom.attach(filterMLAT, 'modify', mlatRange=(0., 10.))
-# take the log of NmF2 and add to the dataframe
-cosmic.custom.attach(addlogNm, 'add')
-# calculates the height above hmF2 to reach Ne < NmF2/e
-cosmic.custom.attach(addTopsideScaleHeight, 'add')
+# Create COSMIC instrument object. Engage supported keyword `altitude_bin`
+# to bin all altitude profiles into 3 km increments.
+cosmic = pysat.Instrument(platform='cosmic', name='gps', tag='ionprf',
+                          clean_level='clean', altitude_bin=3)
 
-# do an average of multiple COSMIC data products
-# from startDate through stopDate
-# a mixture of 1D and 2D data is averaged
+# Apply custom functions to all data that is loaded through cosmic
+cosmic.custom_attach(add_magnetic_coordinates)
+
+# Select locations near the magnetic equator
+cosmic.custom_attach(filterMLAT, kwargs={'mlatRange': (0., 10.)})
+
+# Take the log of NmF2 and add to the dataframe
+cosmic.custom_attach(addlogNm)
+
+# Calculates the height above hmF2 to reach Ne < NmF2/e
+cosmic.custom_attach(addTopsideScaleHeight)
+
+# Perform a bin average of multiple COSMIC data products, from startDate
+# through stopDate. A mixture of 1D and 2D data is averaged.
 cosmic.bounds = (startDate, stopDate)
 cosmicResults = pysatSeasons.avg.median2D(cosmic, [0, 360, 24], 'apex_long',
                                           [0, 24, 24], 'edmaxlct',
                                           ['profiles', 'edmaxalt',
                                            'lognm', 'thf2'])
 
+# The work is done, plot the results!
 
-# the work is done, plot the results
-
-# make IVM and COSMIC plots
+# Make IVM and COSMIC plots
 f, axarr = plt.subplots(4, sharex=True, sharey=True, figsize=(8.5, 11))
 cax = []
-# meridional ion drift average
+
+# Meridional ion drift average
 merDrifts = ivmResults['ionVelmeridional']['median']
 x_arr = ivmResults['ionVelmeridional']['bin_x']
 y_arr = ivmResults['ionVelmeridional']['bin_y']
 
-
-# mask out NaN values
+# Mask out NaN values
 masked = np.ma.array(merDrifts, mask=np.isnan(merDrifts))
-# do plot, NaN values are white
-# note how the data returned from the median function is in plot order
+
+# Plot, NaN values are white.
+# Note how the data returned from the median function is in plot order.
 cax.append(axarr[0].pcolor(x_arr, y_arr,
                            masked, vmax=30., vmin=-30.,
                            edgecolors='none'))
@@ -240,10 +219,10 @@ maxDens = cosmicResults['lognm']['median']
 cx_arr = cosmicResults['lognm']['bin_x']
 cy_arr = cosmicResults['lognm']['bin_y']
 
-# mask out NaN values
-masked = np.ma.array(maxDens,
-                     mask=np.isnan(maxDens))
-# do plot, NaN values are white
+# Mask out NaN values
+masked = np.ma.array(maxDens, mask=np.isnan(maxDens))
+
+# Plot, NaN values are white
 cax.append(axarr[1].pcolor(cx_arr, cy_arr,
            masked, vmax=6.1, vmin=4.8,
            edgecolors='none'))
@@ -253,9 +232,11 @@ cbar1 = f.colorbar(cax[1], ax=axarr[1])
 cbar1.set_label('Log Density')
 
 maxAlt = cosmicResults['edmaxalt']['median']
-# mask out NaN values
+
+# Mask out NaN values
 masked = np.ma.array(maxAlt, mask=np.isnan(maxAlt))
-# do plot, NaN values are white
+
+# Plot, NaN values are white
 cax.append(axarr[2].pcolor(cx_arr, cy_arr,
            masked, vmax=375., vmin=200.,
            edgecolors='none'))
@@ -266,9 +247,11 @@ cbar.set_label('Altitude (km)')
 
 
 maxTh = cosmicResults['thf2']['median']
-# mask out NaN values
+
+# Mask out NaN values
 masked = np.ma.array(maxTh, mask=np.isnan(maxTh))
-# do plot, NaN values are white
+
+# Plot, NaN values are white
 cax.append(axarr[3].pcolor(cx_arr, cy_arr, masked,
                            vmax=225., vmin=75., edgecolors='none'))
 axarr[3].set_title('COSMIC Topside Scale Height')
@@ -280,27 +263,29 @@ f.tight_layout()
 f.savefig('ssnl_median_ivm_cosmic_1d.png')
 
 
-# make COSMIC profile plots
+# Make COSMIC profile plots
 # 6 pages of plots, 4 plots per page
 for k in np.arange(6):
     f, axarr = plt.subplots(4, sharex=True, figsize=(8.5, 11))
-    # iterate over a group of four sectors at a time (4 plots per page)
+    # Iterate over a group of four sectors at a time (4 plots per page)
     for (j, sector) in enumerate(list(zip(*cosmicResults['profiles']['median']))
                                  [k * 4:(k + 1) * 4]):
-        # iterate over all local times within longitude sector
-        # data is returned from the median routine in plot order, [y, x]
-        # instead of [x,y]
+        # Iterate over all local times within longitude sector.
+        # Data is returned from the median routine in plot order, [y, x]
+        # instead of [x,y].
         for (i, ltview) in enumerate(sector):
             if ltview is not None:
-                # plot a given longitude/local time profile
+                # Plot a given longitude/local time profile
                 temp = pds.DataFrame(ltview['ELEC_dens'])
-                # produce a grid covering plot region
+
+                # Produce a grid covering plot region
                 # (y values determined by profile)
                 xx, yy = np.meshgrid(np.array([i, i + 1]), temp.index.values)
                 filtered = ma.array(np.log10(temp.values),
                                     mask=pds.isnull(temp))
                 graph = axarr[j].pcolormesh(xx, yy, filtered,
                                             vmin=3., vmax=6.5)
+
         cbar = f.colorbar(graph, ax=axarr[j])
         cbar.set_label('Log Density')
         axarr[j].set_xlim(0, 24)
