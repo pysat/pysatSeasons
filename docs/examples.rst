@@ -9,13 +9,13 @@ offered in this section.
 Seasonal Occurrence by Orbit
 ----------------------------
 
-How often does a particular thing occur on a orbit-by-orbit basis? As ax example,
+How often does a particular thing occur on a orbit-by-orbit basis? As an example,
 let us calculate the occurrence of a positive perturbation in the meridional
 component of the geomagnetic field as measured by the Vector Electric Field
 Instrument (VEFI) onboard the Communication/Navigation Outage Forecasting
 System (C/NOFS) satellite.
 The full code can be found at
-`<https://github.com/pysat/pysatSeasons/blob/main/demo/ssnl_occurrence_by_orbit.py`>_
+`<https://github.com/pysat/pysatSeasons/blob/main/demo/ssnl_occurrence_by_orbit.py>`_
 
 .. code:: python
 
@@ -140,7 +140,7 @@ measured by IVM should be reflected in the vertical plasma densities measured
 by COSMIC. To look at this relationship over all longitudes and local times,
 for magnetic latitudes near the geomagnetic equator, the code excerpts below
 provides a framework for the user.  The full code can be found at
-`<https://github.com/pysat/pysatSeasons/blob/main/demo/cosmic_and_ivm_demo.py`>_
+`<https://github.com/pysat/pysatSeasons/blob/main/demo/cosmic_and_ivm_demo.py>`_
 
 Note the same averaging routine is used for both COSMIC and IVM, and that both
 1D and 2D data are handled correctly.

@@ -39,10 +39,10 @@ Installation Options
 ::
 
 
-   git clone https://github.com/pysat/pysatSeason.git
+   git clone https://github.com/pysat/pysatSeasons.git
 
 
-2. Install pysatModels:
+2. Install pysatSeasons:
    Change directories into the repository folder and run the setup.py file.
    There are a few ways you can do this:
 

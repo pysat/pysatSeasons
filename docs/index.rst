@@ -1,12 +1,12 @@
 .. pysatModels documentation main file.  Remember that it should at least
    contain the root `toctree` directive.
 
-Welcome to the pysatModels documentation
-========================================
+Welcome to the pysatSeasons documentation
+=========================================
 
-This documentation describes the pysatModels module, which contains routines to
-load model data as pysat.Instrument objects and utilities to perform typical
-model-oriented analysis, such as model validation.
+This documentation describes the pysatSeasons module, which contains routines to
+load data via pysat.Instrument objects and perform seasonal analysis routines
+such as bin averaging, occurrence probabilities, and scatter plots.
 
 .. toctree::
    :maxdepth: 2
