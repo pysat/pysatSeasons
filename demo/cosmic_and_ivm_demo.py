@@ -25,7 +25,8 @@ def add_magnetic_coordinates(inst):
     apex = apexpy.Apex(date=inst.date)
 
     # Convert geographic profile location to magnetic location
-    lats, lons = apex(inst['edmaxlat'], inst['edmaxlon'])
+    lats, lons = apex.geo2qd(inst['edmaxlat'], inst['edmaxlon'],
+                             inst['edmaxalt'])
 
     # Longitudes between 0 - 360.
     idx, = np.where(lons < 0)
@@ -70,12 +71,12 @@ def restrict_abs_values(inst, label, max_val):
         than `max_val` are removed from `inst`.
 
     """
-    inst.data = inst.data[np.abs(inst[label]) <= max_val]
+    inst.data = inst[np.abs(inst[label]) <= max_val]
     return
 
 
 def filter_values(inst, label, val_range=(0., 15.)):
-    """Filter absolute MLAT values to those >=, or <= values in `mlat_range`.
+    """Filter values to those in `label` that are within `val_range` limits.
 
     Parameters
     ----------
@@ -84,13 +85,13 @@ def filter_values(inst, label, val_range=(0., 15.)):
     label : str
         Label for variable to restrict.
     val_range : tuple/list of floats
-        Absolute value of minimum and maximum magnetic latitudes. Positions
-        outside `mlat_range` are removed from `inst`. (default=(0., 15.))
+        Minimum and maximum values allowed. Times where `label`
+        outside `val_range` are removed from `inst`. (default=(0., 15.))
 
     """
 
-    inst.data = inst.data[(inst[label] >= val_range[0])
-                          & (inst[label] <= val_range[1])]
+    inst.data = inst[(inst[label].values >= val_range[0])
+                     & (inst[label].values <= val_range[1])]
     return
 
 
@@ -215,7 +216,7 @@ cosmic.custom_attach(add_scale_height)
 # Perform a bin average of multiple COSMIC data products, from startDate
 # through stopDate. A mixture of 1D and 2D data is averaged.
 cosmic.bounds = (startDate, stopDate)
-cosmicResults = pysatSeasons.avg.median2D(cosmic, [0, 360, 24], 'edmax_qd_long',
+cosmicResults = pysatSeasons.avg.median2D(cosmic, [0, 360, 24], 'edmax_qd_lon',
                                           [0, 24, 24], 'edmaxlct',
                                           ['ELEC_dens', 'edmaxalt',
                                            'lognm', 'thf2'])
