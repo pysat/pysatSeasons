@@ -79,6 +79,6 @@ def to_xarray_dataset(data):
                                      for item in data], 'pysat_binning')
     else:
         output = xr.Dataset()
-        output['data'] = data
+        output['data'] = xr.DataArray(data)
 
     return output
