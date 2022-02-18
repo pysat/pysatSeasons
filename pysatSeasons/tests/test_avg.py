@@ -1,5 +1,5 @@
 """
-tests the pysat averaging code
+Test the pysat averaging code
 """
 import datetime as dt
 import numpy as np
