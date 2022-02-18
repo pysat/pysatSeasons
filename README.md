@@ -35,7 +35,7 @@ and for the Space Physics community.
 | matplotlib     | pysat             |
 | numpy          |                   |
 | pandas         |                   |
-
+| xarray         |                   |
 
 ## GitHub Installation
 
