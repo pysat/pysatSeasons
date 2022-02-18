@@ -26,11 +26,13 @@ orbit_info = {'index': 'longitude', 'kind': 'longitude'}
 vefi = pysat.Instrument(platform='cnofs', name='vefi', tag='dc_b',
                         clean_level=None, orbit_info=orbit_info)
 
+
 # Define function to remove flagged values
 def filter_vefi(inst):
-  idx, = np.where(inst['B_flag'] == 0)
-  inst.data = inst[idx]
-  return
+    idx, = np.where(inst['B_flag'] == 0)
+    inst.data = inst[idx]
+    return
+
 
 # Attach filtering function to `vefi` object.
 vefi.custom_attach(filter_vefi)
@@ -41,7 +43,7 @@ stop = dt.datetime(2010, 5, 15)
 
 # Check if data already on system, if not, download.
 if len(vefi.files[start:stop]) < (stop - start).days:
-  vefi.download(start, stop)
+    vefi.download(start, stop)
 
 # Specify the analysis time limits using `bounds`, otherwise all VEFI DC
 # data will be processed.
@@ -50,8 +52,8 @@ vefi.bounds = (start, stop)
 # Perform occurrence probability calculation.
 # Any data added by custom functions is available within analysis below.
 ans = pysatSeasons.occur_prob.by_orbit2D(vefi, [0, 360, 144], 'longitude',
-                                       [-13, 13, 104], 'latitude',
-                                       ['dB_mer'], [0.], returnBins=True)
+                                         [-13, 13, 104], 'latitude',
+                                         ['dB_mer'], [0.], returnBins=True)
 
 # A dict indexed by data_label is returned.
 ans = ans['dB_mer']

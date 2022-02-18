@@ -171,6 +171,7 @@ def add_scale_height(inst):
 
     return
 
+
 # Register all instruments in pysatCDAAC and pysatNASA. Only required once
 # per install.
 pysat.utils.registry.register_by_module(pysatCDAAC.instruments)
