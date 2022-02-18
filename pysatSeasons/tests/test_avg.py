@@ -163,16 +163,16 @@ class TestSeriesProfileAverages():
         results = avg.median2D(self.testInst, [0., 360., 24], 'longitude',
                                [0., 24., 24], 'mlt', [self.dname])
 
-        # iterate over all
-        # no variation in the median, all values should be the same
+        # Iterate over all.
+        # No variation in the median, all values should be the same.
         test_vals = np.arange(50) * 1.2
         for i, row in enumerate(results[self.dname]['median']):
             for j, item in enumerate(row):
-                assert np.all(item == test_vals)
+                assert np.all(item[self.dname] == test_vals)
 
         for i, row in enumerate(results[self.dname]['avg_abs_dev']):
             for j, item in enumerate(row):
-                assert np.all(item == 0)
+                assert np.all(item[self.dname] == 0)
 
     def test_basic_seasonal_median1D(self):
         """ Test basic seasonal 1D median"""
