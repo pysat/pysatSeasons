@@ -82,7 +82,7 @@ def median1D(const, bin1, label1, data_label, auto_bin=True, returnData=False):
             if len(inst.data) != 0:
                 # Sort the data into bins (x) based on `label1`
                 # (stores bin indexes in xind)
-                xind = np.digitize(inst.data[label1], binx) - 1
+                xind = np.digitize(inst[label1], binx) - 1
 
                 # For each possible x index
                 for xi in xarr:
@@ -172,8 +172,8 @@ def median2D(const, bin1, label1, bin2, label2, data_label,
             if not inst.empty:
                 # Sort the data into bins (x) based on label 1
                 # (stores bin indexes in xind)
-                xind = np.digitize(inst.data[label1], binx) - 1
-
+                xind = np.digitize(inst[label1], binx) - 1
+                yinst = inst.copy()
                 # For each possible x index
                 for xi in xarr:
                     # Get the indices of those pieces of data in that bin.
@@ -182,11 +182,11 @@ def median2D(const, bin1, label1, bin2, label2, data_label,
                     if len(xindex) > 0:
                         # Look up the data along y (label2) at that set of
                         # indices (a given x).
-                        yData = inst[xindex]
+                        yinst.data = inst[xindex]
 
                         # digitize that, to sort data into bins along y
                         # (label2) (get bin indexes)
-                        yind = np.digitize(yData[label2], biny) - 1
+                        yind = np.digitize(yinst[label2], biny) - 1
 
                         # For each possible y index
                         for yj in yarr:
@@ -200,10 +200,9 @@ def median2D(const, bin1, label1, bin2, label2, data_label,
                                     # Take the data (already filtered by x),
                                     # filter it by y, select the data product,
                                     # put it in a list, and extend the deque.
-                                    indlab = yData.columns.get_loc(
-                                        data_label[zk])
                                     ans[zk][yj][xi].extend(
-                                        yData.iloc[yindex, indlab].tolist())
+                                        yinst[yindex,
+                                              data_label[zk]].values.tolist())
 
     return _calc_2d_median(ans, data_label, binx, biny, xarr, yarr, zarr,
                            numx, numy, numz, returnData)
@@ -216,110 +215,61 @@ def _calc_2d_median(ans, data_label, binx, biny, xarr, yarr, zarr, numx,
     countAns = [[[None for i in xarr] for j in yarr] for k in zarr]
     devAns = [[[None for i in xarr] for j in yarr] for k in zarr]
 
-    # all of the loading and storing data is done
-    # determine what kind of data is stored
-    # if just numbers, then use numpy arrays to store data
-    # if the data is a more generalized object, use lists to store data
-    # need to find first bin with data
-    dataType = [None for i in np.arange(numz)]
-
-    # for each data product label, find the first nonempty bin
-    # and select its type
+    # All of the loading and storing data is done, though the data
+    # could be of different types. Make all of them xarray datasets.
+    dim = 'pysat_binning'
     for zk in zarr:
-        breakNow = False
+        scalar_avg = True
         for yj in yarr:
             for xi in xarr:
                 if len(ans[zk][yj][xi]) > 0:
-                    dataType[zk] = type(ans[zk][yj][xi][0])
-                    breakNow = True
-                    break
-            if breakNow:
-                break
+                    countAns[zk][yj][xi] = len(ans[zk][yj][xi])
 
-    # determine if normal number objects are being used or if there
-    # are more complicated objects
-    objArray = [False] * len(zarr)
-    for i, thing in enumerate(dataType):
-        if thing == pds.core.series.Series:
-            objArray[i] = 'S'
-        elif thing == pds.core.frame.DataFrame:
-            objArray[i] = 'F'
-        else:
-            # other, simple scalaRs
-            objArray[i] = 'R'
+                    data = ssnl.to_xarray_dataset(ans[zk][yj][xi])
 
-    objArray = np.array(objArray)
-
-    # if some pandas data series are returned in average, return a list
-    objidx, = np.where(objArray == 'S')
-    if len(objidx) > 0:
-        for zk in zarr[objidx]:
-            for yj in yarr:
-                for xi in xarr:
-                    if len(ans[zk][yj][xi]) > 0:
-                        ans[zk][yj][xi] = list(ans[zk][yj][xi])
-                        medianAns[zk][yj][xi] = \
-                            pds.DataFrame(ans[zk][yj][xi]).median(axis=0)
-                        countAns[zk][yj][xi] = len(ans[zk][yj][xi])
-                        devAns[zk][yj][xi] = \
-                            pds.DataFrame([abs(temp - medianAns[zk][yj][xi])
-                                           for temp in
-                                           ans[zk][yj][xi]]).median(axis=0)
-
-    # if some pandas DataFrames are returned in average, return a list
-    objidx, = np.where(objArray == 'F')
-    if len(objidx) > 0:
-        for zk in zarr[objidx]:
-            for yj in yarr:
-                for xi in xarr:
-                    if len(ans[zk][yj][xi]) > 0:
-                        ans[zk][yj][xi] = list(ans[zk][yj][xi])
-                        countAns[zk][yj][xi] = len(ans[zk][yj][xi])
-
-                        # Convert data to xarray
-                        info = [xr.Dataset.from_dataframe(temp)
-                                for temp in ans[zk][yj][xi]]
-
-                        vars = info[0].data_vars.keys()
-                        test = xr.Dataset()
-
-                        # Combine all info for each variable into a single data
-                        # array.
-                        for var in vars:
-                            test[var] = xr.concat([item[var] for item in info],
-                                                  'pysat_binning')
-
+                    # Higher order data has the 'pysat_binning' dim
+                    if dim in data.dims:
+                        scalar_avg = False
                         # All data is prepped. Perform calculations.
-                        medianAns[zk][yj][xi] = test.median(dim='pysat_binning')
+                        medianAns[zk][yj][xi] = data.median(dim=dim)
 
-                        devAns[zk][yj][xi] = test - medianAns[zk][yj][xi]
-                        devAns[zk][yj][xi] = devAns[zk][yj][xi].apply(np.abs)
-                        devAns[zk][yj][xi] = devAns[zk][yj][xi].median(
-                            dim='pysat_binning')
+                        devAns[zk][yj][xi] = data - medianAns[zk][yj][xi]
+                        devAns[zk][yj][xi] = devAns[zk][yj][xi].map(np.abs)
+                        devAns[zk][yj][xi] = devAns[zk][yj][xi].median(dim=dim)
+                    else:
+                        # print('Hi ', data, data.median(), 'see it?')
+                        medianAns[zk][yj][xi] = data.median()
 
-    objidx, = np.where(objArray == 'R')
-    if len(objidx) > 0:
-        for zk in zarr[objidx]:
+                        devAns[zk][yj][xi] = data - medianAns[zk][yj][xi]
+                        devAns[zk][yj][xi] = devAns[zk][yj][xi].map(np.abs)
+                        devAns[zk][yj][xi] = devAns[zk][yj][xi].median()
+
+        #  # Check for scalar averages and simplify
+        # for yj in yarr:
+        #     for xi in xarr:
+        #         if len(medianAns[zk][yj][xi].indexes[0]) > 1:
+        #             scalar_avg = False
+
+        if scalar_avg:
+            # Store current structure
+            temp_median = medianAns[zk]
+            temp_count = countAns[zk]
+            temp_dev = devAns[zk]
+
+            # Create 2D numpy arrays for new storage
             medianAns[zk] = np.zeros((numy, numx)) * np.nan
             countAns[zk] = np.zeros((numy, numx)) * np.nan
             devAns[zk] = np.zeros((numy, numx)) * np.nan
+
+            # Store data
             for yj in yarr:
                 for xi in xarr:
-                    # convert deque storing data into numpy array
-                    ans[zk][yj][xi] = np.array(ans[zk][yj][xi])
+                    if len(temp_median[yj][xi]) > 0:
+                        medianAns[zk][yj, xi] = temp_median[yj][xi]['data']
+                        countAns[zk][yj, xi] = temp_count[yj][xi]
+                        devAns[zk][yj, xi] = temp_dev[yj][xi]['data']
 
-                    # filter out an NaNs in the arrays
-                    idx, = np.where(np.isfinite(ans[zk][yj][xi]))
-                    ans[zk][yj][xi] = (ans[zk][yj][xi])[idx]
-
-                    # perform median averaging
-                    if len(idx) > 0:
-                        medianAns[zk][yj, xi] = np.median(ans[zk][yj][xi])
-                        countAns[zk][yj, xi] = len(ans[zk][yj][xi])
-                        devAns[zk][yj, xi] = np.median(abs(ans[zk][yj][xi]
-                                                       - medianAns[zk][yj, xi]))
-
-    # prepare output
+    # Prepare output
     output = {}
     for i, label in enumerate(data_label):
         output[label] = {'median': medianAns[i],
