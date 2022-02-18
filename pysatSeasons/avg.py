@@ -244,12 +244,6 @@ def _calc_2d_median(ans, data_label, binx, biny, xarr, yarr, zarr, numx,
                         devAns[zk][yj][xi] = devAns[zk][yj][xi].map(np.abs)
                         devAns[zk][yj][xi] = devAns[zk][yj][xi].median()
 
-        #  # Check for scalar averages and simplify
-        # for yj in yarr:
-        #     for xi in xarr:
-        #         if len(medianAns[zk][yj][xi].indexes[0]) > 1:
-        #             scalar_avg = False
-
         if scalar_avg:
             # Store current structure
             temp_median = medianAns[zk]
