@@ -7,6 +7,8 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 - Removed deprecated `pandas.Panel` from functions.
 - Renamed `computational_form` to `to_xarray_dataset` and refocused.
 - Removed old __future__ imports.
+- Improved docstrings throughout.
+- Removed use of `collections.deque` in `pysatSeasons.avg`.
 
 ## [0.1.3] - 2021-06-18
 - Updates style to match pysat 3.0.0 release candidate
