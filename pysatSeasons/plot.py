@@ -1,3 +1,4 @@
+"""Support scatterplot production over seasons of interest."""
 
 import matplotlib as mpl
 import matplotlib.pyplot as plt
@@ -7,36 +8,36 @@ import numpy as np
 
 def scatterplot(inst, labelx, labely, data_label, datalim, xlim=None,
                 ylim=None):
-    """Return scatterplot of data_label(s) as functions of labelx,y over a
-    season.
+    """Return scatterplot of data_label(s) over `label*` for a season.
 
     Parameters
     ----------
-    labelx : string
-        data product for x-axis
-    labely : string
-        data product for y-axis
-    data_label : string, array-like of strings
-        data product(s) to be scatter plotted
-    datalim : numyp array
-        plot limits for data_label
+    labelx : str
+        Data product for x-axis.
+    labely : str
+        Data product for y-axis.
+    data_label : str, array-like of strings
+        Data product(s) to be scatter plotted.
+    datalim : numpy.array
+        Plot limits for data_label.
 
     Returns
     -------
-    Returns a list of scatter plots of data_label as a function
-    of labelx and labely over the season delineated by start and
-    stop datetime objects.
+    figs : list
+        Scatter plots of `data_label` as a function of `labelx` and `labely`
+        over the season delineated by `inst.bounds`.
 
     """
 
+    # Get current plot settings. Alter for this function.
     if mpl.is_interactive():
         interactive_mode = True
-        # turn interactive plotting off
+        # Turn interactive plotting off
         plt.ioff()
     else:
         interactive_mode = False
 
-    # create figures for plotting
+    # Create figures for plotting
     figs = []
     axs = []
 
@@ -44,7 +45,7 @@ def scatterplot(inst, labelx, labely, data_label, datalim, xlim=None,
     if type(data_label) is str:
         data_label = [data_label]
 
-    # multiple data to be plotted
+    # Multiple data to be plotted
     for i in np.arange(len(data_label)):
         figs.append(plt.figure())
         ax1 = figs[i].add_subplot(211, projection='3d')
@@ -58,7 +59,7 @@ def scatterplot(inst, labelx, labely, data_label, datalim, xlim=None,
             ax1.set_ylim(ylim)
             ax2.set_ylim(ylim)
 
-    # norm method so that data may be scaled to colors appropriately
+    # Norm method so that data may be scaled to colors appropriately
     norm = mpl.colors.Normalize(vmin=datalim[0], vmax=datalim[1])
     p = [i for i in np.arange(len(figs))]
     q = [i for i in np.arange(len(figs))]
@@ -68,7 +69,7 @@ def scatterplot(inst, labelx, labely, data_label, datalim, xlim=None,
                 check1 = len(inst.data[labelx]) > 0
                 check2 = len(inst.data[labely]) > 0
                 check3 = len(inst.data[data_label[j]]) > 0
-                if (check1 & check2 & check3):
+                if check1 & check2 & check3:
                     p[j] = ax[0].scatter(inst.data[labelx], inst.data[labely],
                                          inst.data[data_label[j]], zdir='z',
                                          c=inst.data[data_label[j]], norm=norm,
@@ -85,7 +86,7 @@ def scatterplot(inst, labelx, labely, data_label, datalim, xlim=None,
         ax[0].elev = 30.
 
     if interactive_mode:
-        # turn interactive plotting back on
+        # Turn interactive plotting back on
         plt.ion()
 
     return figs
