@@ -7,7 +7,6 @@ Instrument independent seasonal averaging routine. Supports averaging
 import collections
 import numpy as np
 import pandas as pds
-import xarray as xr
 
 import pysat
 import pysatSeasons as ssnl
