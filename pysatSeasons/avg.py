@@ -4,17 +4,15 @@ Instrument independent seasonal averaging routine. Supports averaging
 1D and 2D data.
 """
 
-import collections
 import numpy as np
 import pandas as pds
-import xarray as xr
 
 import pysat
 import pysatSeasons as ssnl
 
 
 def median1D(const, bin1, label1, data_label, auto_bin=True, returnData=False):
-    """Return a 1D median of data_label over a season and label1
+    """Return a 1D median of nD `data_label` over a season and `label1`.
 
     Parameters
     ----------
@@ -76,8 +74,8 @@ def median1D(const, bin1, label1, data_label, auto_bin=True, returnData=False):
     xarr = np.arange(numx)
     zarr = np.arange(numz)
 
-    # 3d array:  stores the data that is sorted into each bin - in a deque
-    ans = [[collections.deque() for i in xarr] for k in zarr]
+    # 3d array:  stores the data that is sorted into each bin - in a list.
+    ans = [[[] for i in xarr] for k in zarr]
 
     for inst1 in const:
         # Iterate over instrument season. Probably iterates by date but that
@@ -100,7 +98,7 @@ def median1D(const, bin1, label1, data_label, auto_bin=True, returnData=False):
                         # For each data product label zk
                         for zk in zarr:
                             # Take the data (already filtered by x), select the
-                            # data, put it in a list, and extend the deque.
+                            # data, put it in a list, and extend the list.
                             idata = inst[xindex]
                             ans[zk][xi].extend(idata[data_label[zk]].tolist())
 
@@ -115,18 +113,18 @@ def median2D(const, bin1, label1, bin2, label2, data_label,
 
     Parameters
     ----------
-    const: pysat.Constellation or Instrument
-    bin*: array-like
+    const : pysat.Constellation or Instrument
+    bin* : array-like
         List holding [min, max, number of bins] or array-like containing
         bin edges, where * = 1, 2.
-    label*: str
+    label*:  str
         Identifies data product for bin*, where * = 1, 2.
-    data_label: list-like
+    data_label : list-like
         Strings identifying data product(s) to be averaged.
     returnData : bool
         If True, also return binned data used to calculate the average in
         the output dictionary as 'data', in addition to the statistical outputs.
-    auto_bin: bool
+    auto_bin : bool
         If True, function will create bins from the min, max and
         number of bins. If false, bin edges must be manually entered in `bin*`.
 
@@ -175,8 +173,8 @@ def median2D(const, bin1, label1, bin2, label2, data_label,
     xarr = np.arange(numx)
     zarr = np.arange(numz)
 
-    # 3d array:  stores the data that is sorted into each bin - in a deque
-    ans = [[[collections.deque() for i in xarr] for j in yarr] for k in zarr]
+    # 3d array:  stores the data that is sorted into each bin - in a list.
+    ans = [[[[] for i in xarr] for j in yarr] for k in zarr]
 
     for inst1 in const:
         # Iterate over instrument season. Probably iterates by date but that
@@ -230,14 +228,14 @@ def _calc_2d_median(ans, data_label, binx, biny, xarr, yarr, zarr, numx,
 
     Parameters
     ----------
-    ans: list of lists
+    ans : list of lists
         List of lists containing binned data. Provided by `median2D`.
-    bin*: array-like
+    bin* : array-like
         List holding [min, max, number of bins] or array-like containing
         bin edges, where * = 1, 2.
-    *arr: list-like
+    *arr : list-like
         Indexing array along bin directions x, y, and data dimension z.
-    num*: int
+    num* : int
         Number of elements along *arr.
     returnData : bool
         If True, also return binned data used to calculate the average in
