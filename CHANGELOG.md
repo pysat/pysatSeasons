@@ -3,6 +3,7 @@ All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [0.2.0] - 2022-XX-XX
+- Added support for xarray data in the seasonal averaging functions in `pysatSeasons.avg`
 - Removed deprecated `pandas.Panel` from functions.
 - Renamed `computational_form` to `to_xarray_dataset` and refocused.
 - Removed old __future__ imports.

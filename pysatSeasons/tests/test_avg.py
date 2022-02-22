@@ -182,13 +182,13 @@ class TestSeriesProfileAverages():
         # no variation in the median, all values should be the same
         test_vals = np.arange(50) * 1.2
         for i, row in enumerate(results[self.dname]['median']):
-            assert np.all(row == test_vals)
+            assert np.all(row[self.dname] == test_vals)
 
         for i, row in enumerate(results[self.dname]['avg_abs_dev']):
-            assert np.all(row == 0)
+            assert np.all(row[self.dname] == 0)
 
 
-class TestConstellation:
+class TestConstellation():
     def setup(self):
         insts = []
         for i in range(5):

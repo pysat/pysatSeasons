@@ -367,10 +367,11 @@ def _core_mean(inst, data_label, by_orbit=False, by_day=False, by_file=False):
 
 def _calc_1d_median(ans, data_label, binx, xarr, zarr, numx, numz,
                     returnData=False):
-    """Calculate the 1D median
+    """Calculate the 1D median for items in list of lists `ans`.
 
     Parameters
     ----------
+    ans : list of lists
 
     Returns
     ------
@@ -385,96 +386,50 @@ def _calc_1d_median(ans, data_label, binx, xarr, zarr, numx, numz,
     countAns = [[None for i in xarr] for k in zarr]
     devAns = [[None for i in xarr] for k in zarr]
 
-    # All of the loading and storing data is done, determine what kind of data
-    # is stored. If just numbers, then use numpy arrays to store data.
-    # If the data is a more generalized object, use lists to store data
-    # need to find first bin with data.
-    dataType = [None for i in np.arange(numz)]
-
-    # For each data product label, find the first nonempty bin
-    # and select its type
+    # All of the loading and storing data is done, though the data
+    # could be of different types. Make all of them xarray datasets.
+    dim = 'pysat_binning'
     for zk in zarr:
+        scalar_avg = True
         for xi in xarr:
             if len(ans[zk][xi]) > 0:
-                dataType[zk] = type(ans[zk][xi][0])
-                break
+                countAns[zk][xi] = len(ans[zk][xi])
 
-    # Determine if normal number objects are being used or if there
-    # are more complicated objects
-    objArray = [False] * len(zarr)
-    for i, thing in enumerate(dataType):
-        if thing == pds.core.series.Series:
-            objArray[i] = 'S'
-        elif thing == pds.core.frame.DataFrame:
-            objArray[i] = 'F'
-        else:
-            # Other, simple scalars
-            objArray[i] = 'R'
+                data = ssnl.to_xarray_dataset(ans[zk][xi])
 
-    objArray = np.array(objArray)
-
-    # If some pandas data series are returned in average, return a list
-    objidx, = np.where(objArray == 'S')
-    if len(objidx) > 0:
-        for zk in zarr[objidx]:
-            for xi in xarr:
-                if len(ans[zk][xi]) > 0:
-                    ans[zk][xi] = list(ans[zk][xi])
-                    medianAns[zk][xi] = pds.DataFrame(ans[zk][xi]).median(axis=0)
-                    countAns[zk][xi] = len(ans[zk][xi])
-                    devAns[zk][xi] = pds.DataFrame([abs(temp
-                                                        - medianAns[zk][xi])
-                                                    for temp in ans[zk][xi]]).median(axis=0)
-
-    # If some pandas DataFrames are returned in average, return a list
-    objidx, = np.where(objArray == 'F')
-    if len(objidx) > 0:
-        for zk in zarr[objidx]:
-            for xi in xarr:
-                if len(ans[zk][xi]) > 0:
-                    ans[zk][xi] = list(ans[zk][xi])
-                    countAns[zk][xi] = len(ans[zk][xi])
-
-                    # Convert data to xarray
-                    info = [xr.Dataset.from_dataframe(temp)
-                            for temp in ans[zk][xi]]
-
-                    vars = info[0].data_vars.keys()
-                    test = xr.Dataset()
-                    # Combine all info for each variable into a single data
-                    # array.
-                    for var in vars:
-                        test[var] = xr.concat([item[var] for item in info],
-                                              'pysat_binning')
-
+                # Higher order data has the 'pysat_binning' dim
+                if dim in data.dims:
+                    scalar_avg = False
                     # All data is prepped. Perform calculations.
-                    medianAns[zk][xi] = test.median(dim='pysat_binning')
+                    medianAns[zk][xi] = data.median(dim=dim)
 
-                    devAns[zk][xi] = test - medianAns[zk][xi]
-                    devAns[zk][xi] = devAns[zk][xi].apply(np.abs)
-                    devAns[zk][xi] = devAns[zk][xi].median(
-                        dim='pysat_binning')
+                    devAns[zk][xi] = data - medianAns[zk][xi]
+                    devAns[zk][xi] = devAns[zk][xi].map(np.abs)
+                    devAns[zk][xi] = devAns[zk][xi].median(dim=dim)
+                else:
+                    medianAns[zk][xi] = data.median()
 
-    objidx, = np.where(objArray == 'R')
-    if len(objidx) > 0:
-        for zk in zarr[objidx]:
-            medianAns[zk] = np.full(numx, fill_value=np.nan)
-            countAns[zk] = np.full(numx, fill_value=np.nan)
-            devAns[zk] = np.full(numx, fill_value=np.nan)
+                    devAns[zk][xi] = data - medianAns[zk][xi]
+                    devAns[zk][xi] = devAns[zk][xi].map(np.abs)
+                    devAns[zk][xi] = devAns[zk][xi].median()
+
+        if scalar_avg:
+            # Store current structure
+            temp_median = medianAns[zk]
+            temp_count = countAns[zk]
+            temp_dev = devAns[zk]
+
+            # Create 1D numpy arrays for new storage
+            medianAns[zk] = np.full((numx), np.nan)
+            countAns[zk] = np.full((numx), np.nan)
+            devAns[zk] = np.full((numx), np.nan)
+
+            # Store data
             for xi in xarr:
-                # Convert deque storing data into numpy array
-                ans[zk][xi] = np.array(ans[zk][xi])
-
-                # Filter out an NaNs in the arrays
-                idx, = np.where(np.isfinite(ans[zk][xi]))
-                ans[zk][xi] = (ans[zk][xi])[idx]
-
-                # Perform median averaging
-                if len(idx) > 0:
-                    medianAns[zk][xi] = np.median(ans[zk][xi])
-                    countAns[zk][xi] = len(ans[zk][xi])
-                    devAns[zk][xi] = np.median(abs(ans[zk][xi]
-                                                   - medianAns[zk][xi]))
+                if len(temp_median[xi]) > 0:
+                    medianAns[zk][xi] = temp_median[xi]['data']
+                    countAns[zk][xi] = temp_count[xi]
+                    devAns[zk][xi] = temp_dev[xi]['data']
 
     # Prepare output
     output = {}
