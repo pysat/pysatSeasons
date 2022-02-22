@@ -19,27 +19,34 @@ def median1D(const, bin1, label1, data_label, auto_bin=True, returnData=False):
     Parameters
     ----------
     const: Constellation or Instrument
-        Constellation or Instrument object
+        Constellation or Instrument object.
     bin1: array-like
         List holding [min, max, number of bins] or array-like containing
-        bin edges
+        bin edges.
     label1: str
-        identifies data product for bin1
+        Identifies data product for bin1.
     data_label: list-like
-        contains strings identifying data product(s) to be averaged
+        Strings identifying data product(s) to be averaged.
     auto_bin: bool
-        if True, function will create bins from the min, max and
-        number of bins. If false, bin edges must be manually entered
+        If True, function will create bins from the min, max and
+        number of bins. If false, bin edges must be manually entered in `bin1`.
     returnData : bool
-        Return data in output dictionary as well as statistics
+        If True, also return binned data used to calculate the average in
+        the output dictionary as 'data', in addition to the statistical outputs.
 
     Returns
     -------
     median : dict
-        1D median accessed by data_label as a function of label1
+        1D median accessed by `data_label` as a function of `label1`
         over the season delineated by bounds of passed instrument objects.
         Also includes 'count' and 'avg_abs_dev' as well as the values of
-        the bin edges in 'bin_x'
+        the bin edges in 'bin_x'. If returnData True, then binned data
+        stored under 'data' under `data_label`.
+
+    Note
+    ----
+    The range of dates to be loaded, and the cadence used to load data over
+    that range, is controlled by the `const.bounds` attribute.
 
     """
 
@@ -104,20 +111,24 @@ def median1D(const, bin1, label1, data_label, auto_bin=True, returnData=False):
 
 def median2D(const, bin1, label1, bin2, label2, data_label,
              returnData=False, auto_bin=True):
-    """Return a 2D average of data_label over a season and label1, label2.
+    """Return a 2D average of nD `data_label` over season and `label1` `label2`.
 
     Parameters
     ----------
-    const: Constellation or Instrument
+    const: pysat.Constellation or Instrument
     bin*: array-like
         List holding [min, max, number of bins] or array-like containing
-        bin edges, where * = 1, 2
-    label*: string
-        identifies data product for bin*, where * = 1, 2
+        bin edges, where * = 1, 2.
+    label*: str
+        Identifies data product for bin*, where * = 1, 2.
     data_label: list-like
-        contains strings identifying data product(s) to be averaged
-    auto_bin: if True, function will create bins from the min, max and
-              number of bins. If false, bin edges must be manually entered
+        Strings identifying data product(s) to be averaged.
+    returnData : bool
+        If True, also return binned data used to calculate the average in
+        the output dictionary as 'data', in addition to the statistical outputs.
+    auto_bin: bool
+        If True, function will create bins from the min, max and
+        number of bins. If false, bin edges must be manually entered in `bin*`.
 
     Returns
     -------
@@ -126,6 +137,11 @@ def median2D(const, bin1, label1, bin2, label2, data_label,
         over the season delineated by bounds of passed instrument objects.
         Also includes 'count' and 'avg_abs_dev' as well as the values of
         the bin edges in 'bin_x' and 'bin_y'.
+
+    Note
+    ----
+    The range of dates to be loaded, and the cadence used to load data over
+    that range, is controlled by the `const.bounds` attribute.
 
     """
 
@@ -210,6 +226,32 @@ def median2D(const, bin1, label1, bin2, label2, data_label,
 
 def _calc_2d_median(ans, data_label, binx, biny, xarr, yarr, zarr, numx,
                     numy, numz, returnData=False):
+    """Return a 2D average of nD `data_label` over season and `label1` `label2`.
+
+    Parameters
+    ----------
+    ans: list of lists
+        List of lists containing binned data. Provided by `median2D`.
+    bin*: array-like
+        List holding [min, max, number of bins] or array-like containing
+        bin edges, where * = 1, 2.
+    *arr: list-like
+        Indexing array along bin directions x, y, and data dimension z.
+    num*: int
+        Number of elements along *arr.
+    returnData : bool
+        If True, also return binned data used to calculate the average in
+        the output dictionary as 'data', in addition to the statistical outputs.
+
+    Returns
+    -------
+    median : dictionary
+        2D median accessed by `data_label` as a function of `label1` and
+        `label2` over the season delineated by bounds of passed Instrument
+        objects. Also includes 'count' and 'avg_abs_dev' as well as the
+        values of the bin edges in 'bin_x' and 'bin_y'.
+
+    """
     # set up output arrays
     medianAns = [[[None for i in xarr] for j in yarr] for k in zarr]
     countAns = [[[None for i in xarr] for j in yarr] for k in zarr]
@@ -237,7 +279,6 @@ def _calc_2d_median(ans, data_label, binx, biny, xarr, yarr, zarr, numx,
                         devAns[zk][yj][xi] = devAns[zk][yj][xi].map(np.abs)
                         devAns[zk][yj][xi] = devAns[zk][yj][xi].median(dim=dim)
                     else:
-                        # print('Hi ', data, data.median(), 'see it?')
                         medianAns[zk][yj][xi] = data.median()
 
                         devAns[zk][yj][xi] = data - medianAns[zk][yj][xi]
@@ -278,60 +319,105 @@ def _calc_2d_median(ans, data_label, binx, biny, xarr, yarr, zarr, numx,
     return output
 
 
-# simple averaging through multiple iterations
-
 def mean_by_day(inst, data_label):
-    """Mean of data_label by day over Instrument.bounds
+    """Mean of `data_label` by day over Instrument.bounds
 
     Parameters
     ----------
-    data_label : string
-        string identifying data product to be averaged
+    inst : pysat.Instrument
+        Instrument object to perform mean upon.
+    data_label : str
+        Data product label to be averaged.
 
     Returns
     -------
-    mean : pandas Series
-        simple mean of data_label indexed by day
+    mean : pandas.Series
+        Mean of `data_label` indexed by day.
+
+    Note
+    ----
+    The range of dates to be loaded, and the cadence used to load data over
+    that range, is controlled by the `inst.bounds` attribute.
 
     """
     return _core_mean(inst, data_label, by_day=True)
 
 
 def mean_by_orbit(inst, data_label):
-    """Mean of data_label by orbit over Instrument.bounds
+    """Mean of `data_label` by orbit over Instrument.bounds.
 
     Parameters
     ----------
-    data_label : string
-        string identifying data product to be averaged
+    inst : pysat.Instrument
+        Instrument object to perform mean upon.
+    data_label : str
+        Data product label to be averaged.
 
     Returns
     -------
-    mean : pandas Series
-        simple mean of data_label indexed by start of each orbit
+    mean : pandas.Series
+        Mean of `data_label` indexed by start of each orbit.
+
+    Note
+    ----
+    The range of dates to be loaded, and the cadence used to load data over
+    that range, is controlled by the `inst.bounds` attribute.
 
     """
     return _core_mean(inst, data_label, by_orbit=True)
 
 
 def mean_by_file(inst, data_label):
-    """Mean of data_label by orbit over Instrument.bounds
+    """Mean of `data_label` by orbit over Instrument.bounds.
 
     Parameters
     ----------
-    data_label : string
-        string identifying data product to be averaged
+    inst : pysat.Instrument
+        Instrument object to perform mean upon.
+    data_label : str
+        Data product label to be averaged.
 
     Returns
     -------
-    mean : pandas Series
-        simple mean of data_label indexed by start of each file
+    mean : pandas.Series
+        Mean of `data_label` indexed by start of each file.
+
+    Note
+    ----
+    The range of dates to be loaded, and the cadence used to load data over
+    that range, is controlled by the `inst.bounds` attribute.
 
     """
     return _core_mean(inst, data_label, by_file=True)
 
 
 def _core_mean(inst, data_label, by_orbit=False, by_day=False, by_file=False):
+    """Mean of `data_label` by different iterations over `inst.bounds`.
+
+    Parameters
+    ----------
+    inst : pysat.Instrument
+        Instrument object to perform mean upon.
+    data_label : str
+        Data product label to be averaged.
+    by_orbit : bool
+        If True, iterate by orbit.
+    by_day : bool
+        If True, iterate by day.
+    by_file : bool
+        If True, iterate by fil.
+
+    Returns
+    -------
+    mean : pandas.Series
+        Mean of `data_label` indexed by start of each file.
+
+    Note
+    ----
+    The range of dates to be loaded, and the cadence used to load data over
+    that range, is controlled by the `inst.bounds` attribute.
+
+    """
 
     if by_orbit:
         iterator = inst.orbits
@@ -340,14 +426,14 @@ def _core_mean(inst, data_label, by_orbit=False, by_day=False, by_file=False):
     else:
         raise ValueError('A choice must be made, by day, file, or orbit')
 
-    # create empty series to hold result
+    # Create empty series to hold result
     mean_val = pds.Series(dtype=np.float64)
-    # iterate over season, calculate the mean
+
+    # Iterate over season, calculate the mean
     for linst in iterator:
         if not linst.empty:
-            # compute mean absolute using pandas functions and store
-            # data could be an image, or lower dimension, account for 2D
-            # and lower
+            # Compute mean using xarray functions and store
+
             data = linst[data_label]
             data = data.dropna()
 
@@ -367,18 +453,30 @@ def _core_mean(inst, data_label, by_orbit=False, by_day=False, by_file=False):
 
 def _calc_1d_median(ans, data_label, binx, xarr, zarr, numx, numz,
                     returnData=False):
-    """Calculate the 1D median for items in list of lists `ans`.
+    """Return a 1D average of nD `data_label` over season.
 
     Parameters
     ----------
-    ans : list of lists
+    ans: list of lists
+        List of lists containing binned data. Provided by `median1D`.
+    binx: array-like
+        List holding [min, max, number of bins] or array-like containing
+        bin edges, where * = 1, 2.
+    *arr: list-like
+        Indexing array along bin direction x and data dimension z.
+    num*: int
+        Number of elements along *arr.
+    returnData : bool
+        If True, also return binned data used to calculate the average in
+        the output dictionary as 'data', in addition to the statistical outputs.
 
     Returns
-    ------
-
-    Notes
-    -----
-    This is an overcomplicated way of doing this.  Try and simplify later
+    -------
+    median : dictionary
+        1D median accessed by `data_label` as a function of `label1` and
+        `label2` over the season delineated by bounds of passed Instrument
+        objects. Also includes 'count' and 'avg_abs_dev' as well as the
+        values of the bin edges in 'bin_x' and 'bin_y'.
 
     """
     # Set up output arrays
