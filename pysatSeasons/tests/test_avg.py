@@ -41,9 +41,8 @@ class TestBasics():
         dummy_y = results['dummy1']['bin_y']
 
         # Iterate over all y rows.
-        # Value should be equal to integer value of mlt
-        # No variation in the median, all values should be the same
-        check = []
+        # Value should be equal to integer value of mlt.
+        # No variation in the median, all values should be the same.
         for i, y in enumerate(dummy_y[:-1]):
             assert np.all(dummy_val[i, :] == y.astype(int))
             assert np.all(dummy_dev[i, :] == 0)
@@ -53,8 +52,7 @@ class TestBasics():
             assert np.all(dummy2_dev[:, i] == 0)
 
         for i, x in enumerate(dummy_x[:-1]):
-            assert np.all(dummy3_val[:, i] == x / 15.0 * 1000.0
-                                + dummy_y[:-1])
+            assert np.all(dummy3_val[:, i] == x / 15.0 * 1000.0 + dummy_y[:-1])
             assert np.all(dummy3_dev[:, i] == 0)
 
         # Holds here because there are 32 days, no data is discarded,
@@ -379,8 +377,7 @@ class TestHeterogenousConstellation:
             assert np.all(dummy2_dev[:, i] == 0)
 
         for i, x in enumerate(dummy_x[:-1]):
-            assert np.all(dummy3_val[:, i] == x / 15.0 * 1000.0
-                                + dummy_y[:-1])
+            assert np.all(dummy3_val[:, i] == x / 15.0 * 1000.0 + dummy_y[:-1])
             assert np.all(dummy3_dev[:, i] == 0)
 
         return
