@@ -99,8 +99,7 @@ def median1D(const, bin1, label1, data_label, auto_bin=True, returnData=False):
                         for zk in zarr:
                             # Take the data (already filtered by x), select the
                             # data, put it in a list, and extend the list.
-                            idata = inst[xindex]
-                            ans[zk][xi].extend(idata[data_label[zk]].tolist())
+                            ans[zk][xi].extend(inst[xindex, data_label[zk]])
 
     # Calculate the 1D median
     return _calc_1d_median(ans, data_label, binx, xarr, zarr, numx, numz,
@@ -215,8 +214,7 @@ def median2D(const, bin1, label1, bin2, label2, data_label,
                                     # filter it by y, select the data product,
                                     # put it in a list, and extend the deque.
                                     ans[zk][yj][xi].extend(
-                                        yinst[yindex,
-                                              data_label[zk]].values.tolist())
+                                        yinst[yindex, data_label[zk]])
 
     return _calc_2d_median(ans, data_label, binx, biny, xarr, yarr, zarr,
                            numx, numy, numz, returnData)
@@ -251,9 +249,9 @@ def _calc_2d_median(ans, data_label, binx, biny, xarr, yarr, zarr, numx,
 
     """
     # set up output arrays
-    medianAns = [[[None for i in xarr] for j in yarr] for k in zarr]
-    countAns = [[[None for i in xarr] for j in yarr] for k in zarr]
-    devAns = [[[None for i in xarr] for j in yarr] for k in zarr]
+    medianAns = [[[[] for i in xarr] for j in yarr] for k in zarr]
+    countAns = [[[[] for i in xarr] for j in yarr] for k in zarr]
+    devAns = [[[[] for i in xarr] for j in yarr] for k in zarr]
 
     # All of the loading and storing data is done, though the data
     # could be of different types. Make all of them xarray datasets.
@@ -262,9 +260,10 @@ def _calc_2d_median(ans, data_label, binx, biny, xarr, yarr, zarr, numx,
         scalar_avg = True
         for yj in yarr:
             for xi in xarr:
-                if len(ans[zk][yj][xi]) > 0:
-                    countAns[zk][yj][xi] = len(ans[zk][yj][xi])
 
+                countAns[zk][yj][xi] = len(ans[zk][yj][xi])
+
+                if len(ans[zk][yj][xi]) > 0:
                     data = ssnl.to_xarray_dataset(ans[zk][yj][xi])
 
                     # Higher order data has the 'pysat_binning' dim
@@ -290,9 +289,9 @@ def _calc_2d_median(ans, data_label, binx, biny, xarr, yarr, zarr, numx,
             temp_dev = devAns[zk]
 
             # Create 2D numpy arrays for new storage
-            medianAns[zk] = np.zeros((numy, numx)) * np.nan
-            countAns[zk] = np.zeros((numy, numx)) * np.nan
-            devAns[zk] = np.zeros((numy, numx)) * np.nan
+            medianAns[zk] = np.full((numy, numx), np.nan)
+            countAns[zk] = np.full((numy, numx), np.nan)
+            devAns[zk] = np.full((numy, numx), np.nan)
 
             # Store data
             for yj in yarr:
