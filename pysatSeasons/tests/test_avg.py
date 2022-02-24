@@ -53,7 +53,41 @@ class TestBasics():
 
         # Ensure all outputs are numpy arrays
         for var in vars:
-            assert isinstance(results[var]['median'], np.array)
+            assert isinstance(results[var]['median'], type(np.array([])))
+
+        # Ensure binned data returned
+        for var in vars:
+            assert 'data' in results[var].keys()
+
+        return
+
+    def test_basic_seasonal_median1D(self):
+        """Test the basic seasonal 1D median."""
+        self.testInst.bounds = self.bounds1
+        vars = ['dummy1', 'dummy2', 'dummy3']
+        results = avg.median1D(self.testInst, [0., 360., 24], 'longitude',
+                               vars, returnData=True)
+
+        # Iterate over x rows. Value should be the longitude / 15.
+        for i, x in enumerate(results['dummy1']['bin_x'][:-1]):
+            assert np.all(results['dummy2']['median'][i] == x / 15.0)
+            assert np.all(results['dummy2']['avg_abs_dev'][i] == 0)
+
+        # Iterate over x rows. Value should be the longitude / 15 * 1000.
+        # except for the variation in value with 'mlt'.
+        for i, x in enumerate(results['dummy1']['bin_x'][:-1]):
+            assert np.all(results['dummy3']['median'][i] // 100 * 100 == x
+                          / 15.0 * 1000.0)
+            assert np.all(results['dummy3']['avg_abs_dev'][i] > 0)
+
+        # Holds here because there are 32 days, no data is discarded,
+        # and each day holds same amount of data.
+        assert np.all(self.testInst.data['dummy1'].size * 3
+                      == sum(results['dummy1']['count']))
+
+        # Ensure all outputs are numpy arrays
+        for var in vars:
+            assert isinstance(results[var]['median'], type(np.array([])))
 
         # Ensure binned data returned
         for var in vars:
@@ -548,6 +582,15 @@ class TestSeasonalAverageUnevenBins:
             avg.median2D(self.testInst, ['1', 'a', '23', '10'], 'longitude',
                          ['0', 'd', '24', 'c'], 'mlt',
                          ['dummy1', 'dummy2', 'dummy3'], auto_bin=False)
+        return
+
+    def test_median2D_bad_input(self):
+        """Test failure of median2D with non Constellation or Instrument input.
+        """
+        with pytest.raises(ValueError) as verr:
+            avg.median2D([], [0., 360., 24], 'longitude', [0., 24., 24], 'mlt',
+                         ['longitude'])
+        assert str(verr).find('Parameter must be an Instrument') > 0
         return
 
 
