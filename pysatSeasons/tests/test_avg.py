@@ -263,6 +263,18 @@ class TestXarrayProfileAverages():
         return
 
 
+class TestXarrayVariableProfileAverages(TestXarrayProfileAverages):
+    def setup(self):
+        """Run before every method to create a clean testing setup."""
+        self.testInst = pysat.Instrument('pysat', 'testing2D_xarray',
+                                         clean_level='clean')
+        self.testInst.bounds = (dt.datetime(2008, 1, 1),
+                                dt.datetime(2008, 2, 1))
+        self.dname = 'variable_profiles'
+
+        return
+
+
 class TestConstellation():
     def setup(self):
         insts = []
