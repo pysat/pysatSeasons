@@ -268,7 +268,8 @@ def _calc_2d_median(ans, data_label, binx, biny, xarr, yarr, zarr, numx,
 
                     # Higher order data has the 'pysat_binning' dim
                     if dim in data.dims:
-                        scalar_avg = False
+                        if len(data.dims) > 1:
+                            scalar_avg = False
                         # All data is prepped. Perform calculations.
                         medianAns[zk][yj][xi] = data.median(dim=dim)
 
@@ -297,9 +298,10 @@ def _calc_2d_median(ans, data_label, binx, biny, xarr, yarr, zarr, numx,
             for yj in yarr:
                 for xi in xarr:
                     if len(temp_median[yj][xi]) > 0:
-                        medianAns[zk][yj, xi] = temp_median[yj][xi]['data']
+                        key = [name for name in temp_median[yj][xi].data_vars]
+                        medianAns[zk][yj, xi] = temp_median[yj][xi][key[0]]
                         countAns[zk][yj, xi] = temp_count[yj][xi]
-                        devAns[zk][yj, xi] = temp_dev[yj][xi]['data']
+                        devAns[zk][yj, xi] = temp_dev[yj][xi][key[0]]
 
     # Prepare output
     output = {}
@@ -494,7 +496,8 @@ def _calc_1d_median(ans, data_label, binx, xarr, zarr, numx, numz,
 
                 # Higher order data has the 'pysat_binning' dim
                 if dim in data.dims:
-                    scalar_avg = False
+                    if len(data.dims) > 1:
+                        scalar_avg = False
                     # All data is prepped. Perform calculations.
                     medianAns[zk][xi] = data.median(dim=dim)
 
@@ -522,9 +525,10 @@ def _calc_1d_median(ans, data_label, binx, xarr, zarr, numx, numz,
             # Store data
             for xi in xarr:
                 if len(temp_median[xi]) > 0:
-                    medianAns[zk][xi] = temp_median[xi]['data']
+                    key = [name for name in temp_median[xi].data_vars]
+                    medianAns[zk][xi] = temp_median[xi][key[0]]
                     countAns[zk][xi] = temp_count[xi]
-                    devAns[zk][xi] = temp_dev[xi]['data']
+                    devAns[zk][xi] = temp_dev[xi][key[0]]
 
     # Prepare output
     output = {}
