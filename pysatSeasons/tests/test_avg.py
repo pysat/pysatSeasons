@@ -213,12 +213,13 @@ class TestXarrayProfileAverages():
         self.testInst.bounds = (dt.datetime(2008, 1, 1),
                                 dt.datetime(2008, 2, 1))
         self.dname = 'profiles'
+        self.test_val_length = 15
 
         return
 
     def teardown(self):
         """Run after every method to clean up previous testing."""
-        del self.testInst, self.dname
+        del self.testInst, self.dname, self.test_val_length
 
         return
 
@@ -233,7 +234,7 @@ class TestXarrayProfileAverages():
             mlt_val = i
             for j, item in enumerate(row):
                 long_val = j * 1000.
-                test_vals = [mlt_val + long_val] * 15
+                test_vals = mlt_val + long_val
                 assert np.all(item[self.dname].values == test_vals)
 
         for i, row in enumerate(results[self.dname]['avg_abs_dev']):
@@ -250,9 +251,12 @@ class TestXarrayProfileAverages():
         for i, row in enumerate(results[self.dname]['median']):
             # Define truth values. There is a variation in value based on
             # longitude, at thousands level. MLT only shows at ones/tens level.
-            test_vals = [i] * 15
+            test_vals = [i] * self.test_val_length
             vals = []
             for val in row[self.dname].values:
+                if not isinstance(val, np.float64):
+                    # Provide support for testing higher order data sources.
+                    val = val[0]
                 vals.append(int(str(int(val))[-2:]))
             assert np.all(vals == test_vals)
 
@@ -271,6 +275,26 @@ class TestXarrayVariableProfileAverages(TestXarrayProfileAverages):
         self.testInst.bounds = (dt.datetime(2008, 1, 1),
                                 dt.datetime(2008, 2, 1))
         self.dname = 'variable_profiles'
+        self.test_val_length = 15
+
+        return
+
+
+class TestXarrayImageAverages(TestXarrayProfileAverages):
+    def setup(self):
+        """Run before every method to create a clean testing setup."""
+        self.testInst = pysat.Instrument('pysat', 'testing2D_xarray',
+                                         clean_level='clean')
+        self.testInst.bounds = (dt.datetime(2008, 1, 1),
+                                dt.datetime(2008, 2, 1))
+        self.dname = 'images'
+        self.test_val_length = 17
+
+        return
+
+    def teardown(self):
+        """Run after every method to clean up previous testing."""
+        del self.testInst, self.dname, self.test_val_length
 
         return
 
