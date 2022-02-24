@@ -302,19 +302,20 @@ f.savefig('ssnl_median_ivm_cosmic_1d.png')
 for k in np.arange(6):
     f, axarr = plt.subplots(4, sharex=True, figsize=(8.5, 11))
     # Iterate over a group of four sectors at a time (4 plots per page)
-    for (j, sector) in enumerate(list(zip(*cosmicResults['profiles']['median']))
+    for (j, sector) in enumerate(list(zip(*cosmicResults['ELEC_dens']['median']))
                                  [k * 4:(k + 1) * 4]):
         # Iterate over all local times within longitude sector.
         # Data is returned from the median routine in plot order, [y, x]
         # instead of [x,y].
         for (i, ltview) in enumerate(sector):
-            if ltview is not None:
+            if np.isfinite(ltview):
                 # Plot a given longitude/local time profile
                 temp = pds.DataFrame(ltview['ELEC_dens'])
 
                 # Produce a grid covering plot region
                 # (y values determined by profile)
-                xx, yy = np.meshgrid(np.array([i, i + 1]), temp.index.values)
+                xx, yy = np.meshgrid(np.array([i, i + 1]),
+                                     np.arange(len(temp.index.values) + 1))
                 filtered = ma.array(np.log10(temp.values),
                                     mask=pds.isnull(temp))
                 graph = axarr[j].pcolormesh(xx, yy, filtered,
