@@ -270,7 +270,6 @@ class TestXarrayProfileAverages():
         results = avg.median2D(self.testInst, [0., 360., 24], 'longitude',
                                [0., 24., 24], 'mlt', [self.dname])
 
-        # No variation in the median, all values should be the same.
         # Values in xarray instrument depend upon longitude and mlt location.
         for i, row in enumerate(results[self.dname]['median']):
             mlt_val = i
@@ -279,6 +278,7 @@ class TestXarrayProfileAverages():
                 test_vals = mlt_val + long_val
                 assert np.all(item[self.dname].values == test_vals)
 
+        # No variation in the median, all values should be the same.
         for i, row in enumerate(results[self.dname]['avg_abs_dev']):
             for j, item in enumerate(row):
                 assert np.all(item[self.dname].values == 0)
