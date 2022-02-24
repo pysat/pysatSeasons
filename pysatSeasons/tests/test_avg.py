@@ -25,40 +25,39 @@ class TestBasics():
     def test_basic_seasonal_median2D(self):
         """Test the basic seasonal 2D median."""
         self.testInst.bounds = self.bounds1
+        vars = ['dummy1', 'dummy2', 'dummy3']
         results = avg.median2D(self.testInst, [0., 360., 24], 'longitude',
-                               [0., 24., 24], 'mlt',
-                               ['dummy1', 'dummy2', 'dummy3'])
-        dummy_val = results['dummy1']['median']
-        dummy_dev = results['dummy1']['avg_abs_dev']
+                               [0., 24., 24], 'mlt', vars, returnData=True)
 
-        dummy2_val = results['dummy2']['median']
-        dummy2_dev = results['dummy2']['avg_abs_dev']
+        # Iterate over all y rows. Value should be equal to integer value of
+        # mlt. No variation in the median, all values should be the same.
+        for i, y in enumerate(results['dummy1']['bin_y'][:-1]):
+            assert np.all(results['dummy1']['median'][i, :] == y.astype(int))
+            assert np.all(results['dummy1']['avg_abs_dev'][i, :] == 0)
 
-        dummy3_val = results['dummy3']['median']
-        dummy3_dev = results['dummy3']['avg_abs_dev']
+        # Iterate over x rows. Value should be the longitude / 15.
+        for i, x in enumerate(results['dummy1']['bin_x'][:-1]):
+            assert np.all(results['dummy2']['median'][:, i] == x / 15.0)
+            assert np.all(results['dummy2']['avg_abs_dev'][:, i] == 0)
 
-        dummy_x = results['dummy1']['bin_x']
-        dummy_y = results['dummy1']['bin_y']
-
-        # Iterate over all y rows.
-        # Value should be equal to integer value of mlt.
-        # No variation in the median, all values should be the same.
-        for i, y in enumerate(dummy_y[:-1]):
-            assert np.all(dummy_val[i, :] == y.astype(int))
-            assert np.all(dummy_dev[i, :] == 0)
-
-        for i, x in enumerate(dummy_x[:-1]):
-            assert np.all(dummy2_val[:, i] == x / 15.0)
-            assert np.all(dummy2_dev[:, i] == 0)
-
-        for i, x in enumerate(dummy_x[:-1]):
-            assert np.all(dummy3_val[:, i] == x / 15.0 * 1000.0 + dummy_y[:-1])
-            assert np.all(dummy3_dev[:, i] == 0)
+        # Iterate over x rows. Value should be the longitude / 15 * 1000.
+        for i, x in enumerate(results['dummy1']['bin_x'][:-1]):
+            assert np.all(results['dummy3']['median'][:, i] == x / 15.0 * 1000.0
+                          + results['dummy1']['bin_y'][:-1])
+            assert np.all(results['dummy3']['avg_abs_dev'][:, i] == 0)
 
         # Holds here because there are 32 days, no data is discarded,
         # and each day holds same amount of data.
         assert np.all(self.testInst.data['dummy1'].size * 3
                       == sum([sum(i) for i in results['dummy1']['count']]))
+
+        # Ensure all outputs are numpy arrays
+        for var in vars:
+            assert isinstance(results[var]['median'], np.array)
+
+        # Ensure binned data returned
+        for var in vars:
+            assert 'data' in results[var].keys()
 
         return
 
@@ -629,6 +628,15 @@ class TestInstMed1D():
         with pytest.raises(KeyError):
             avg.median1D(self.testInst, self.test_bins, self.test_label,
                          self.test_data[0])
+        return
+
+    def test_median1D_bad_input(self):
+        """Test failure of median1D with non Constellation or Instrument input.
+        """
+        with pytest.raises(ValueError) as verr:
+            avg.median1D([], self.test_bins, self.test_label,
+                         self.test_data[0])
+        assert str(verr).find('Parameter must be an Instrument') > 0
         return
 
     def test_median1D_bad_label(self):
