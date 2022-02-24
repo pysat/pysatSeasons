@@ -324,8 +324,9 @@ for k in np.arange(6):
         cbar = f.colorbar(graph, ax=axarr[j])
         cbar.set_label('Log Density')
         axarr[j].set_xlim(0, 24)
-        axarr[j].set_ylim(50., 700.)
-        axarr[j].set_yticks([50., 200., 350., 500., 650.])
+        axarr[j].set_ylim(0., 300.)
+        axarr[j].set_yticks([50., 100., 150., 200., 250.],
+                            [150., 300., 450., 600., 750.])
         axarr[j].set_ylabel('Altitude (km)')
         axarr[j].set_title('Apex Longitudes %i-%i' %
                            (4 * k * 15 + j * 15, 4 * k * 15 + (j + 1) * 15))
