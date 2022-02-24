@@ -434,7 +434,12 @@ def _core_mean(inst, data_label, by_orbit=False, by_day=False, by_file=False):
             # Compute mean using xarray functions and store
 
             data = linst[data_label]
-            data = data.dropna()
+            data = ssnl.to_xarray_dataset(data)
+            if 'time' in data.dims:
+                epoch_dim = 'time'
+            elif 'Epoch' in data.dims:
+                epoch_dim = 'Epoch'
+            data = data.dropna(dim=epoch_dim)
 
             if by_orbit or by_file:
                 date = linst.index[0]
@@ -442,7 +447,6 @@ def _core_mean(inst, data_label, by_orbit=False, by_day=False, by_file=False):
                 date = linst.date
 
             # Perform average
-            data = ssnl.to_xarray_dataset(data)
             mean_val[date] = data.mean(dim=data[data_label].dims[0],
                                        skipna=True)[data_label].values
 
