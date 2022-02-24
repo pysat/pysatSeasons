@@ -98,6 +98,15 @@ class TestBasics():
         return
 
 
+class TestXarrayBasics(TestBasics):
+    def setup(self):
+        """Run before every method to create a clean testing setup."""
+        self.testInst = pysat.Instrument('pysat', 'testing_xarray',
+                                         clean_level='clean')
+        self.bounds1 = (dt.datetime(2008, 1, 1), dt.datetime(2008, 1, 3))
+        self.bounds2 = (dt.datetime(2009, 1, 1), dt.datetime(2009, 1, 2))
+
+
 class TestFrameProfileAverages():
     def setup(self):
         """Runs before every method to create a clean testing setup."""
