@@ -363,22 +363,15 @@ class TestConstellation():
         for i in self.testC.instruments:
             i.bounds = self.bounds
         self.testI.bounds = self.bounds
+        vars = ['dummy1', 'dummy2', 'dummy3']
         resultsC = avg.median2D(self.testC, [0., 360., 24], 'longitude',
-                                [0., 24., 24], 'mlt',
-                                ['dummy1', 'dummy2', 'dummy3'])
+                                [0., 24., 24], 'mlt', vars)
         resultsI = avg.median2D(self.testI, [0., 360., 24], 'longitude',
-                                [0., 24., 24], 'mlt',
-                                ['dummy1', 'dummy2', 'dummy3'])
-        medC1 = resultsC['dummy1']['median']
-        medI1 = resultsI['dummy1']['median']
-        medC2 = resultsC['dummy2']['median']
-        medI2 = resultsI['dummy2']['median']
-        medC3 = resultsC['dummy3']['median']
-        medI3 = resultsI['dummy3']['median']
+                                [0., 24., 24], 'mlt', vars)
 
-        assert np.array_equal(medC1, medI1)
-        assert np.array_equal(medC2, medI2)
-        assert np.array_equal(medC3, medI3)
+        for var in vars:
+            assert np.array_equal(resultsC[var]['median'],
+                                  resultsI[var]['median'])
 
         return
 
