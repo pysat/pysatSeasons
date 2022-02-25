@@ -2,6 +2,7 @@
 Test pysatSeasons occur_prob object and code.
 """
 import datetime as dt
+import numpy as np
 import pytest
 
 import pysat
@@ -42,23 +43,28 @@ class TestBasics():
         return
 
     def test_occur_prob_daily_2D_w_bad_data_label(self):
-        """Catch a data_label that is not list-like."""
-        with pytest.raises(ValueError) as verr:
-            occur_prob.daily2D(self.testInst, [0, 360, 4], 'longitude',
-                               [-60, 60, 3], 'latitude', 'slt', [12.])
+        """Input a data_label that is not list-like."""
 
-        assert str(verr).find('Must have a gate value for each data_label') >= 0
+        ans = occur_prob.daily2D(self.testInst, [0, 360, 4], 'longitude',
+                                 [-60, 60, 3], 'latitude', 'slt', [12.])
+
+        ans2 = occur_prob.daily2D(self.testInst, [0, 360, 4], 'longitude',
+                                 [-60, 60, 3], 'latitude', ['slt'], [12.])
+
+        assert np.array_equal(ans['slt']['prob'], ans2['slt']['prob'])
 
         return
 
     def test_occur_prob_daily_2D_w_bad_gate(self):
-        """Catch a gate that is not list-like"""
-        with pytest.raises(ValueError) as verr:
-            occur_prob.daily2D(self.testInst, [0, 360, 4], 'longitude',
-                               [-60, 60, 3], 'latitude', ['slt'], 12.)
+        """Input a gate that is not list-like"""
 
-        estr = 'Gate levels must be list-like group of variable names.'
-        assert str(verr).find(estr) >= 0
+        ans = occur_prob.daily2D(self.testInst, [0, 360, 4], 'longitude',
+                                 [-60, 60, 3], 'latitude', ['slt'], 12.)
+
+        ans2 = occur_prob.daily2D(self.testInst, [0, 360, 4], 'longitude',
+                                  [-60, 60, 3], 'latitude', ['slt'], [12.])
+
+        assert np.array_equal(ans['slt']['prob'], ans2['slt']['prob'])
 
         return
 
@@ -102,25 +108,29 @@ class TestBasics():
 
     def test_occur_prob_daily_3D_w_bad_data_label(self):
         """Catch a data_label that is not list-like"""
-        with pytest.raises(ValueError) as verr:
-            occur_prob.daily3D(self.testInst, [0, 360, 4], 'longitude',
-                               [-60, 60, 3], 'latitude', [0, 24, 2], 'slt',
-                               'slt', [12.])
+        ans = occur_prob.daily3D(self.testInst, [0, 360, 4], 'longitude',
+                                 [-60, 60, 3], 'latitude', [0, 24, 2], 'slt',
+                                 'slt', [12.])
 
-        estr = 'Must have a gate value for each data_label'
-        assert str(verr).find(estr) >= 0
+        ans2 = occur_prob.daily3D(self.testInst, [0, 360, 4], 'longitude',
+                                  [-60, 60, 3], 'latitude', [0, 24, 2], 'slt',
+                                  ['slt'], [12.])
+
+        assert np.array_equal(ans['slt']['prob'], ans2['slt']['prob'])
 
         return
 
     def test_occur_prob_daily_3D_w_bad_gate(self):
         """Catch a gate that is not list-like"""
-        with pytest.raises(ValueError) as verr:
-            occur_prob.daily3D(self.testInst, [0, 360, 4], 'longitude',
-                               [-60, 60, 3], 'latitude', [0, 24, 2], 'slt',
-                               ['slt'], 12.)
+        ans = occur_prob.daily3D(self.testInst, [0, 360, 4], 'longitude',
+                                 [-60, 60, 3], 'latitude', [0, 24, 2], 'slt',
+                                 ['slt'], 12.)
 
-        estr = 'Gate levels must be list-like group of variable names.'
-        assert str(verr).find(estr) >= 0
+        ans2 = occur_prob.daily3D(self.testInst, [0, 360, 4], 'longitude',
+                                  [-60, 60, 3], 'latitude', [0, 24, 2], 'slt',
+                                  ['slt'], [12.])
+
+        assert np.array_equal(ans['slt']['prob'], ans2['slt']['prob'])
 
         return
 
