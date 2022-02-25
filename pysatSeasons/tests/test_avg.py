@@ -374,6 +374,10 @@ class TestConstellation():
             i.bounds = self.bounds
         self.testI.bounds = self.bounds
 
+        # Define variables for 1D testing
+        self.one_d_vars = ['dummy1', 'dummy2', 'dummy3']
+        self.unequal_one_d_vars = []
+
         return
 
     def teardown(self):
@@ -391,30 +395,44 @@ class TestConstellation():
         resultsI = avg.median2D(self.testI, [0., 360., 24], 'longitude',
                                 [0., 24., 24], 'mlt', vars)
 
+        output_labels = ['median', 'avg_abs_dev']
         for var in vars:
-            assert np.array_equal(resultsC[var]['median'],
-                                  resultsI[var]['median'])
+            for output in output_labels:
+                assert np.array_equal(resultsC[var][output],
+                                      resultsI[var][output])
 
         return
 
     def test_constellation_median1D(self):
         """Test constellation implementation of 1D median."""
 
-        vars = ['dummy1', 'dummy2', 'dummy3']
+        vars = []
+        for var in [self.one_d_vars, self.unequal_one_d_vars]:
+            vars.extend(var)
 
         resultsC = avg.median1D(self.testC, [0., 24, 24], 'mlt',
-                                ['dummy1', 'dummy2', 'dummy3'])
+                                vars)
         resultsI = avg.median1D(self.testI, [0., 24, 24], 'mlt',
-                                ['dummy1', 'dummy2', 'dummy3'])
+                                vars)
 
-        for var in vars:
-            assert np.array_equal(resultsC[var]['median'],
-                                  resultsI[var]['median'])
+        output_labels = ['median', 'avg_abs_dev']
+        for var in self.one_d_vars:
+            for output in output_labels:
+                assert np.array_equal(resultsC[var][output],
+                                      resultsI[var][output])
+
+        # Check parameters that are not the same.
+        output_labels = ['median']
+        for var in self.unequal_one_d_vars:
+            for output in output_labels:
+                assert not np.array_equal(resultsC[var][output],
+                                          resultsI[var][output])
 
         return
 
 
-class TestHeterogenousConstellation:
+class TestHeterogenousConstellation(TestConstellation):
+    """Test with a Constellation of Instruments with different parameters."""
     def setup(self):
         insts = []
         for i in range(2):
@@ -423,68 +441,25 @@ class TestHeterogenousConstellation:
                                           clean_level='clean',
                                           root_date=r_date))
         self.testC = pysat.Constellation(instruments=insts)
+        self.testI = pysat.Instrument('pysat', 'testing', clean_level='clean')
         self.bounds = (dt.datetime(2008, 1, 1), dt.datetime(2008, 1, 3))
+
+        # Apply bounds to all Instruments in Constellation, and solo Instrument.
+        for i in self.testC.instruments:
+            i.bounds = self.bounds
+        self.testI.bounds = self.bounds
+
+        # Define variables for 1D testing. A more limited set that only
+        # depends upon 'mlt'. Other variables also include longitude, which
+        # can differ between instruments when only binning by 'mlt'.
+        self.one_d_vars = ['dummy1']
+        self.unequal_one_d_vars = ['dummy2', 'dummy3']
 
         return
 
     def teardown(self):
-        del self.testC, self.bounds
-
-        return
-
-    def test_heterogenous_constellation_median2D(self):
-        """Test the seasonal 2D median of a heterogeneous constellation."""
-        for inst in self.testC:
-            inst.bounds = self.bounds
-
-        results = avg.median2D(self.testC, [0., 360., 24], 'longitude',
-                               [0., 24., 24], 'mlt',
-                               ['dummy1', 'dummy2', 'dummy3'])
-        dummy_val = results['dummy1']['median']
-        dummy_dev = results['dummy1']['avg_abs_dev']
-
-        dummy2_val = results['dummy2']['median']
-        dummy2_dev = results['dummy2']['avg_abs_dev']
-
-        dummy3_val = results['dummy3']['median']
-        dummy3_dev = results['dummy3']['avg_abs_dev']
-
-        dummy_x = results['dummy1']['bin_x']
-        dummy_y = results['dummy1']['bin_y']
-
-        # Iterate over all y rows.
-        # Value should be equal to integer value of mlt.
-        # No variation in the median, all values should be the same.
-        for i, y in enumerate(dummy_y[:-1]):
-            assert np.all(dummy_val[i, :] == y.astype(int))
-            assert np.all(dummy_dev[i, :] == 0)
-
-        for i, x in enumerate(dummy_x[:-1]):
-            assert np.all(dummy2_val[:, i] == x / 15.0)
-            assert np.all(dummy2_dev[:, i] == 0)
-
-        for i, x in enumerate(dummy_x[:-1]):
-            assert np.all(dummy3_val[:, i] == x / 15.0 * 1000.0 + dummy_y[:-1])
-            assert np.all(dummy3_dev[:, i] == 0)
-
-        return
-
-    def test_heterogenous_constellation_median1D(self):
-        """Test the seasonal 1D median of a heterogeneous constellation."""
-        for inst in self.testC:
-            inst.bounds = self.bounds
-        results = avg.median1D(self.testC, [0., 24, 24], 'mlt', ['dummy1'])
-
-        # Extract the results
-        dummy_val = results['dummy1']['median']
-        dummy_dev = results['dummy1']['avg_abs_dev']
-
-        # Iterate over all x rows.
-        # Value should be equal to integer value of mlt.
-        # No variation in the median, all values should be the same.
-        for i, x in enumerate(results['dummy1']['bin_x'][:-1]):
-            assert np.all(dummy_val[i] == x.astype(int))
-            assert np.all(dummy_dev[i] == 0)
+        del self.testC, self.bounds, self.one_d_vars, self.unequal_one_d_vars
+        del self.testI
 
         return
 
