@@ -416,8 +416,7 @@ class TestConstellation():
         self.bounds = (dt.datetime(2008, 1, 1), dt.datetime(2008, 1, 3))
 
         # Apply bounds to all Instruments in Constellation, and solo Instrument.
-        for i in self.testC.instruments:
-            i.bounds = self.bounds
+        self.testC.bounds = self.bounds
         self.testI.bounds = self.bounds
 
         # Define variables for 1D testing
@@ -491,8 +490,7 @@ class TestHeterogenousConstellation(TestConstellation):
         self.bounds = (dt.datetime(2008, 1, 1), dt.datetime(2008, 1, 3))
 
         # Apply bounds to all Instruments in Constellation, and solo Instrument.
-        for i in self.testC.instruments:
-            i.bounds = self.bounds
+        self.testC.bounds = self.bounds
         self.testI.bounds = self.bounds
 
         # Define variables for 1D testing. A more limited set that only
