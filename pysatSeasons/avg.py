@@ -180,13 +180,16 @@ def median2D(const, bin1, label1, bin2, label2, data_label,
         # all depends on the configuration of that particular instrument.
         # Either way, it iterates over the instrument, loading successive
         # data between start and end bounds.
+
+        # Copy instrument to provide data source independent access
+        yinst = inst1.copy()
+
         for inst in inst1:
             # Collect data in bins for averaging
             if not inst.empty:
                 # Sort the data into bins (x) based on label 1
                 # (stores bin indexes in xind)
                 xind = np.digitize(inst[label1], binx) - 1
-                yinst = inst.copy()
                 # For each possible x index
                 for xi in xarr:
                     # Get the indices of those pieces of data in that bin.
