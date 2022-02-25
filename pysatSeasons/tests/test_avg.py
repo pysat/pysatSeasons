@@ -11,6 +11,8 @@ from pysatSeasons import avg
 
 
 class TestBasics():
+    """Test basic functions using pandas 1D data sources."""
+
     def setup(self):
         """Run before every method to create a clean testing setup."""
         self.testInst = pysat.Instrument('pysat', 'testing',
@@ -132,6 +134,8 @@ class TestBasics():
 
 
 class TestXarrayBasics(TestBasics):
+    """Reapply basic tests to 1D xarray data sources."""
+
     def setup(self):
         """Run before every method to create a clean testing setup."""
         self.testInst = pysat.Instrument('pysat', 'testing_xarray',
@@ -141,7 +145,10 @@ class TestXarrayBasics(TestBasics):
 
         return
 
+
 class TestFrameProfileAverages():
+    """Test bin averaging dataframes from pandas data sources."""
+
     def setup(self):
         """Runs before every method to create a clean testing setup."""
         self.testInst = pysat.Instrument('pysat', 'testing2D',
@@ -166,12 +173,13 @@ class TestFrameProfileAverages():
         results = avg.median2D(self.testInst, [0., 360., 24], 'longitude',
                                [0., 24., 24], 'mlt', [self.dname])
 
-        # No variation in the median, all values should be the same
+        # Test medians.
         for i, row in enumerate(results[self.dname]['median']):
             for j, item in enumerate(row):
                 assert np.all(item['density'] == self.test_vals)
                 assert np.all(item['fraction'] == self.test_fracs)
 
+        # No variation in the median, all values should be the same
         for i, row in enumerate(results[self.dname]['avg_abs_dev']):
             for j, item in enumerate(row):
                 assert np.all(item['density'] == 0)
@@ -185,11 +193,12 @@ class TestFrameProfileAverages():
         results = avg.median1D(self.testInst, [0., 24, 24], 'mlt',
                                [self.dname])
 
-        # No variation in the median, all values should be the same.
+        # Test medians.
         for i, row in enumerate(results[self.dname]['median']):
             assert np.all(row['density'] == self.test_vals)
             assert np.all(row['fraction'] == self.test_fracs)
 
+        # No variation in the median, all values should be the same.
         for i, row in enumerate(results[self.dname]['avg_abs_dev']):
             assert np.all(row['density'] == 0)
             assert np.all(row['fraction'] == 0)
@@ -198,6 +207,8 @@ class TestFrameProfileAverages():
 
 
 class TestSeriesProfileAverages():
+    """Test bin averaging series profile data from pandas data sources."""
+
     def setup(self):
         """Runs before every method to create a clean testing setup."""
         self.testInst = pysat.Instrument('pysat', 'testing2D',
@@ -220,12 +231,12 @@ class TestSeriesProfileAverages():
         results = avg.median2D(self.testInst, [0., 360., 24], 'longitude',
                                [0., 24., 24], 'mlt', [self.dname])
 
-        # Iterate over all.
-        # No variation in the median, all values should be the same.
+        # Test medians.
         for i, row in enumerate(results[self.dname]['median']):
             for j, item in enumerate(row):
                 assert np.all(item[self.dname] == self.test_vals)
 
+        # No variation in the median, all values should be the same.
         for i, row in enumerate(results[self.dname]['avg_abs_dev']):
             for j, item in enumerate(row):
                 assert np.all(item[self.dname] == 0)
@@ -237,11 +248,11 @@ class TestSeriesProfileAverages():
         results = avg.median1D(self.testInst, [0., 24., 24], 'mlt',
                                [self.dname])
 
-        # Iterate over all.
-        # No variation in the median, all values should be the same.
+        # Test medians.
         for i, row in enumerate(results[self.dname]['median']):
             assert np.all(row[self.dname] == self.test_vals)
 
+        # No variation in the median, all values should be the same.
         for i, row in enumerate(results[self.dname]['avg_abs_dev']):
             assert np.all(row[self.dname] == 0)
 
@@ -249,6 +260,8 @@ class TestSeriesProfileAverages():
 
 
 class TestXarrayProfileAverages():
+    """Test bin averaging profile data from xarray data sources."""
+
     def setup(self):
         """Run before every method to create a clean testing setup."""
         self.testInst = pysat.Instrument('pysat', 'testing2D_xarray',
@@ -311,6 +324,8 @@ class TestXarrayProfileAverages():
 
 
 class TestXarrayVariableProfileAverages(TestXarrayProfileAverages):
+    """Test bin averaging variable profile data from xarray data sources."""
+
     def setup(self):
         """Run before every method to create a clean testing setup."""
         self.testInst = pysat.Instrument('pysat', 'testing2D_xarray',
@@ -324,6 +339,8 @@ class TestXarrayVariableProfileAverages(TestXarrayProfileAverages):
 
 
 class TestXarrayImageAverages(TestXarrayProfileAverages):
+    """Test bin averaging image data from xarray data sources."""
+
     def setup(self):
         """Run before every method to create a clean testing setup."""
         self.testInst = pysat.Instrument('pysat', 'testing2D_xarray',
@@ -352,6 +369,11 @@ class TestConstellation():
         self.testI = pysat.Instrument('pysat', 'testing', clean_level='clean')
         self.bounds = (dt.datetime(2008, 1, 1), dt.datetime(2008, 1, 3))
 
+        # Apply bounds to all Instruments in Constellation, and solo Instrument.
+        for i in self.testC.instruments:
+            i.bounds = self.bounds
+        self.testI.bounds = self.bounds
+
         return
 
     def teardown(self):
@@ -361,10 +383,6 @@ class TestConstellation():
 
     def test_constellation_median2D(self):
         """Test constellation implementation of 2D median."""
-        for i in self.testC.instruments:
-            i.bounds = self.bounds
-
-        self.testI.bounds = self.bounds
 
         vars = ['dummy1', 'dummy2', 'dummy3']
 
@@ -381,10 +399,6 @@ class TestConstellation():
 
     def test_constellation_median1D(self):
         """Test constellation implementation of 1D median."""
-        for i in self.testC.instruments:
-            i.bounds = self.bounds
-
-        self.testI.bounds = self.bounds
 
         vars = ['dummy1', 'dummy2', 'dummy3']
 
@@ -562,7 +576,10 @@ class TestSeasonalAverageUnevenBins:
             avg.median2D(self.testInst, np.array([0., 300., 100.]), 'longitude',
                          np.array([0., 24., 13.]), 'mlt',
                          ['dummy1', 'dummy2', 'dummy3'], auto_bin=False)
-        print(verr)
+
+        estr = 'bins must be monotonically increasing or decreasing'
+        assert verr.find(estr) >= 0
+
         return
 
     def test_bin_data_depth(self):
@@ -570,7 +587,10 @@ class TestSeasonalAverageUnevenBins:
         with pytest.raises(TypeError) as verr:
             avg.median2D(self.testInst, 1, 'longitude', 24, 'mlt',
                          ['dummy1', 'dummy2', 'dummy3'], auto_bin=False)
-        print(verr)
+
+        estr = 'len() of unsized object'
+        assert verr.find(estr) >= 0
+
         return
 
     def test_bin_data_type(self):
@@ -579,7 +599,10 @@ class TestSeasonalAverageUnevenBins:
             avg.median2D(self.testInst, ['1', 'a', '23', '10'], 'longitude',
                          ['0', 'd', '24', 'c'], 'mlt',
                          ['dummy1', 'dummy2', 'dummy3'], auto_bin=False)
-        print(verr)
+
+        estr = "Cannot cast array data from"
+        assert verr.find(estr) >= 0
+
         return
 
     def test_median2D_bad_input(self):
@@ -588,7 +611,9 @@ class TestSeasonalAverageUnevenBins:
         with pytest.raises(ValueError) as verr:
             avg.median2D([], [0., 360., 24], 'longitude', [0., 24., 24], 'mlt',
                          ['longitude'])
+
         assert str(verr).find('Parameter must be an Instrument') > 0
+
         return
 
 
@@ -669,7 +694,10 @@ class TestInstMed1D():
         with pytest.raises(KeyError) as verr:
             avg.median1D(self.testInst, self.test_bins, self.test_label,
                          self.test_data[0])
-        print(verr)
+
+        estr = self.test_label
+        assert verr.find(estr) >= 0
+
         return
 
     def test_median1D_bad_input(self):
@@ -678,7 +706,9 @@ class TestInstMed1D():
         with pytest.raises(ValueError) as verr:
             avg.median1D([], self.test_bins, self.test_label,
                          self.test_data[0])
+
         assert str(verr).find('Parameter must be an Instrument') > 0
+
         return
 
     def test_median1D_bad_label(self):
@@ -686,7 +716,10 @@ class TestInstMed1D():
         with pytest.raises(KeyError) as verr:
             avg.median1D(self.testInst, self.test_bins, "bad_label",
                          self.test_data)
-        print(verr)
+
+        estr = "bad_label"
+        assert verr.find(estr) >= 0
+
         return
 
     def test_nonmonotonic_bins(self):
@@ -694,7 +727,10 @@ class TestInstMed1D():
         with pytest.raises(ValueError) as verr:
             avg.median1D(self.testInst, [0, 13, 5], self.test_label,
                          self.test_data, auto_bin=False)
-        print(verr)
+
+        estr = 'bins must be monotonically increasing or decreasing'
+        assert verr.find(estr) >= 0
+
         return
 
     def test_bin_data_depth(self):
@@ -702,7 +738,10 @@ class TestInstMed1D():
         with pytest.raises(TypeError) as verr:
             avg.median1D(self.testInst, 24, self.test_label, self.test_data,
                          auto_bin=False)
-        print(verr)
+
+        estr = 'len() of unsized object'
+        assert verr.find(estr) >= 0
+
         return
 
     def test_bin_data_type(self):
@@ -710,5 +749,8 @@ class TestInstMed1D():
         with pytest.raises(TypeError) as verr:
             avg.median2D(self.testInst, ['0', 'd', '24', 'c'], self.test_label,
                          self.test_data, auto_bin=False)
-        print(verr)
+
+        estr = 'median2D() missing 2 required positional arguments'
+        assert verr.find(estr) >= 0
+
         return
