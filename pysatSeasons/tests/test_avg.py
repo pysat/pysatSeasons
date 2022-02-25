@@ -578,7 +578,7 @@ class TestSeasonalAverageUnevenBins:
                          ['dummy1', 'dummy2', 'dummy3'], auto_bin=False)
 
         estr = 'bins must be monotonically increasing or decreasing'
-        assert verr.find(estr) >= 0
+        assert str(verr).find(estr) >= 0
 
         return
 
@@ -589,7 +589,7 @@ class TestSeasonalAverageUnevenBins:
                          ['dummy1', 'dummy2', 'dummy3'], auto_bin=False)
 
         estr = 'len() of unsized object'
-        assert verr.find(estr) >= 0
+        assert str(verr).find(estr) >= 0
 
         return
 
@@ -601,7 +601,7 @@ class TestSeasonalAverageUnevenBins:
                          ['dummy1', 'dummy2', 'dummy3'], auto_bin=False)
 
         estr = "Cannot cast array data from"
-        assert verr.find(estr) >= 0
+        assert str(verr).find(estr) >= 0
 
         return
 
@@ -696,7 +696,7 @@ class TestInstMed1D():
                          self.test_data[0])
 
         estr = self.test_label
-        assert verr.find(estr) >= 0
+        assert str(verr).find(estr) >= 0
 
         return
 
@@ -718,7 +718,7 @@ class TestInstMed1D():
                          self.test_data)
 
         estr = "bad_label"
-        assert verr.find(estr) >= 0
+        assert str(verr).find(estr) >= 0
 
         return
 
@@ -729,7 +729,7 @@ class TestInstMed1D():
                          self.test_data, auto_bin=False)
 
         estr = 'bins must be monotonically increasing or decreasing'
-        assert verr.find(estr) >= 0
+        assert str(verr).find(estr) >= 0
 
         return
 
@@ -740,7 +740,7 @@ class TestInstMed1D():
                          auto_bin=False)
 
         estr = 'len() of unsized object'
-        assert verr.find(estr) >= 0
+        assert str(verr).find(estr) >= 0
 
         return
 
@@ -751,6 +751,6 @@ class TestInstMed1D():
                          self.test_data, auto_bin=False)
 
         estr = 'median2D() missing 2 required positional arguments'
-        assert verr.find(estr) >= 0
+        assert str(verr).find(estr) >= 0
 
         return
