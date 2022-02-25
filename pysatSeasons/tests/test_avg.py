@@ -20,16 +20,26 @@ class TestBasics():
         self.bounds1 = (dt.datetime(2008, 1, 1), dt.datetime(2008, 1, 3))
         self.bounds2 = (dt.datetime(2009, 1, 1), dt.datetime(2009, 1, 2))
 
+        self.long_bins = [0., 360., 24]
+        self.mlt_bins = [0., 24., 24]
+        self.auto_bin = True
+
+        return
+
     def teardown(self):
         """Run after every method to clean up previous testing."""
-        del self.testInst, self.bounds1, self.bounds2
+        del self.testInst, self.bounds1, self.bounds2, self.long_bins
+        del self.mlt_bins
+
+        return
 
     def test_basic_seasonal_median2D(self):
         """Test the basic seasonal 2D median."""
         self.testInst.bounds = self.bounds1
         vars = ['dummy1', 'dummy2', 'dummy3']
-        results = avg.median2D(self.testInst, [0., 360., 24], 'longitude',
-                               [0., 24., 24], 'mlt', vars, returnData=True)
+        results = avg.median2D(self.testInst, self.long_bins, 'longitude',
+                               self.mlt_bins, 'mlt', vars, returnData=True,
+                               auto_bin=self.auto_bin)
 
         # Iterate over all y rows. Value should be equal to integer value of
         # mlt. No variation in the median, all values should be the same.
@@ -67,8 +77,8 @@ class TestBasics():
         """Test the basic seasonal 1D median."""
         self.testInst.bounds = self.bounds1
         vars = ['dummy1', 'dummy2', 'dummy3']
-        results = avg.median1D(self.testInst, [0., 360., 24], 'longitude',
-                               vars, returnData=True)
+        results = avg.median1D(self.testInst, self.long_bins, 'longitude',
+                               vars, returnData=True, auto_bin=self.auto_bin)
 
         # Iterate over x rows. Value should be the longitude / 15.
         for i, x in enumerate(results['dummy1']['bin_x'][:-1]):
@@ -94,6 +104,42 @@ class TestBasics():
         # Ensure binned data returned
         for var in vars:
             assert 'data' in results[var].keys()
+
+        return
+
+
+class TestXarrayBasics(TestBasics):
+    """Reapply basic tests to 1D xarray data sources."""
+
+    def setup(self):
+        """Run before every method to create a clean testing setup."""
+        self.testInst = pysat.Instrument('pysat', 'testing_xarray',
+                                         clean_level='clean')
+        self.bounds1 = (dt.datetime(2008, 1, 1), dt.datetime(2008, 1, 3))
+        self.bounds2 = (dt.datetime(2009, 1, 1), dt.datetime(2009, 1, 2))
+
+        self.long_bins = [0., 360., 24]
+        self.mlt_bins = [0., 24., 24]
+        self.auto_bin = True
+
+        return
+
+
+class TestBasicsMeanBy():
+    """Test basic functions using pandas 1D data sources."""
+
+    def setup(self):
+        """Run before every method to create a clean testing setup."""
+        self.testInst = pysat.Instrument('pysat', 'testing',
+                                         clean_level='clean')
+        self.bounds1 = (dt.datetime(2008, 1, 1), dt.datetime(2008, 1, 3))
+        self.bounds2 = (dt.datetime(2009, 1, 1), dt.datetime(2009, 1, 2))
+
+        return
+
+    def teardown(self):
+        """Run after every method to clean up previous testing."""
+        del self.testInst, self.bounds1, self.bounds2
 
         return
 
@@ -133,7 +179,7 @@ class TestBasics():
         return
 
 
-class TestXarrayBasics(TestBasics):
+class TestXarrayBasicsMeanBy(TestBasicsMeanBy):
     """Reapply basic tests to 1D xarray data sources."""
 
     def setup(self):
@@ -489,7 +535,7 @@ class Test2DConstellation(TestSeriesProfileAverages):
         return
 
 
-class TestSeasonalAverageUnevenBins:
+class TestSeasonalAverageUnevenBins(TestBasics):
     def setup(self):
         """Runs before every method to create a clean testing setup."""
         self.testInst = pysat.Instrument('pysat', 'testing',
@@ -497,51 +543,20 @@ class TestSeasonalAverageUnevenBins:
         self.testInst.bounds = (dt.datetime(2008, 1, 1),
                                 dt.datetime(2008, 1, 3))
 
+        self.bounds1 = (dt.datetime(2008, 1, 1), dt.datetime(2008, 1, 3))
+        self.bounds2 = (dt.datetime(2009, 1, 1), dt.datetime(2009, 1, 2))
+
+        self.long_bins = np.linspace(0., 360., 25)
+        self.mlt_bins = np.linspace(0., 24., 25)
+
+        self.auto_bin = False
+
         return
 
     def teardown(self):
-        """Runs after every method to clean up previous testing."""
-        del self.testInst
-
-        return
-
-    def test_seasonal_average_uneven_bins(self):
-        """Test seasonal 2D median with uneven bins."""
-        results = avg.median2D(self.testInst, np.linspace(0., 360., 25),
-                               'longitude', np.linspace(0., 24., 25), 'mlt',
-                               ['dummy1', 'dummy2', 'dummy3'], auto_bin=False)
-        dummy_val = results['dummy1']['median']
-        dummy_dev = results['dummy1']['avg_abs_dev']
-
-        dummy2_val = results['dummy2']['median']
-        dummy2_dev = results['dummy2']['avg_abs_dev']
-
-        dummy3_val = results['dummy3']['median']
-        dummy3_dev = results['dummy3']['avg_abs_dev']
-
-        dummy_x = results['dummy1']['bin_x']
-        dummy_y = results['dummy1']['bin_y']
-
-        # Iterate over all y rows.
-        # Value should be equal to integer value of mlt.
-        # No variation in the median, all values should be the same.
-        for i, y in enumerate(dummy_y[:-1]):
-            assert np.all(dummy_val[i, :] == y.astype(int))
-            assert np.all(dummy_dev[i, :] == 0)
-
-        for i, x in enumerate(dummy_x[:-1]):
-            assert np.all(dummy2_val[:, i] == x / 15.0)
-            assert np.all(dummy2_dev[:, i] == 0)
-
-        for i, x in enumerate(dummy_x[:-1]):
-            assert np.all(dummy3_val[:, i] == x / 15.0 * 1000.0
-                          + dummy_y[:-1])
-            assert np.all(dummy3_dev[:, i] == 0)
-
-        # Holds here because there are 32 days, no data is discarded,
-        # each day holds same amount of data.
-        assert (self.testInst.data['dummy1'].size * 3
-                == sum([sum(i) for i in results['dummy1']['count']]))
+        """Run after every method to clean up previous testing."""
+        del self.testInst, self.bounds1, self.bounds2, self.long_bins
+        del self.mlt_bins
 
         return
 
