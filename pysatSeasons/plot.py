@@ -72,7 +72,7 @@ def scatterplot(const, labelx, labely, data_label, datalim, xlim=None,
     p = [i for i in np.arange(len(figs))]
     q = [i for i in np.arange(len(figs))]
     for linst in const.instruments:
-        for i, inst in enumerate(linst):
+        for inst in linst:
             for j, (fig, ax) in enumerate(zip(figs, axs)):
                 if not inst.empty:
                     check1 = len(inst.data[labelx]) > 0
