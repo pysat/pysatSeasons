@@ -47,7 +47,7 @@ class TestBasics():
             occur_prob.daily2D(self.testInst, [0, 360, 4], 'longitude',
                                [-60, 60, 3], 'latitude', 'slt', [12.])
 
-        assert verr.find('Must have a gate value for each data_label') >= 0
+        assert str(verr).find('Must have a gate value for each data_label') >= 0
 
         return
 
@@ -58,7 +58,7 @@ class TestBasics():
                                [-60, 60, 3], 'latitude', ['slt'], 12.)
 
         estr = 'Gate levels must be list-like group of variable names.'
-        assert verr.find(estr) >= 0
+        assert str(verr).find(estr) >= 0
 
         return
 
@@ -69,7 +69,7 @@ class TestBasics():
                                [-60, 60, 3], 'latitude', ['slt'], [12., 18.])
 
         estr = 'Must have a gate value for each data_label'
-        assert verr.find(estr) >= 0
+        assert str(verr).find(estr) >= 0
 
         return
 
@@ -108,7 +108,7 @@ class TestBasics():
                                'slt', [12.])
 
         estr = 'Must have a gate value for each data_label'
-        assert verr.find(estr) >= 0
+        assert str(verr).find(estr) >= 0
 
         return
 
@@ -121,7 +121,7 @@ class TestBasics():
                                ['slt'], 12.)
 
         estr = 'Gate levels must be list-like group of variable names.'
-        assert verr.find(estr) >= 0
+        assert str(verr).find(estr) >= 0
 
         return
 
@@ -133,7 +133,7 @@ class TestBasics():
                                ['slt'], [12., 18.])
 
         estr = 'Must have a gate value for each data_label'
-        assert verr.find(estr) >= 0
+        assert str(verr).find(estr) >= 0
 
         return
 
