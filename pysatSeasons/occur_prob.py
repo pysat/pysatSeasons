@@ -159,12 +159,10 @@ def _occurrence2D(const, bin1, label1, bin2, label2, data_label, gate,
     elif not isinstance(const, pysat.Constellation):
         raise ValueError("Parameter must be an Instrument or a Constellation.")
 
-    if not hasattr(data_label, '__iter__'):
-        raise ValueError(' '.join(('Data label must be list-like group of',
-                                   'variable names.')))
-    if not hasattr(gate, '__iter__'):
-        raise ValueError(' '.join(('Gate levels must be list-like group of',
-                                   'variable names.')))
+    # Ensure inputs are list-like
+    data_label = pysat.utils.listify(data_label)
+    gate = pysat.utils.listify(gate)
+
     if len(gate) != len(data_label):
         raise ValueError('Must have a gate value for each data_label')
 
@@ -183,7 +181,6 @@ def _occurrence2D(const, bin1, label1, bin2, label2, data_label, gate,
     iter_insts = []
     if by_orbit:
         for inst in const:
-            inst.load(date=inst.bounds[0][0])
             iter_insts.append(inst.orbits)
     else:
         for inst in const:
@@ -378,12 +375,10 @@ def _occurrence3D(const, bin1, label1, bin2, label2, bin3, label3,
     elif not isinstance(const, pysat.Constellation):
         raise ValueError("Parameter must be an Instrument or a Constellation.")
 
-    if not hasattr(data_label, '__iter__'):
-        raise ValueError(' '.join(('Data label must be list-like group of',
-                         'variable names.')))
-    if not hasattr(gate, '__iter__'):
-        raise ValueError(' '.join(('Gate levels must be list-like group of',
-                                   'variable names.')))
+    # Ensure inputs are list-like
+    data_label = pysat.utils.listify(data_label)
+    gate = pysat.utils.listify(gate)
+
     if len(gate) != len(data_label):
         raise ValueError('Must have a gate value for each data_label')
 
@@ -392,12 +387,12 @@ def _occurrence3D(const, bin1, label1, bin2, label2, bin3, label3,
     biny = np.linspace(bin2[0], bin2[1], bin2[2] + 1)
     binz = np.linspace(bin3[0], bin3[1], bin3[2] + 1)
 
-    numx, numy, numz = len(binx) - 1, len(biny) - 1, len(binz) - 1
-    numd = len(data_label)
+    numx, numy, numz, numd = (len(binx) - 1, len(biny) - 1, len(binz) - 1,
+                              len(data_label))
 
     # Create array to store all values before taking median
-    xarr, yarr, zarr = np.arange(numx), np.arange(numy), np.arange(numz)
-    darr = np.arange(numd)
+    xarr, yarr, zarr, darr = (np.arange(numx), np.arange(numy), np.arange(numz),
+                              np.arange(numd))
 
     total = np.zeros((numd, numz, numy, numx))
     hits = np.zeros((numd, numz, numy, numx))
@@ -406,7 +401,6 @@ def _occurrence3D(const, bin1, label1, bin2, label2, bin3, label3,
     iter_insts = []
     if by_orbit:
         for inst in const:
-            inst.load(date=inst.bounds[0][0])
             iter_insts.append(inst.orbits)
     else:
         for inst in const:
