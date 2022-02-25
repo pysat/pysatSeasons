@@ -16,8 +16,10 @@ object as the season of interest.
 
 import numpy as np
 
+import pysat
 
-def daily2D(inst, bin1, label1, bin2, label2, data_label, gate,
+
+def daily2D(const, bin1, label1, bin2, label2, data_label, gate,
             returnBins=False):
     """2D Daily Occurrence Probability of `data_label` > `gate` over a season.
 
@@ -28,8 +30,8 @@ def daily2D(inst, bin1, label1, bin2, label2, data_label, gate,
 
     Parameters
     ----------
-    inst : pysat.Instrument
-        Instrument to use for calculating occurrence probability.
+    const : pysat.Instrument or pysat.Constellation
+        Instrument/Constellation to use for calculating occurrence probability.
     binX : array-like
         List holding [min, max, number of bins] or array-like containing
         bin edges, where X = 1, 2.
@@ -59,11 +61,11 @@ def daily2D(inst, bin1, label1, bin2, label2, data_label, gate,
 
     """
 
-    return _occurrence2D(inst, bin1, label1, bin2, label2, data_label, gate,
+    return _occurrence2D(const, bin1, label1, bin2, label2, data_label, gate,
                          by_orbit=False, returnBins=returnBins)
 
 
-def by_orbit2D(inst, bin1, label1, bin2, label2, data_label, gate,
+def by_orbit2D(const, bin1, label1, bin2, label2, data_label, gate,
                returnBins=False):
     """2D Occurrence Probability of `data_label` orbit-by-orbit over a season.
 
@@ -74,8 +76,8 @@ def by_orbit2D(inst, bin1, label1, bin2, label2, data_label, gate,
 
     Parameters
     ----------
-    inst : pysat.Instrument
-        Instrument to use for calculating occurrence probability.
+    inst : pysat.Instrument or pysat.Constellation
+        Instrument/Constellation to use for calculating occurrence probability.
     binX : array-like
         List holding [min, max, number of bins] or array-like containing
         bin edges, where X = 1, 2.
@@ -104,11 +106,11 @@ def by_orbit2D(inst, bin1, label1, bin2, label2, data_label, gate,
 
     """
 
-    return _occurrence2D(inst, bin1, label1, bin2, label2, data_label, gate,
+    return _occurrence2D(const, bin1, label1, bin2, label2, data_label, gate,
                          by_orbit=True, returnBins=returnBins)
 
 
-def _occurrence2D(inst, bin1, label1, bin2, label2, data_label, gate,
+def _occurrence2D(const, bin1, label1, bin2, label2, data_label, gate,
                   by_orbit=False, returnBins=False):
     """2D Occurrence Probability of `data_label` orbit-by-orbit over a season.
 
@@ -119,7 +121,7 @@ def _occurrence2D(inst, bin1, label1, bin2, label2, data_label, gate,
 
     Parameters
     ----------
-    inst : pysat.Instrument
+    const : pysat.Instrument or pysat.Constellation
         Instrument to use for calculating occurrence probability.
     binX : array-like
         List holding [min, max, number of bins] or array-like containing
@@ -152,6 +154,11 @@ def _occurrence2D(inst, bin1, label1, bin2, label2, data_label, gate,
 
     """
 
+    if isinstance(const, pysat.Instrument):
+        const = pysat.Constellation(instruments=[const])
+    elif not isinstance(const, pysat.Constellation):
+        raise ValueError("Parameter must be an Instrument or a Constellation.")
+
     if not hasattr(data_label, '__iter__'):
         raise ValueError(' '.join(('Data label must be list-like group of',
                                    'variable names.')))
@@ -165,44 +172,55 @@ def _occurrence2D(inst, bin1, label1, bin2, label2, data_label, gate,
     binx = np.linspace(bin1[0], bin1[1], bin1[2] + 1)
     biny = np.linspace(bin2[0], bin2[1], bin2[2] + 1)
 
-    numx = len(binx) - 1
-    numy = len(biny) - 1
-    numz = len(data_label)
-    arrx = np.arange(numx)
-    arry = np.arange(numy)
-    arrz = np.arange(numz)
+    numx, numy, numz = len(binx) - 1, len(biny) - 1, len(data_label)
+    arrx, arry, arrz = np.arange(numx), np.arange(numy), np.arange(numz)
 
     # Create arrays to store all values
     total = np.zeros((numz, numy, numx))
     hits = np.zeros((numz, numy, numx))
+
+    # Support iterating by day or by orbit.
+    iter_insts = []
     if by_orbit:
-        inst.load(date=inst.bounds[0][0])
-        iterator = inst.orbits
+        for inst in const:
+            inst.load(date=inst.bounds[0][0])
+            iter_insts.append(inst.orbits)
     else:
-        iterator = inst
+        for inst in const:
+            iter_insts.append(inst)
 
-    # Copy instrument to provide data source independent access
-    loop_inst = inst.copy()
+    # Iterate over instruments and calculate occurrence.
+    for inst, cinst in zip(iter_insts, const.instruments):
 
-    for i, linst in enumerate(iterator):
-        if len(linst.data) != 0:
-            xind = np.digitize(linst.data[label1], binx) - 1
-            for xi in arrx:
-                xindex, = np.where(xind == xi)
-                if len(xindex) > 0:
-                    loop_inst.data = linst[xindex]
-                    yind = np.digitize(loop_inst[label2], biny) - 1
-                    for yj in arry:
-                        yindex, = np.where(yind == yj)
-                        if len(yindex) > 0:
-                            # Iterate over the different data_labels
-                            for zk in arrz:
-                                # indlab = yData.columns.get_loc(data_label[zk])
-                                zdata = loop_inst[yindex, data_label[zk]]
-                                if np.any(np.isfinite(zdata)):
-                                    total[zk, yj, xi] += 1.
-                                    if np.any(zdata > gate[zk]):
-                                        hits[zk, yj, xi] += 1.
+        # Copy instrument to provide data source independent access
+        loop_inst = cinst.copy()
+
+        # Iterate over Instrument bounds by orbit or by day.
+        for i, linst in enumerate(inst):
+
+            # Collect data in 2D distribution of bins
+            if len(linst.data) != 0:
+                xind = np.digitize(linst.data[label1], binx) - 1
+                for xi in arrx:
+                    xindex, = np.where(xind == xi)
+                    if len(xindex) > 0:
+                        loop_inst.data = linst[xindex]
+                        yind = np.digitize(loop_inst[label2], biny) - 1
+                        for yj in arry:
+                            yindex, = np.where(yind == yj)
+                            if len(yindex) > 0:
+
+                                # Binning complete. Iterate over the different
+                                # data_labels and record if above gate.
+                                for zk in arrz:
+                                    zdata = loop_inst[yindex, data_label[zk]]
+                                    if np.any(np.isfinite(zdata)):
+                                        # There is some data.
+                                        total[zk, yj, xi] += 1.
+
+                                        if np.any(zdata > gate[zk]):
+                                            # There is data above the gate.
+                                            hits[zk, yj, xi] += 1.
 
     # All of the loading and storing data is done. Calculate probability.
     prob = hits / total
@@ -216,11 +234,11 @@ def _occurrence2D(inst, bin1, label1, bin2, label2, data_label, gate,
             output[label]['bin_y'] = biny
 
     # Clean up
-    del iterator
+    del iter_insts, loop_inst
     return output
 
 
-def daily3D(inst, bin1, label1, bin2, label2, bin3, label3,
+def daily3D(const, bin1, label1, bin2, label2, bin3, label3,
             data_label, gate, returnBins=False):
     """3D Daily Occurrence Probability of `data_label` > `gate` over a season.
 
@@ -231,8 +249,8 @@ def daily3D(inst, bin1, label1, bin2, label2, bin3, label3,
 
     Parameters
     ----------
-    inst : pysat.Instrument
-        Instrument to use for calculating occurrence probability.
+    const : pysat.Instrument or pysat.Constellation
+        Instrument/Constellation to use for calculating occurrence probability.
     binX : array-like
         List holding [min, max, number of bins] or array-like containing
         bin edges, where X = 1, 2.
@@ -261,12 +279,12 @@ def daily3D(inst, bin1, label1, bin2, label2, bin3, label3,
 
     """
 
-    return _occurrence3D(inst, bin1, label1, bin2, label2, bin3, label3,
+    return _occurrence3D(const, bin1, label1, bin2, label2, bin3, label3,
                          data_label, gate, returnBins=returnBins,
                          by_orbit=False)
 
 
-def by_orbit3D(inst, bin1, label1, bin2, label2, bin3, label3,
+def by_orbit3D(const, bin1, label1, bin2, label2, bin3, label3,
                data_label, gate, returnBins=False):
     """3D Occurrence Probability of `data_label` orbit-by-orbit over a season.
 
@@ -277,8 +295,8 @@ def by_orbit3D(inst, bin1, label1, bin2, label2, bin3, label3,
 
     Parameters
     ----------
-    inst : pysat.Instrument
-        Instrument to use for calculating occurrence probability.
+    const : pysat.Instrument or pysat.Constellation
+        Instrument/Constellation to use for calculating occurrence probability.
     binX : array-like
         List holding [min, max, number of bins] or array-like containing
         bin edges, where X = 1, 2.
@@ -307,12 +325,12 @@ def by_orbit3D(inst, bin1, label1, bin2, label2, bin3, label3,
 
     """
 
-    return _occurrence3D(inst, bin1, label1, bin2, label2, bin3, label3,
+    return _occurrence3D(const, bin1, label1, bin2, label2, bin3, label3,
                          data_label, gate, returnBins=returnBins,
                          by_orbit=True)
 
 
-def _occurrence3D(inst, bin1, label1, bin2, label2, bin3, label3,
+def _occurrence3D(const, bin1, label1, bin2, label2, bin3, label3,
                   data_label, gate, returnBins=False, by_orbit=False):
     """3D Occurrence Probability of `data_label` orbit-by-orbit over a season.
 
@@ -323,8 +341,8 @@ def _occurrence3D(inst, bin1, label1, bin2, label2, bin3, label3,
 
     Parameters
     ----------
-    inst : pysat.Instrument
-        Instrument to use for calculating occurrence probability.
+    const : pysat.Instrument or pysat.Constellation
+        Instrument/Constellation to use for calculating occurrence probability.
     binX : array-like
         List holding [min, max, number of bins] or array-like containing
         bin edges, where X = 1, 2.
@@ -355,6 +373,11 @@ def _occurrence3D(inst, bin1, label1, bin2, label2, bin3, label3,
 
     """
 
+    if isinstance(const, pysat.Instrument):
+        const = pysat.Constellation(instruments=[const])
+    elif not isinstance(const, pysat.Constellation):
+        raise ValueError("Parameter must be an Instrument or a Constellation.")
+
     if not hasattr(data_label, '__iter__'):
         raise ValueError(' '.join(('Data label must be list-like group of',
                          'variable names.')))
@@ -369,56 +392,67 @@ def _occurrence3D(inst, bin1, label1, bin2, label2, bin3, label3,
     biny = np.linspace(bin2[0], bin2[1], bin2[2] + 1)
     binz = np.linspace(bin3[0], bin3[1], bin3[2] + 1)
 
-    numx = len(binx) - 1
-    numy = len(biny) - 1
-    numz = len(binz) - 1
+    numx, numy, numz = len(binx) - 1, len(biny) - 1, len(binz) - 1
     numd = len(data_label)
 
     # Create array to store all values before taking median
-    yarr = np.arange(numy)
-    xarr = np.arange(numx)
-    zarr = np.arange(numz)
+    xarr, yarr, zarr = np.arange(numx), np.arange(numy), np.arange(numz)
     darr = np.arange(numd)
 
     total = np.zeros((numd, numz, numy, numx))
     hits = np.zeros((numd, numz, numy, numx))
 
+    # Support iterating by day or by orbit.
+    iter_insts = []
     if by_orbit:
-        iterator = inst.orbits
+        for inst in const:
+            inst.load(date=inst.bounds[0][0])
+            iter_insts.append(inst.orbits)
     else:
-        iterator = inst
+        for inst in const:
+            iter_insts.append(inst)
 
-    # Copy instrument to provide data source independent access
-    loop_sat_y = inst.copy()
-    loop_sat_z = inst.copy()
+    # Iterate over instruments and calculate occurrence.
+    for inst, cinst in zip(iter_insts, const.instruments):
 
-    # Iterate over given season
-    for i, sat in enumerate(iterator):
-        if not sat.empty:
-            xind = np.digitize(sat.data[label1], binx) - 1
-            for xi in xarr:
-                xindex, = np.where(xind == xi)
-                if len(xindex) > 0:
-                    loop_sat_y.data = sat[xindex]
-                    yind = np.digitize(loop_sat_y[label2], biny) - 1
-                    for yj in yarr:
-                        yindex, = np.where(yind == yj)
-                        if len(yindex) > 0:
-                            loop_sat_z.data = loop_sat_y[yindex]
-                            zind = np.digitize(loop_sat_z[label3], binz) - 1
-                            for zk in zarr:
-                                zindex, = np.where(zind == zk)
-                                if len(zindex) > 0:
-                                    for di in darr:
-                                        # indlab = zData.columns.get_loc(data_label[di])
-                                        ddata = loop_sat_z[zindex,
-                                                           data_label[di]]
-                                        idx, = np.where(np.isfinite(ddata))
-                                        if len(idx) > 0:
-                                            total[di, zk, yj, xi] += 1
-                                            idx, = np.where(ddata > gate[di])
+        # Copy instrument to provide data source independent access
+        loop_sat_y = cinst.copy()
+        loop_sat_z = cinst.copy()
+
+        # Iterate over given season
+        for i, sat in enumerate(inst):
+
+            # Bin data over 3D bins
+            if not sat.empty:
+                xind = np.digitize(sat.data[label1], binx) - 1
+                for xi in xarr:
+                    xindex, = np.where(xind == xi)
+                    if len(xindex) > 0:
+                        loop_sat_y.data = sat[xindex]
+                        yind = np.digitize(loop_sat_y[label2], biny) - 1
+                        for yj in yarr:
+                            yindex, = np.where(yind == yj)
+                            if len(yindex) > 0:
+                                loop_sat_z.data = loop_sat_y[yindex]
+                                zind = np.digitize(loop_sat_z[label3], binz) - 1
+                                for zk in zarr:
+                                    zindex, = np.where(zind == zk)
+                                    if len(zindex) > 0:
+
+                                        # Binning complete. Calculate data
+                                        # larger than gate.
+                                        for di in darr:
+                                            ddata = loop_sat_z[zindex,
+                                                               data_label[di]]
+                                            idx, = np.where(np.isfinite(ddata))
                                             if len(idx) > 0:
-                                                hits[di, zk, yj, xi] += 1
+                                                # There is data
+                                                total[di, zk, yj, xi] += 1
+                                                idx, = np.where(ddata
+                                                                > gate[di])
+                                                if len(idx) > 0:
+                                                    # Data above gate
+                                                    hits[di, zk, yj, xi] += 1
 
     # All of the loading and storing data is done
     prob = hits / total
@@ -433,5 +467,5 @@ def _occurrence3D(inst, bin1, label1, bin2, label2, bin3, label3,
             output[label]['bin_z'] = binz
 
     # Clean up
-    del iterator
+    del iter_insts, loop_sat_y, loop_sat_z
     return output
