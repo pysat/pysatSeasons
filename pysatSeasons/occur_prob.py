@@ -181,14 +181,16 @@ def _occurrence2D(inst, bin1, label1, bin2, label2, data_label, gate,
     else:
         iterator = inst
 
-    for i, inst in enumerate(iterator):
-        loop_inst = inst.copy()
-        if len(inst.data) != 0:
-            xind = np.digitize(inst.data[label1], binx) - 1
+    # Copy instrument to provide data source independent access
+    loop_inst = inst.copy()
+
+    for i, linst in enumerate(iterator):
+        if len(linst.data) != 0:
+            xind = np.digitize(linst.data[label1], binx) - 1
             for xi in arrx:
                 xindex, = np.where(xind == xi)
                 if len(xindex) > 0:
-                    loop_inst.data = inst[xindex]
+                    loop_inst.data = linst[xindex]
                     yind = np.digitize(loop_inst[label2], biny) - 1
                     for yj in arry:
                         yindex, = np.where(yind == yj)
@@ -386,10 +388,12 @@ def _occurrence3D(inst, bin1, label1, bin2, label2, bin3, label3,
     else:
         iterator = inst
 
+    # Copy instrument to provide data source independent access
+    loop_sat_y = inst.copy()
+    loop_sat_z = inst.copy()
+
     # Iterate over given season
     for i, sat in enumerate(iterator):
-        loop_sat_y = sat.copy()
-        loop_sat_z = sat.copy()
         if not sat.empty:
             xind = np.digitize(sat.data[label1], binx) - 1
             for xi in xarr:
