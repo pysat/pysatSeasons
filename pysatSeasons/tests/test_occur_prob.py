@@ -112,7 +112,6 @@ class TestBasics():
 
         return
 
-
     def test_occur_prob_daily_3D_w_bad_gate(self):
         """Catch a gate that is not list-like"""
         with pytest.raises(ValueError) as verr:
