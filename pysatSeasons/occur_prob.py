@@ -193,7 +193,7 @@ def _occurrence2D(const, bin1, label1, bin2, label2, data_label, gate,
         loop_inst = cinst.copy()
 
         # Iterate over Instrument bounds by orbit or by day.
-        for i, linst in enumerate(inst):
+        for linst in inst:
 
             # Collect data in 2D distribution of bins
             if len(linst.data) != 0:
@@ -414,7 +414,7 @@ def _occurrence3D(const, bin1, label1, bin2, label2, bin3, label3,
         loop_sat_z = cinst.copy()
 
         # Iterate over given season
-        for i, sat in enumerate(inst):
+        for sat in inst:
 
             # Bin data over 3D bins
             if not sat.empty:
