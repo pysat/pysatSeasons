@@ -49,7 +49,7 @@ class TestBasics():
                                  [-60, 60, 3], 'latitude', 'slt', [12.])
 
         ans2 = occur_prob.daily2D(self.testInst, [0, 360, 4], 'longitude',
-                                 [-60, 60, 3], 'latitude', ['slt'], [12.])
+                                  [-60, 60, 3], 'latitude', ['slt'], [12.])
 
         assert np.array_equal(ans['slt']['prob'], ans2['slt']['prob'])
 
