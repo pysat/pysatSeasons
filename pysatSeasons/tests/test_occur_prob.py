@@ -24,7 +24,7 @@ class TestBasics():
 
     def teardown(self):
         """Run after every method to clean up previous testing."""
-        del self.testInst, self.testInst.bounds
+        del self.testInst
 
         return
 
@@ -46,7 +46,9 @@ class TestBasics():
         with pytest.raises(ValueError) as verr:
             occur_prob.daily2D(self.testInst, [0, 360, 4], 'longitude',
                                [-60, 60, 3], 'latitude', 'slt', [12.])
-        print(verr)
+
+        assert verr.find('Must have a gate value for each data_label') >= 0
+
         return
 
     def test_occur_prob_daily_2D_w_bad_gate(self):
@@ -54,7 +56,10 @@ class TestBasics():
         with pytest.raises(ValueError) as verr:
             occur_prob.daily2D(self.testInst, [0, 360, 4], 'longitude',
                                [-60, 60, 3], 'latitude', ['slt'], 12.)
-        print(verr)
+
+        estr = 'Gate levels must be list-like group of variable names.'
+        assert verr.find(estr) >= 0
+
         return
 
     def test_occur_prob_daily_2D_w_mismatched_gate_and_data_label(self):
@@ -62,7 +67,10 @@ class TestBasics():
         with pytest.raises(ValueError) as verr:
             occur_prob.daily2D(self.testInst, [0, 360, 4], 'longitude',
                                [-60, 60, 3], 'latitude', ['slt'], [12., 18.])
-        print(verr)
+
+        estr = 'Must have a gate value for each data_label'
+        assert verr.find(estr) >= 0
+
         return
 
     def test_occur_prob_by_orbit_2D_w_bins(self):
@@ -98,7 +106,10 @@ class TestBasics():
             occur_prob.daily3D(self.testInst, [0, 360, 4], 'longitude',
                                [-60, 60, 3], 'latitude', [0, 24, 2], 'slt',
                                'slt', [12.])
-        print(verr)
+
+        estr = 'Must have a gate value for each data_label'
+        assert verr.find(estr) >= 0
+
         return
 
 
@@ -108,7 +119,10 @@ class TestBasics():
             occur_prob.daily3D(self.testInst, [0, 360, 4], 'longitude',
                                [-60, 60, 3], 'latitude', [0, 24, 2], 'slt',
                                ['slt'], 12.)
-        print(verr)
+
+        estr = 'Gate levels must be list-like group of variable names.'
+        assert verr.find(estr) >= 0
+
         return
 
     def test_occur_prob_daily_3D_w_mismatched_gate_and_data_label(self):
@@ -117,7 +131,10 @@ class TestBasics():
             occur_prob.daily3D(self.testInst, [0, 360, 4], 'longitude',
                                [-60, 60, 3], 'latitude', [0, 24, 2], 'slt',
                                ['slt'], [12., 18.])
-        print(verr)
+
+        estr = 'Must have a gate value for each data_label'
+        assert verr.find(estr) >= 0
+
         return
 
     def test_occur_prob_by_orbit_3D_w_bins(self):
