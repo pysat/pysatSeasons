@@ -13,6 +13,7 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 - Improved docstrings throughout.
 - Updated documentation examples.
 - Migrated to GitHub Workflows for CI testing.
+- Migrated from noses to pytest.
 
 ## [0.1.3] - 2021-06-18
 - Updates style to match pysat 3.0.0 release candidate
