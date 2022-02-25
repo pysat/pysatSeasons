@@ -77,7 +77,7 @@ def median1D(const, bin1, label1, data_label, auto_bin=True, returnData=False):
     # 3d array:  stores the data that is sorted into each bin - in a list.
     ans = [[[] for i in xarr] for k in zarr]
 
-    for inst1 in const:
+    for inst1 in const.instruments:
         # Iterate over instrument season, loading successive
         # data between start and end bounds.
         for inst in inst1:
@@ -174,7 +174,7 @@ def median2D(const, bin1, label1, bin2, label2, data_label,
     ans = [[[[] for i in xarr] for j in yarr] for k in zarr]
 
     # Iterate over Instruments
-    for inst1 in const:
+    for inst1 in const.instruments:
 
         # Copy instrument to provide data source independent access
         yinst = inst1.copy()
