@@ -5,13 +5,17 @@ import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d import Axes3D  # noqa: F401
 import numpy as np
 
+import pysat
 
-def scatterplot(inst, labelx, labely, data_label, datalim, xlim=None,
+
+def scatterplot(const, labelx, labely, data_label, datalim, xlim=None,
                 ylim=None):
     """Return scatterplot of data_label(s) over `label*` for a season.
 
     Parameters
     ----------
+    const : pysat.Instrument or pysat.Constellation
+        Instrument/Constellation to scatterplot.
     labelx : str
         Data product for x-axis.
     labely : str
@@ -29,6 +33,11 @@ def scatterplot(inst, labelx, labely, data_label, datalim, xlim=None,
 
     """
 
+    if isinstance(const, pysat.Instrument):
+        const = pysat.Constellation(instruments=[const])
+    elif not isinstance(const, pysat.Constellation):
+        raise ValueError("Parameter must be an Instrument or a Constellation.")
+
     # Get current plot settings. Alter for this function.
     if mpl.is_interactive():
         interactive_mode = True
@@ -42,8 +51,7 @@ def scatterplot(inst, labelx, labely, data_label, datalim, xlim=None,
     axs = []
 
     # Check for list-like behaviour of data_label
-    if type(data_label) is str:
-        data_label = [data_label]
+    data_label = pysat.utils.listify(data_label)
 
     # Multiple data to be plotted
     for i in np.arange(len(data_label)):
@@ -63,20 +71,26 @@ def scatterplot(inst, labelx, labely, data_label, datalim, xlim=None,
     norm = mpl.colors.Normalize(vmin=datalim[0], vmax=datalim[1])
     p = [i for i in np.arange(len(figs))]
     q = [i for i in np.arange(len(figs))]
-    for i, inst in enumerate(inst):
-        for j, (fig, ax) in enumerate(zip(figs, axs)):
-            if not inst.empty:
-                check1 = len(inst.data[labelx]) > 0
-                check2 = len(inst.data[labely]) > 0
-                check3 = len(inst.data[data_label[j]]) > 0
-                if check1 & check2 & check3:
-                    p[j] = ax[0].scatter(inst.data[labelx], inst.data[labely],
-                                         inst.data[data_label[j]], zdir='z',
-                                         c=inst.data[data_label[j]], norm=norm,
-                                         linewidth=0, edgecolors=None)
-                    q[j] = ax[1].scatter(inst.data[labelx], inst.data[labely],
-                                         c=inst.data[data_label[j]],
-                                         norm=norm, alpha=0.5, edgecolor=None)
+    for linst in const.instruments:
+        for i, inst in enumerate(linst):
+            for j, (fig, ax) in enumerate(zip(figs, axs)):
+                if not inst.empty:
+                    check1 = len(inst.data[labelx]) > 0
+                    check2 = len(inst.data[labely]) > 0
+                    check3 = len(inst.data[data_label[j]]) > 0
+                    if check1 & check2 & check3:
+                        p[j] = ax[0].scatter(inst.data[labelx],
+                                             inst.data[labely],
+                                             inst.data[data_label[j]],
+                                             zdir='z',
+                                             c=inst.data[data_label[j]],
+                                             norm=norm,
+                                             linewidth=0, edgecolors=None)
+                        q[j] = ax[1].scatter(inst.data[labelx],
+                                             inst.data[labely],
+                                             c=inst.data[data_label[j]],
+                                             norm=norm, alpha=0.5,
+                                             edgecolor=None)
 
     for j, (fig, ax) in enumerate(zip(figs, axs)):
         try:
