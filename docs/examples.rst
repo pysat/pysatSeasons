@@ -19,90 +19,92 @@ The full code can be found at
 
 .. code:: python
 
-  """
-  Demonstrates iterating over an instrument data set by orbit and determining
-  the occurrence probability of an event occurring.
-  """
+    """
+    Demonstrates iterating over an instrument data set by orbit and determining
+    the occurrence probability of an event occurring.
+    """
 
-  import datetime as dt
-  import os
-  import matplotlib.pyplot as plt
-  import numpy as np
+    import datetime as dt
+    import os
+    import matplotlib.pyplot as plt
+    import numpy as np
 
-  import pysat
-  import pysatNASA
-  import pysatSeasons
+    import pysat
+    import pysatNASA
+    import pysatSeasons
 
-  # Ensure all pysatNASA data plugins are registered with pysat. Only needs
-  # to be performed once per installation/upgrade.
-  pysat.utils.registry.register_by_module(pysatNASA.instruments)
+    # Ensure all pysatNASA data plugins are registered with pysat. Only needs
+    # to be performed once per installation/upgrade.
+    pysat.utils.registry.register_by_module(pysatNASA.instruments)
 
-  # Set the directory where the plots will be saved. Setting nothing will put
-  # the plots in the current directory
-  results_dir = ''
+    # Set the directory where the plots will be saved. Setting nothing will put
+    # the plots in the current directory
+    results_dir = ''
 
-  # Select C/NOFS VEFI DC magnetometer data, use longitude to determine where
-  # there are changes in the orbit (local time info not in file)
-  orbit_info = {'index': 'longitude', 'kind': 'longitude'}
-  vefi = pysat.Instrument(platform='cnofs', name='vefi', tag='dc_b',
-                          clean_level=None, orbit_info=orbit_info)
+    # Select C/NOFS VEFI DC magnetometer data, use longitude to determine where
+    # there are changes in the orbit (local time info not in file)
+    orbit_info = {'index': 'longitude', 'kind': 'longitude'}
+    vefi = pysat.Instrument(platform='cnofs', name='vefi', tag='dc_b',
+                            clean_level=None, orbit_info=orbit_info)
 
-  # Define function to remove flagged values
-  def filter_vefi(inst):
-      idx, = np.where(inst['B_flag'] == 0)
-      inst.data = inst[idx]
-      return
 
-  # Attach filtering function to `vefi` object.
-  vefi.custom_attach(filter_vefi)
+    # Define function to remove flagged values
+    def filter_vefi(inst):
+        idx, = np.where(inst['B_flag'] == 0)
+        inst.data = inst[idx]
+        return
 
-  # Set limits on dates analysis will cover, inclusive
-  start = dt.datetime(2010, 5, 9)
-  stop = dt.datetime(2010, 5, 15)
 
-  # Check if data already on system, if not, download.
-  if len(vefi.files[start:stop]) < (stop - start).days:
-      vefi.download(start, stop)
+    # Attach filtering function to `vefi` object.
+    vefi.custom_attach(filter_vefi)
 
-  # Specify the analysis time limits using `bounds`, otherwise all VEFI DC
-  # data will be processed.
-  vefi.bounds = (start, stop)
+    # Set limits on dates analysis will cover, inclusive
+    start = dt.datetime(2010, 5, 9)
+    stop = dt.datetime(2010, 5, 15)
 
-  # Perform occurrence probability calculation.
-  # Any data added by custom functions is available within analysis below.
-  ans = pysatSeasons.occur_prob.by_orbit2D(vefi, [0, 360, 144], 'longitude',
-                                           [-13, 13, 104], 'latitude',
-                                           ['dB_mer'], [0.], returnBins=True)
+    # Check if data already on system, if not, download.
+    if len(vefi.files[start:stop]) < (stop - start).days:
+        vefi.download(start, stop)
 
-  # A dict indexed by data_label is returned.
-  ans = ans['dB_mer']
+    # Specify the analysis time limits using `bounds`, otherwise all VEFI DC
+    # data will be processed.
+    vefi.bounds = (start, stop)
 
-  # Plot occurrence probability
-  f, axarr = plt.subplots(2, 1, sharex=True, sharey=True)
+    # Perform occurrence probability calculation.
+    # Any data added by custom functions is available within analysis below.
+    ans = pysatSeasons.occur_prob.by_orbit2D(vefi, [0, 360, 144], 'longitude',
+                                             [-13, 13, 104], 'latitude',
+                                             ['dB_mer'], [0.], returnBins=True)
 
-  # Mask for locations not observed.
-  masked = np.ma.array(ans['prob'], mask=np.isnan(ans['prob']))
+    # A dict indexed by data_label is returned.
+    ans = ans['dB_mer']
 
-  # Plot occurrence probability
-  im = axarr[0].pcolor(ans['bin_x'], ans['bin_y'], masked)
-  axarr[0].set_title('Occurrence Probability Delta-B Meridional > 0')
-  axarr[0].set_ylabel('Latitude')
-  axarr[0].set_yticks((-13, -10, -5, 0, 5, 10, 13))
-  axarr[0].set_ylim((ans['bin_y'][0], ans['bin_y'][-1]))
-  plt.colorbar(im, ax=axarr[0], label='Occurrence Probability')
+    # Plot occurrence probability
+    f, axarr = plt.subplots(2, 1, sharex=True, sharey=True)
 
-  # Plot number of orbits per bin.
-  im = axarr[1].pcolor(ans['bin_x'], ans['bin_y'], ans['count'])
-  axarr[1].set_title('Number of Orbits in Bin')
-  axarr[1].set_xlabel('Longitude')
-  axarr[1].set_xticks((0, 60, 120, 180, 240, 300, 360))
-  axarr[1].set_xlim((ans['bin_x'][0], ans['bin_x'][-1]))
-  axarr[1].set_ylabel('Latitude')
-  plt.colorbar(im, ax=axarr[1], label='Counts')
+    # Mask for locations not observed.
+    masked = np.ma.array(ans['prob'], mask=np.isnan(ans['prob']))
 
-  f.tight_layout()
-  plt.savefig(os.path.join(results_dir, 'ssnl_occurrence_by_orbit_demo'))
-  plt.close()
+    # Plot occurrence probability
+    im = axarr[0].pcolor(ans['bin_x'], ans['bin_y'], masked)
+    axarr[0].set_title('Occurrence Probability Delta-B Meridional > 0')
+    axarr[0].set_ylabel('Latitude')
+    axarr[0].set_yticks((-13, -10, -5, 0, 5, 10, 13))
+    axarr[0].set_ylim((ans['bin_y'][0], ans['bin_y'][-1]))
+    plt.colorbar(im, ax=axarr[0], label='Occurrence Probability')
+
+    # Plot number of orbits per bin.
+    im = axarr[1].pcolor(ans['bin_x'], ans['bin_y'], ans['count'])
+    axarr[1].set_title('Number of Orbits in Bin')
+    axarr[1].set_xlabel('Longitude')
+    axarr[1].set_xticks((0, 60, 120, 180, 240, 300, 360))
+    axarr[1].set_xlim((ans['bin_x'][0], ans['bin_x'][-1]))
+    axarr[1].set_ylabel('Latitude')
+    plt.colorbar(im, ax=axarr[1], label='Counts')
+
+    f.tight_layout()
+    plt.savefig(os.path.join(results_dir, 'ssnl_occurrence_by_orbit_demo'))
+    plt.close()
 
 Result
 
@@ -147,48 +149,45 @@ Note the same averaging routine is used for both COSMIC and IVM, and that both
 
 .. code:: python
 
-  # Instantiate IVM Object
-  ivm = pysat.Instrument(platform='cnofs', name='ivm', tag='',
-                         clean_level='clean')
+    # Instantiate IVM Object
+    ivm = pysat.Instrument(platform='cnofs', name='ivm', tag='',
+                           clean_level='clean')
 
-  # Restrict measurements to those near geomagnetic equator
-  ivm.custom_attach(restrictMLAT, 'modify', maxMLAT=25.)
+    # Restrict measurements to those near geomagnetic equator.
+    ivm.custom_attach(restrict_abs_values, args=['mlat', 25.])
 
-  # Perform seasonal average
-  ivm.bounds = (startDate, stopDate)
-  ivmResults = pysatSeasons.avg.median2D(ivm, [0, 360, 24], 'alon',
-                                         [0, 24, 24], 'mlt',
-                                         ['ionVelmeridional'])
+    # Perform seasonal average
+    ivm.bounds = (startDate, stopDate)
+    ivmResults = pysatSeasons.avg.median2D(ivm, [0, 360, 24], 'alon',
+                                           [0, 24, 24], 'mlt',
+                                           ['ionVelmeridional'])
 
-  # Create COSMIC instrument object
-  cosmic = pysat.Instrument(platform='cosmic',
-                            name='gps', tag='ionprf',
-                            clean_level='clean',
-                            altitude_bin=3)
+    # Create COSMIC instrument object. Engage supported keyword `altitude_bin`
+    # to bin all altitude profiles into 3 km increments.
+    cosmic = pysat.Instrument(platform='cosmic', name='gps', tag='ionprf',
+                              clean_level='clean', altitude_bin=3)
 
-  # Apply custom functions to all data that is loaded through cosmic
-  cosmic.custom_attach(addApexLong)
+    # Apply custom functions to all data that is loaded through cosmic
+    cosmic.custom_attach(add_magnetic_coordinates)
 
-  # Select locations near the magnetic equator
-  cosmic.custom_attach(filterMLAT, kwargs={'mlatRange': (0., 10.)})
+    # Select locations near the magnetic equator
+    cosmic.custom_attach(filter_values, args=['edmax_qd_lat', (-10., 10.)])
 
-  # Take the log of NmF2 and add to the dataframe
-  cosmic.custom_attach(addlogNm, 'add')
+    # Take the log of NmF2 and add to the dataframe
+    cosmic.custom_attach(add_log_density)
 
-  # Calculate the height above hmF2 to reach Ne < NmF2/e
-  cosmic.custom_attach(addTopsideScaleHeight, 'add')
+    # Calculates the height above hmF2 to reach Ne < NmF2/e
+    cosmic.custom_attach(add_scale_height)
 
-  # Perform average of multiple COSMIC data products, including a mixture of
-  # 1D and 2D data, from `startDate` through `stopDate`
+    # Perform a bin average of multiple COSMIC data products, from startDate
+    # through stopDate. A mixture of 1D and 2D data is averaged.
+    cosmic.bounds = (startDate, stopDate)
+    cosmicResults = pysatSeasons.avg.median2D(cosmic, [0, 360, 24], 'edmax_qd_lon',
+                                              [0, 24, 24], 'edmaxlct',
+                                              ['ELEC_dens', 'edmaxalt',
+                                               'lognm', 'thf2'])
 
-  cosmic.bounds = (startDate, stopDate)
-  cosmicResults = pysatSeasons.avg.median2D(cosmic, [0, 360, 24], 'apex_long',
-                                            [0, 24, 24], 'edmaxlct',
-                                            ['profiles', 'edmaxalt',
-                                            'lognm', 'thf2'])
-
-
-  # The work is done, plot the results
+    # The work is done, plot the results!
 
 
 .. image:: ./images/ssnl_median_ivm_cosmic_1d.png
@@ -201,12 +200,11 @@ added using the nano-kernel.
 
 .. code:: python
 
-   cosmic.custom_attach(addApexLong)
+   cosmic.custom_attach(add_magnetic_coordinates)
 
-call runs a routine that adds the needed information. This routine is currently
-only using a simple titled dipole model.
-Similarly, using custom functions, locations away from the magnetic equator are
-filtered out and a couple new quantities are added.
+call runs a routine that adds the needed information using the community
+package ``Apexpy``. Similarly, using custom functions, locations away from the
+magnetic equator are filtered out and a couple new quantities are added.
 
 There is a strong correspondence between the distribution of downward drifts
 between noon and midnight and a reduction in the height of the peak ionospheric
