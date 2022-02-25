@@ -165,3 +165,51 @@ class TestXarrayBasics(TestBasics):
                                 dt.datetime(2008, 1, 31))
 
         return
+
+
+class TestConstellationBasics(TestBasics):
+    """Basic tests using Constellations and pandas data source."""
+
+    def setup(self):
+        """Run before every method to create a clean testing setup."""
+        orbit_info = {'index': 'longitude', 'kind': 'longitude'}
+        self.rawInst = pysat.Instrument('pysat', 'testing',
+                                        clean_level='clean',
+                                        orbit_info=orbit_info)
+        self.rawInst.bounds = (dt.datetime(2008, 1, 1),
+                               dt.datetime(2008, 1, 31))
+
+        self.testInst = pysat.Constellation(instruments=[self.rawInst,
+                                                         self.rawInst.copy()])
+
+        return
+
+    def teardown(self):
+        """Run after every method to clean up previous testing."""
+        del self.testInst, self.rawInst
+
+        return
+
+
+class TestXarrayConstellationBasics(TestBasics):
+    """Basic tests using Constellations and xarray data source."""
+
+    def setup(self):
+        """Run before every method to create a clean testing setup."""
+        orbit_info = {'index': 'longitude', 'kind': 'longitude'}
+        self.rawInst = pysat.Instrument('pysat', 'testing_xarray',
+                                        clean_level='clean',
+                                        orbit_info=orbit_info)
+        self.rawInst.bounds = (dt.datetime(2008, 1, 1),
+                               dt.datetime(2008, 1, 31))
+
+        self.testInst = pysat.Constellation(instruments=[self.rawInst,
+                                                         self.rawInst.copy()])
+
+        return
+
+    def teardown(self):
+        """Run after every method to clean up previous testing."""
+        del self.testInst, self.rawInst
+
+        return
