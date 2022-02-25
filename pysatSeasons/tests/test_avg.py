@@ -139,6 +139,7 @@ class TestXarrayBasics(TestBasics):
         self.bounds1 = (dt.datetime(2008, 1, 1), dt.datetime(2008, 1, 3))
         self.bounds2 = (dt.datetime(2009, 1, 1), dt.datetime(2009, 1, 2))
 
+        return
 
 class TestFrameProfileAverages():
     def setup(self):
@@ -557,25 +558,28 @@ class TestSeasonalAverageUnevenBins:
 
     def test_nonmonotonic_bins(self):
         """Test 2D median failure when provided with a non-monotonic bins."""
-        with pytest.raises(ValueError):
+        with pytest.raises(ValueError) as verr:
             avg.median2D(self.testInst, np.array([0., 300., 100.]), 'longitude',
                          np.array([0., 24., 13.]), 'mlt',
                          ['dummy1', 'dummy2', 'dummy3'], auto_bin=False)
+        print(verr)
         return
 
     def test_bin_data_depth(self):
         """Test failure when an array-like of length 1 is given to median2D."""
-        with pytest.raises(TypeError):
+        with pytest.raises(TypeError) as verr:
             avg.median2D(self.testInst, 1, 'longitude', 24, 'mlt',
                          ['dummy1', 'dummy2', 'dummy3'], auto_bin=False)
+        print(verr)
         return
 
     def test_bin_data_type(self):
         """Test failure when a non array-like is given to median2D."""
-        with pytest.raises(TypeError):
+        with pytest.raises(TypeError) as verr:
             avg.median2D(self.testInst, ['1', 'a', '23', '10'], 'longitude',
                          ['0', 'd', '24', 'c'], 'mlt',
                          ['dummy1', 'dummy2', 'dummy3'], auto_bin=False)
+        print(verr)
         return
 
     def test_median2D_bad_input(self):
@@ -662,9 +666,10 @@ class TestInstMed1D():
 
     def test_median1D_bad_data(self):
         """Test failure of median1D with string data instead of list."""
-        with pytest.raises(KeyError):
+        with pytest.raises(KeyError) as verr:
             avg.median1D(self.testInst, self.test_bins, self.test_label,
                          self.test_data[0])
+        print(verr)
         return
 
     def test_median1D_bad_input(self):
@@ -678,28 +683,32 @@ class TestInstMed1D():
 
     def test_median1D_bad_label(self):
         """Test failure of median1D with unknown label."""
-        with pytest.raises(KeyError):
+        with pytest.raises(KeyError) as verr:
             avg.median1D(self.testInst, self.test_bins, "bad_label",
                          self.test_data)
+        print(verr)
         return
 
     def test_nonmonotonic_bins(self):
         """Test median1D failure when provided with a non-monotonic bins."""
-        with pytest.raises(ValueError):
+        with pytest.raises(ValueError) as verr:
             avg.median1D(self.testInst, [0, 13, 5], self.test_label,
                          self.test_data, auto_bin=False)
+        print(verr)
         return
 
     def test_bin_data_depth(self):
         """Test failure when array-like of length 1 is given to median1D."""
-        with pytest.raises(TypeError):
+        with pytest.raises(TypeError) as verr:
             avg.median1D(self.testInst, 24, self.test_label, self.test_data,
                          auto_bin=False)
+        print(verr)
         return
 
     def test_bin_data_type(self):
         """Test failure when median 1D is given non array-like bins."""
-        with pytest.raises(TypeError):
+        with pytest.raises(TypeError) as verr:
             avg.median2D(self.testInst, ['0', 'd', '24', 'c'], self.test_label,
                          self.test_data, auto_bin=False)
+        print(verr)
         return
