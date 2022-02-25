@@ -182,20 +182,21 @@ def _occurrence2D(inst, bin1, label1, bin2, label2, data_label, gate,
         iterator = inst
 
     for i, inst in enumerate(iterator):
+        loop_inst = inst.copy()
         if len(inst.data) != 0:
             xind = np.digitize(inst.data[label1], binx) - 1
             for xi in arrx:
                 xindex, = np.where(xind == xi)
                 if len(xindex) > 0:
-                    yData = inst.data.iloc[xindex]
-                    yind = np.digitize(yData[label2], biny) - 1
+                    loop_inst.data = inst[xindex]
+                    yind = np.digitize(loop_inst[label2], biny) - 1
                     for yj in arry:
                         yindex, = np.where(yind == yj)
                         if len(yindex) > 0:
                             # Iterate over the different data_labels
                             for zk in arrz:
-                                indlab = yData.columns.get_loc(data_label[zk])
-                                zdata = yData.iloc[yindex, indlab]
+                                # indlab = yData.columns.get_loc(data_label[zk])
+                                zdata = loop_inst[yindex, data_label[zk]]
                                 if np.any(np.isfinite(zdata)):
                                     total[zk, yj, xi] += 1.
                                     if np.any(zdata > gate[zk]):
@@ -387,25 +388,27 @@ def _occurrence3D(inst, bin1, label1, bin2, label2, bin3, label3,
 
     # Iterate over given season
     for i, sat in enumerate(iterator):
-
-        if len(sat.data) != 0:
+        loop_sat_y = sat.copy()
+        loop_sat_z = sat.copy()
+        if not sat.empty:
             xind = np.digitize(sat.data[label1], binx) - 1
             for xi in xarr:
                 xindex, = np.where(xind == xi)
                 if len(xindex) > 0:
-                    yData = sat.data.iloc[xindex]
-                    yind = np.digitize(yData[label2], biny) - 1
+                    loop_sat_y.data = sat[xindex]
+                    yind = np.digitize(loop_sat_y[label2], biny) - 1
                     for yj in yarr:
                         yindex, = np.where(yind == yj)
                         if len(yindex) > 0:
-                            zData = yData.iloc[yindex]
-                            zind = np.digitize(zData[label3], binz) - 1
+                            loop_sat_z.data = loop_sat_y[yindex]
+                            zind = np.digitize(loop_sat_z[label3], binz) - 1
                             for zk in zarr:
                                 zindex, = np.where(zind == zk)
                                 if len(zindex) > 0:
                                     for di in darr:
-                                        indlab = zData.columns.get_loc(data_label[di])
-                                        ddata = zData.iloc[zindex, indlab]
+                                        # indlab = zData.columns.get_loc(data_label[di])
+                                        ddata = loop_sat_z[zindex,
+                                                           data_label[di]]
                                         idx, = np.where(np.isfinite(ddata))
                                         if len(idx) > 0:
                                             total[di, zk, yj, xi] += 1
