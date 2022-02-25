@@ -4,11 +4,15 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [0.2.0] - 2022-XX-XX
 - Added support for xarray data in the seasonal averaging functions in `pysatSeasons.avg`
+- Added support for xarray data in the occurrence probability functions in `pysatSeasons.occur_prob`
+- Added support for Constellations in `pysatSeasons.occur_prob`
 - Removed deprecated `pandas.Panel` from functions.
-- Renamed `computational_form` to `to_xarray_dataset` and refocused.
 - Removed old __future__ imports.
-- Improved docstrings throughout.
 - Removed use of `collections.deque` in `pysatSeasons.avg`.
+- Renamed `computational_form` to `to_xarray_dataset` and refocused.
+- Improved docstrings throughout.
+- Updated documentation examples.
+- Migrated to GitHub Workflows for CI testing.
 
 ## [0.1.3] - 2021-06-18
 - Updates style to match pysat 3.0.0 release candidate
