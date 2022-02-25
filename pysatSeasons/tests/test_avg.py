@@ -695,7 +695,7 @@ class TestInstMed1D():
             avg.median1D(self.testInst, self.test_bins, self.test_label,
                          self.test_data[0])
 
-        estr = self.test_data[0]
+        estr = self.test_data[0][0]
         assert str(verr).find(estr) >= 0
 
         return
