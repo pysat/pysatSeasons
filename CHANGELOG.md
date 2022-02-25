@@ -13,6 +13,7 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 - Documentation
   - Improved docstrings throughout.
   - Updated documentation examples.
+  - Documentation now available on readthedocs.org.
 - Bug Fix
 - Maintenance
   - Removed deprecated `pandas.Panel` from functions.
@@ -20,6 +21,7 @@ This project adheres to [Semantic Versioning](http://semver.org/).
   - Removed use of `collections.deque` in `pysatSeasons.avg`.
   - Migrated to GitHub Workflows for CI testing.
   - Migrated from noses to pytest.
+  - Adopted setup.cfg
 
 ## [0.1.3] - 2021-06-18
 - Updates style to match pysat 3.0.0 release candidate
