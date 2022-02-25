@@ -51,7 +51,7 @@ def median1D(const, bin1, label1, data_label, auto_bin=True, returnData=False):
     # `const` is either an Instrument or a Constellation, and we want to
     #  iterate over it. If it's a Constellation, then we can do that as is,
     #  but if it's an Instrument, we just have to put that Instrument
-    #  into something that will yield that Instrument, like a list.
+    #  into a Constellation.
     if isinstance(const, pysat.Instrument):
         const = pysat.Constellation(instruments=[const])
     elif not isinstance(const, pysat.Constellation):
@@ -78,9 +78,7 @@ def median1D(const, bin1, label1, data_label, auto_bin=True, returnData=False):
     ans = [[[] for i in xarr] for k in zarr]
 
     for inst1 in const:
-        # Iterate over instrument season. Probably iterates by date but that
-        # all depends on the configuration of that particular instrument.
-        # Either way, it iterates over the instrument, loading successive
+        # Iterate over instrument season, loading successive
         # data between start and end bounds.
         for inst in inst1:
             # Collect data in bins for averaging
@@ -145,7 +143,7 @@ def median2D(const, bin1, label1, bin2, label2, data_label,
     # `const` is either an Instrument or a Constellation, and we want to
     #  iterate over it. If it's a Constellation, then we can do that as is,
     #  but if it's an Instrument, we just have to put that Instrument
-    #  into something that will yield that Instrument, like a list.
+    #  into a Constellation.
     if isinstance(const, pysat.Instrument):
         const = pysat.Constellation(instruments=[const])
     elif not isinstance(const, pysat.Constellation):
@@ -175,15 +173,13 @@ def median2D(const, bin1, label1, bin2, label2, data_label,
     # 3d array:  stores the data that is sorted into each bin - in a list.
     ans = [[[[] for i in xarr] for j in yarr] for k in zarr]
 
+    # Iterate over Instruments
     for inst1 in const:
-        # Iterate over instrument season. Probably iterates by date but that
-        # all depends on the configuration of that particular instrument.
-        # Either way, it iterates over the instrument, loading successive
-        # data between start and end bounds.
 
         # Copy instrument to provide data source independent access
         yinst = inst1.copy()
 
+        # Iterate over instrument season.
         for inst in inst1:
             # Collect data in bins for averaging
             if not inst.empty:
@@ -200,7 +196,7 @@ def median2D(const, bin1, label1, bin2, label2, data_label,
                         # indices (a given x).
                         yinst.data = inst[xindex]
 
-                        # digitize that, to sort data into bins along y
+                        # Digitize that, to sort data into bins along y
                         # (label2) (get bin indexes)
                         yind = np.digitize(yinst[label2], biny) - 1
 
