@@ -6,6 +6,7 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 - Added support for xarray data in the seasonal averaging functions in `pysatSeasons.avg`
 - Added support for xarray data in the occurrence probability functions in `pysatSeasons.occur_prob`
 - Added support for Constellations in `pysatSeasons.occur_prob`
+- Added support for Constellations in `pysatSeasons.plot`
 - Removed deprecated `pandas.Panel` from functions.
 - Removed old __future__ imports.
 - Removed use of `collections.deque` in `pysatSeasons.avg`.
