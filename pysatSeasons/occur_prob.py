@@ -32,11 +32,11 @@ def daily2D(const, bin1, label1, bin2, label2, data_label, gate,
     ----------
     const : pysat.Instrument or pysat.Constellation
         Instrument/Constellation to use for calculating occurrence probability.
-    binX : array-like
+    bin1, bin2 : array-like
         List holding [min, max, number of bins] or array-like containing
-        bin edges, where X = 1, 2.
-    labelX : str
-        Identifies data product for binX, where X = 1, 2.
+        bin edges.
+    label1, label2 : str
+        Identifies data product for binX.
     data_label : list of str
         Identifies data product(s) to calculate occurrence probability
         e.g. inst[data_label].
@@ -76,18 +76,18 @@ def by_orbit2D(const, bin1, label1, bin2, label2, data_label, gate,
 
     Parameters
     ----------
-    inst : pysat.Instrument or pysat.Constellation
+    const : pysat.Instrument or pysat.Constellation
         Instrument/Constellation to use for calculating occurrence probability.
-    binX : array-like
+    bin1, bin2 : array-like
         List holding [min, max, number of bins] or array-like containing
-        bin edges, where X = 1, 2.
-    labelX: str
-        Identifies data product for binX, where X = 1, 2.
-    data_label: list of str
+        bin edges.
+    label1, label2 : str
+        Identifies data product for binX.
+    data_label : list of str
         Data product label(s) to calculate occurrence probability.
-    gate: list of values
+    gate : list of values
         Values that `data_label` must achieve to be counted as an occurrence.
-    returnBins: bool
+    returnBins : bool
         If True, return arrays with values of bin edges, useful for pcolor.
         (default=False)
 
@@ -123,19 +123,19 @@ def _occurrence2D(const, bin1, label1, bin2, label2, data_label, gate,
     ----------
     const : pysat.Instrument or pysat.Constellation
         Instrument to use for calculating occurrence probability.
-    binX : array-like
+    bin1, bin2 : array-like
         List holding [min, max, number of bins] or array-like containing
-        bin edges, where X = 1, 2.
-    labelX: str
-        Identifies data product for binX, where X = 1, 2.
-    data_label: list of str
+        bin edges.
+    label1, label2 : str
+        Identifies data product for binX.
+    data_label : list of str
         Data product label(s) to calculate occurrence probability.
-    gate: list of values
+    gate : list of values
         Values that `data_label` must achieve to be counted as an occurrence.
     by_orbit : bool
         If True, then occurrence probability determined by orbit rather than
         by day. (default=False)
-    returnBins: bool
+    returnBins : bool
         If True, return arrays with values of bin edges, useful for pcolor.
         (default=False)
 
@@ -248,11 +248,11 @@ def daily3D(const, bin1, label1, bin2, label2, bin3, label3,
     ----------
     const : pysat.Instrument or pysat.Constellation
         Instrument/Constellation to use for calculating occurrence probability.
-    binX : array-like
+    bin1, bin2, bin3 : array-like
         List holding [min, max, number of bins] or array-like containing
-        bin edges, where X = 1, 2.
-    labelX : str
-        Identifies data product for binX, where X = 1, 2.
+        bin edges.
+    label1, label2, label3 : str
+        Identifies data product for binX.
     data_label : list of str
         Identifies data product(s) to calculate occurrence probability
         e.g. inst[data_label].
@@ -294,11 +294,11 @@ def by_orbit3D(const, bin1, label1, bin2, label2, bin3, label3,
     ----------
     const : pysat.Instrument or pysat.Constellation
         Instrument/Constellation to use for calculating occurrence probability.
-    binX : array-like
+    bin1, bin2, bin3 : array-like
         List holding [min, max, number of bins] or array-like containing
-        bin edges, where X = 1, 2.
-    labelX : str
-        Identifies data product for binX, where X = 1, 2.
+        bin edges.
+    label1, label2, label3 : str
+        Identifies data product for binX.
     data_label : list of str
         Identifies data product(s) to calculate occurrence probability
         e.g. inst[data_label].
@@ -340,11 +340,11 @@ def _occurrence3D(const, bin1, label1, bin2, label2, bin3, label3,
     ----------
     const : pysat.Instrument or pysat.Constellation
         Instrument/Constellation to use for calculating occurrence probability.
-    binX : array-like
+    bin1, bin2, bin3 : array-like
         List holding [min, max, number of bins] or array-like containing
-        bin edges, where X = 1, 2.
-    labelX: str
-        Identifies data product for binX, where X = 1, 2.
+        bin edges.
+    label1, label2, label3: str
+        Identifies data product for binX.
     data_label: list of str
         Data product label(s) to calculate occurrence probability.
     gate: list of values
