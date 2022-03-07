@@ -1,6 +1,4 @@
-"""
-Test pysatSeasons plotting code.
-"""
+"""Test pysatSeasons plotting code."""
 
 import datetime as dt
 import matplotlib as mpl
@@ -13,7 +11,7 @@ from pysatSeasons import plot
 class TestBasics():
 
     def setup(self):
-        """Runs before every method to create a clean testing setup."""
+        """Run before every method to create a clean testing setup."""
         self.testInst = pysat.Instrument('pysat', 'testing',
                                          clean_level='clean')
         self.testInst.bounds = (dt.datetime(2008, 1, 1),
@@ -22,7 +20,7 @@ class TestBasics():
         return
 
     def teardown(self):
-        """Runs after every method to clean up previous testing."""
+        """Run after every method to clean up previous testing."""
         del self.testInst
         plt.close()
 
@@ -91,7 +89,7 @@ class TestXarrayBasics(TestBasics):
     """Reapply basic tests with xarray data source."""
 
     def setup(self):
-        """Runs before every method to create a clean testing setup."""
+        """Run before every method to create a clean testing setup."""
         self.testInst = pysat.Instrument('pysat', 'testing_xarray',
                                          clean_level='clean')
         self.testInst.bounds = (dt.datetime(2008, 1, 1),
@@ -103,7 +101,7 @@ class TestXarrayBasics(TestBasics):
 class TestConstellationBasics(TestBasics):
 
     def setup(self):
-        """Runs before every method to create a clean testing setup."""
+        """Run before every method to create a clean testing setup."""
         self.rawInst = pysat.Instrument('pysat', 'testing',
                                         clean_level='clean')
         self.rawInst.bounds = (dt.datetime(2008, 1, 1),
@@ -115,7 +113,7 @@ class TestConstellationBasics(TestBasics):
         return
 
     def teardown(self):
-        """Runs after every method to clean up previous testing."""
+        """Run after every method to clean up previous testing."""
         del self.testInst, self.rawInst
         plt.close()
 
@@ -125,7 +123,7 @@ class TestConstellationBasics(TestBasics):
 class TestXarrayConstellationBasics(TestXarrayBasics):
 
     def setup(self):
-        """Runs before every method to create a clean testing setup."""
+        """Run before every method to create a clean testing setup."""
         self.rawInst = pysat.Instrument('pysat', 'testing_xarray',
                                         clean_level='clean')
         self.rawInst.bounds = (dt.datetime(2008, 1, 1),
@@ -137,7 +135,7 @@ class TestXarrayConstellationBasics(TestXarrayBasics):
         return
 
     def teardown(self):
-        """Runs after every method to clean up previous testing."""
+        """Run after every method to clean up previous testing."""
         del self.testInst, self.rawInst
         plt.close()
 
