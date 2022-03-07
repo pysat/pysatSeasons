@@ -1,6 +1,5 @@
-"""
-tests the pysat _core code
-"""
+"""Test the pysat _core code."""
+
 import xarray as xr
 
 import pysat
@@ -10,13 +9,13 @@ import pysatSeasons as ps
 
 class TestCore(object):
     def setup(self):
-        """Runs before every method to create a clean testing setup."""
+        """Run before every method to create a clean testing setup."""
         self.testInst = pysat.Instrument(inst_module=pinsts.pysat_testing,
                                          clean_level='clean')
         self.bounds1 = self.testInst.inst_module._test_dates['']['']
 
     def teardown(self):
-        """Runs after every method to clean up previous testing."""
+        """Run after every method to clean up previous testing."""
         del self.testInst, self.bounds1
 
     def test_comp_form_simple_data(self):
@@ -69,11 +68,11 @@ class TestCore(object):
 
 class TestCoreXarray(TestCore):
     def setup(self):
-        """Runs before every method to create a clean testing setup."""
+        """Run before every method to create a clean testing setup."""
         self.testInst = pysat.Instrument(inst_module=pinsts.pysat_testing_xarray,
                                          clean_level='clean')
         self.bounds1 = self.testInst.inst_module._test_dates['']['']
 
     def teardown(self):
-        """Runs after every method to clean up previous testing."""
+        """Run after every method to clean up previous testing."""
         del self.testInst, self.bounds1
