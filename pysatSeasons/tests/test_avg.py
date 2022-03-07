@@ -1,6 +1,5 @@
-"""
-Test the pysat averaging code
-"""
+"""Test the pysat averaging code."""
+
 import datetime as dt
 import numpy as np
 import pandas as pds
@@ -196,7 +195,7 @@ class TestFrameProfileAverages():
     """Test bin averaging dataframes from pandas data sources."""
 
     def setup(self):
-        """Runs before every method to create a clean testing setup."""
+        """Run before every method to create a clean testing setup."""
         self.testInst = pysat.Instrument('pysat', 'testing2D',
                                          clean_level='clean')
         self.testInst.bounds = (dt.datetime(2008, 1, 1),
@@ -208,7 +207,7 @@ class TestFrameProfileAverages():
         return
 
     def teardown(self):
-        """Runs after every method to clean up previous testing."""
+        """Run after every method to clean up previous testing."""
         del self.testInst, self.dname, self.test_vals, self.test_fracs
 
         return
@@ -267,7 +266,7 @@ class TestSeriesProfileAverages():
         return
 
     def teardown(self):
-        """Runs after every method to clean up previous testing."""
+        """Run after every method to clean up previous testing."""
         del self.testInst, self.dname
 
         return
@@ -407,6 +406,7 @@ class TestXarrayImageAverages(TestXarrayProfileAverages):
 
 class TestConstellation():
     def setup(self):
+        """Run before every method to create a clean testing setup."""
         insts = []
         for i in range(5):
             insts.append(pysat.Instrument('pysat', 'testing',
@@ -426,6 +426,7 @@ class TestConstellation():
         return
 
     def teardown(self):
+        """Run after every method to clean up previous testing."""
         del self.testC, self.testI, self.bounds
 
         return
@@ -479,6 +480,7 @@ class TestConstellation():
 class TestHeterogenousConstellation(TestConstellation):
     """Test with a Constellation of Instruments with different parameters."""
     def setup(self):
+        """Run before every method to create a clean testing setup."""
         insts = []
         for i in range(2):
             r_date = dt.datetime(2009, 1, i + 1)
@@ -502,6 +504,7 @@ class TestHeterogenousConstellation(TestConstellation):
         return
 
     def teardown(self):
+        """Run after every method to clean up previous testing."""
         del self.testC, self.bounds, self.one_d_vars, self.unequal_one_d_vars
         del self.testI
 
@@ -511,7 +514,7 @@ class TestHeterogenousConstellation(TestConstellation):
 class Test2DConstellation(TestSeriesProfileAverages):
 
     def setup(self):
-        """Runs before every method to create a clean testing setup."""
+        """Run before every method to create a clean testing setup."""
         self.insts = []
         self.testInst = pysat.Instrument('pysat', 'testing2D',
                                          clean_level='clean')
@@ -528,6 +531,7 @@ class Test2DConstellation(TestSeriesProfileAverages):
         return
 
     def teardown(self):
+        """Run after every method to clean up previous testing."""
         del self.testC, self.insts, self.testInst, self.dname, self.test_vals
 
         return
@@ -535,7 +539,7 @@ class Test2DConstellation(TestSeriesProfileAverages):
 
 class TestSeasonalAverageUnevenBins(TestBasics):
     def setup(self):
-        """Runs before every method to create a clean testing setup."""
+        """Run before every method to create a clean testing setup."""
         self.testInst = pysat.Instrument('pysat', 'testing',
                                          clean_level='clean')
         self.testInst.bounds = (dt.datetime(2008, 1, 1),
@@ -607,7 +611,7 @@ class TestSeasonalAverageUnevenBins(TestBasics):
 
 class TestInstMed1D():
     def setup(self):
-        """Runs before every method to create a clean testing setup"""
+        """Run before every method to create a clean testing setup"""
         self.testInst = pysat.Instrument('pysat', 'testing',
                                          clean_level='clean',
                                          update_files=True)
@@ -640,7 +644,7 @@ class TestInstMed1D():
         return
 
     def teardown(self):
-        """Runs after every method to clean up previous testing."""
+        """Run after every method to clean up previous testing."""
         del self.testInst, self.test_bins, self.test_label, self.test_data
         del self.out_keys, self.out_data
 
