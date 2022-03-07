@@ -19,10 +19,8 @@ The full code can be found at
 
 .. code:: python
 
-    """
-    Demonstrates iterating over an instrument data set by orbit and determining
-    the occurrence probability of an event occurring.
-    """
+    # Demonstrates iterating over an instrument data set by orbit and
+    # determining the occurrence probability of an event occurring.
 
     import datetime as dt
     import os
