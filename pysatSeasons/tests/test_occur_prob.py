@@ -1,6 +1,5 @@
-"""
-Test pysatSeasons occur_prob object and code.
-"""
+"""Test pysatSeasons occur_prob object and code.."""
+
 import datetime as dt
 import numpy as np
 import pytest
