@@ -25,9 +25,9 @@ sys.path.insert(0, os.path.abspath('..'))
 project = 'pysatSeasons'
 title = '{:s} Documentation'.format(project)
 zenodo = json.loads(open('../.zenodo.json').read())
-author = ', '.join([x['name'] for x in zenodo['creators']])
+author = ', '.join([auth['name'] for auth in zenodo['creators']])
 copyright = ', '.join(['2021', author])
-description = 'Seasonal Analysis using pysat.'
+description = 'Seasonal analysis using pysat.'
 
 # The short X.Y version
 module_dir = os.path.split(os.path.abspath(os.path.dirname(__file__)))[0]

@@ -17,7 +17,7 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 - Bug Fix
 - Maintenance
   - Removed deprecated `pandas.Panel` from functions.
-  - Removed old __future__ imports.
+  - Removed old `__future__` imports.
   - Removed use of `collections.deque` in `pysatSeasons.avg`.
   - Migrated to GitHub Workflows for CI testing.
   - Migrated from noses to pytest.
