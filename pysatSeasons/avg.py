@@ -113,11 +113,11 @@ def median2D(const, bin1, label1, bin2, label2, data_label,
     Parameters
     ----------
     const : pysat.Constellation or Instrument
-    bin* : array-like
+    bin1, bin2 : array-like
         List holding [min, max, number of bins] or array-like containing
-        bin edges, where * = 1, 2.
-    label*:  str
-        Identifies data product for bin*, where * = 1, 2.
+        bin edges.
+    label1, label2:  str
+        Identifies data product for binning.
     data_label : list-like
         Strings identifying data product(s) to be averaged.
     returnData : bool
@@ -131,7 +131,7 @@ def median2D(const, bin1, label1, bin2, label2, data_label,
 
     Returns
     -------
-    median : dictionary
+    median : dict
         2D median accessed by data_label as a function of label1 and label2
         over the season delineated by bounds of passed instrument objects.
         Also includes 'count' and 'avg_abs_dev' as well as the values of
@@ -231,13 +231,15 @@ def _calc_2d_median(ans, data_label, binx, biny, xarr, yarr, zarr, numx,
     ----------
     ans : list of lists
         List of lists containing binned data. Provided by `median2D`.
-    bin* : array-like
+    data_label : str
+        Label for data to be binned and averaged.
+    binx, biny : array-like
         List holding [min, max, number of bins] or array-like containing
         bin edges, where * = 1, 2.
-    *arr : list-like
+    xarr, yarr, zarr : list-like
         Indexing array along bin directions x, y, and data dimension z.
-    num* : int
-        Number of elements along *arr.
+    numx, numy, numz : int
+        Number of elements along xarr, yarr, zarr.
     returnData : bool
         If True, also return binned data used to calculate the average in
         the output dictionary as 'data', in addition to the statistical outputs.
@@ -245,7 +247,7 @@ def _calc_2d_median(ans, data_label, binx, biny, xarr, yarr, zarr, numx,
 
     Returns
     -------
-    median : dictionary
+    median : dict
         2D median accessed by `data_label` as a function of `label1` and
         `label2` over the season delineated by bounds of passed Instrument
         objects. Also includes 'count' and 'avg_abs_dev' as well as the
@@ -466,13 +468,15 @@ def _calc_1d_median(ans, data_label, binx, xarr, zarr, numx, numz,
     ----------
     ans: list of lists
         List of lists containing binned data. Provided by `median1D`.
+    data_label : str
+        Label for data to be binned and averaged.
     binx: array-like
         List holding [min, max, number of bins] or array-like containing
-        bin edges, where * = 1, 2.
-    *arr: list-like
+        bin edges.
+    xarr, zarr: list-like
         Indexing array along bin direction x and data dimension z.
-    num*: int
-        Number of elements along *arr.
+    numx, numz: int
+        Number of elements along xarr, zarr.
     returnData : bool
         If True, also return binned data used to calculate the average in
         the output dictionary as 'data', in addition to the statistical outputs.
@@ -480,7 +484,7 @@ def _calc_1d_median(ans, data_label, binx, xarr, zarr, numx, numz,
 
     Returns
     -------
-    median : dictionary
+    median : dict
         1D median accessed by `data_label` as a function of `label1` and
         `label2` over the season delineated by bounds of passed Instrument
         objects. Also includes 'count' and 'avg_abs_dev' as well as the
