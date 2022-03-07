@@ -28,9 +28,11 @@ def median1D(const, bin1, label1, data_label, auto_bin=True, returnData=False):
     auto_bin: bool
         If True, function will create bins from the min, max and
         number of bins. If false, bin edges must be manually entered in `bin1`.
+        (default=True)
     returnData : bool
         If True, also return binned data used to calculate the average in
         the output dictionary as 'data', in addition to the statistical outputs.
+        (default=False)
 
     Returns
     -------
@@ -121,9 +123,11 @@ def median2D(const, bin1, label1, bin2, label2, data_label,
     returnData : bool
         If True, also return binned data used to calculate the average in
         the output dictionary as 'data', in addition to the statistical outputs.
+        (default=False)
     auto_bin : bool
         If True, function will create bins from the min, max and
         number of bins. If false, bin edges must be manually entered in `bin*`.
+        (default=True)
 
     Returns
     -------
@@ -237,6 +241,7 @@ def _calc_2d_median(ans, data_label, binx, biny, xarr, yarr, zarr, numx,
     returnData : bool
         If True, also return binned data used to calculate the average in
         the output dictionary as 'data', in addition to the statistical outputs.
+        (default=False)
 
     Returns
     -------
@@ -399,11 +404,11 @@ def _core_mean(inst, data_label, by_orbit=False, by_day=False, by_file=False):
     data_label : str
         Data product label to be averaged.
     by_orbit : bool
-        If True, iterate by orbit.
+        If True, iterate by orbit. (default=False)
     by_day : bool
-        If True, iterate by day.
+        If True, iterate by day. (default=False)
     by_file : bool
-        If True, iterate by fil.
+        If True, iterate by file. (default=False)
 
     Returns
     -------
@@ -471,6 +476,7 @@ def _calc_1d_median(ans, data_label, binx, xarr, zarr, numx, numz,
     returnData : bool
         If True, also return binned data used to calculate the average in
         the output dictionary as 'data', in addition to the statistical outputs.
+        (default=False)
 
     Returns
     -------
