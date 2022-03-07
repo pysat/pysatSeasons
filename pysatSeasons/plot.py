@@ -10,7 +10,7 @@ import pysat
 
 def scatterplot(const, labelx, labely, data_label, datalim, xlim=None,
                 ylim=None):
-    """Return scatterplot of data_label(s) over `label*` for a season.
+    """Return scatterplot of `data_label` over `label*` for a season.
 
     Parameters
     ----------
@@ -20,10 +20,13 @@ def scatterplot(const, labelx, labely, data_label, datalim, xlim=None,
         Data product for x-axis.
     labely : str
         Data product for y-axis.
-    data_label : str, array-like of strings
+    data_label : str or array-like of str
         Data product(s) to be scatter plotted.
     datalim : numpy.array
         Plot limits for data_label.
+    xlim, ylim : numpy.array or None.
+        Array for limits along x or y axes. If None, limits
+        are determined automatically. (default=None)
 
     Returns
     -------
