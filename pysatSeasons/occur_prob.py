@@ -48,7 +48,7 @@ def daily2D(const, bin1, label1, bin2, label2, data_label, gate,
 
     Returns
     -------
-    occur_prob : dictionary
+    occur_prob : dict
         A dict of dicts indexed by `data_label`. Each entry is dict with entries
         'prob' for the probability and 'count' for the number of days with any
         data; 'bin_x' and 'bin_y' are also returned if requested. Note that
@@ -93,7 +93,7 @@ def by_orbit2D(const, bin1, label1, bin2, label2, data_label, gate,
 
     Returns
     -------
-    occur_prob : dictionary
+    occur_prob : dict
         A dict of dicts indexed by data_label. Each entry is dict with entries
         'prob' for the probability and 'count' for the number of orbits with
         any data; 'bin_x' and 'bin_y' are also returned if requested. Note that
@@ -141,7 +141,7 @@ def _occurrence2D(const, bin1, label1, bin2, label2, data_label, gate,
 
     Returns
     -------
-    occur_prob : dictionary
+    occur_prob : dict
         A dict of dicts indexed by data_label. Each entry is dict with entries
         'prob' for the probability and 'count' for the number of orbits with
         any data; 'bin_x' and 'bin_y' are also returned if requested. Note that
@@ -264,7 +264,7 @@ def daily3D(const, bin1, label1, bin2, label2, bin3, label3,
 
     Returns
     -------
-    occur_prob : dictionary
+    occur_prob : dict
         A dict of dicts indexed by `data_label`. Each entry is dict with entries
         'prob' for the probability and 'count' for the number of days with any
         data; 'bin_x', 'bin_y', and 'bin_z' are also returned if requested.
