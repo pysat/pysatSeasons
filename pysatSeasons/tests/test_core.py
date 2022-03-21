@@ -28,7 +28,7 @@ class TestCore(object):
         return
 
     def test_comp_form_instrument_variable(self):
-        """Test to_xarray_dataset with inst[var]"""
+        """Test to_xarray_dataset with inst[var]."""
 
         self.testInst.load(date=self.bounds1)
 
@@ -38,7 +38,7 @@ class TestCore(object):
         return
 
     def test_comp_form_numbers(self):
-        """Test to_xarray_dataset with [float1, float2, ...., floatn]"""
+        """Test to_xarray_dataset with [float1, float2, ...., floatn]."""
 
         self.testInst.load(date=self.bounds1)
 
@@ -49,7 +49,7 @@ class TestCore(object):
         return
 
     def test_comp_form_list_vars(self):
-        """Test to_xarray_dataset with [inst[var], inst[var2], ...]"""
+        """Test to_xarray_dataset with [inst[var], inst[var2], ...]."""
         self.testInst.load(date=self.bounds1)
         self.out = pyseas.to_xarray_dataset([self.testInst['mlt'],
                                              self.testInst['longitude']])
@@ -58,7 +58,7 @@ class TestCore(object):
         return
 
     def test_comp_form_list_data(self):
-        """Test to_xarray_dataset with [inst.data, inst.data, ...]"""
+        """Test to_xarray_dataset with [inst.data, inst.data, ...]."""
         self.testInst.load(date=self.bounds1)
         self.out = pyseas.to_xarray_dataset([self.testInst.data,
                                              self.testInst.data])
