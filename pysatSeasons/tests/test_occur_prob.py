@@ -55,7 +55,7 @@ class TestBasics():
         return
 
     def test_occur_prob_daily_2D_w_bad_gate(self):
-        """Input a gate that is not list-like"""
+        """Input a gate that is not list-like."""
 
         ans = occur_prob.daily2D(self.testInst, [0, 360, 4], 'longitude',
                                  [-60, 60, 3], 'latitude', ['slt'], 12.)
@@ -68,7 +68,7 @@ class TestBasics():
         return
 
     def test_occur_prob_daily_2D_w_mismatched_gate_and_data_label(self):
-        """Catch a gate that does not match the data_label"""
+        """Catch a gate that does not match the data_label."""
         with pytest.raises(ValueError) as verr:
             occur_prob.daily2D(self.testInst, [0, 360, 4], 'longitude',
                                [-60, 60, 3], 'latitude', ['slt'], [12., 18.])
@@ -79,7 +79,7 @@ class TestBasics():
         return
 
     def test_occur_prob_by_orbit_2D_w_bins(self):
-        """Run a basic probability routine by orbit 2D"""
+        """Run a basic probability routine by orbit 2D."""
         ans = occur_prob.by_orbit2D(self.testInst, [0, 24, 2], 'slt',
                                     [-60, 60, 3], 'latitude', ['slt'], [12.],
                                     returnBins=True)
@@ -92,7 +92,7 @@ class TestBasics():
         return
 
     def test_occur_prob_daily_3D_w_bins(self):
-        """Run a basic probability routine daily 3D"""
+        """Run a basic probability routine daily 3D."""
         ans = occur_prob.daily3D(self.testInst, [0, 360, 4], 'longitude',
                                  [-60, 60, 3], 'latitude', [0, 24, 2], 'slt',
                                  ['slt'], [12.], returnBins=True)
@@ -106,7 +106,7 @@ class TestBasics():
         return
 
     def test_occur_prob_daily_3D_w_bad_data_label(self):
-        """Catch a data_label that is not list-like"""
+        """Catch a data_label that is not list-like."""
         ans = occur_prob.daily3D(self.testInst, [0, 360, 4], 'longitude',
                                  [-60, 60, 3], 'latitude', [0, 24, 2], 'slt',
                                  'slt', [12.])
@@ -120,7 +120,7 @@ class TestBasics():
         return
 
     def test_occur_prob_daily_3D_w_bad_gate(self):
-        """Catch a gate that is not list-like"""
+        """Catch a gate that is not list-like."""
         ans = occur_prob.daily3D(self.testInst, [0, 360, 4], 'longitude',
                                  [-60, 60, 3], 'latitude', [0, 24, 2], 'slt',
                                  ['slt'], 12.)
@@ -134,7 +134,7 @@ class TestBasics():
         return
 
     def test_occur_prob_daily_3D_w_mismatched_gate_and_data_label(self):
-        """Catch a gate that does not match the data_label"""
+        """Catch a gate that does not match the data_label."""
         with pytest.raises(ValueError) as verr:
             occur_prob.daily3D(self.testInst, [0, 360, 4], 'longitude',
                                [-60, 60, 3], 'latitude', [0, 24, 2], 'slt',
@@ -146,7 +146,7 @@ class TestBasics():
         return
 
     def test_occur_prob_by_orbit_3D_w_bins(self):
-        """Run a basic probability routine by orbit 3D"""
+        """Run a basic probability routine by orbit 3D."""
         ans = occur_prob.by_orbit3D(self.testInst, [0, 360, 4], 'longitude',
                                     [-60, 60, 3], 'latitude',
                                     [0, 24, 2], 'slt', ['slt'], [12.],
