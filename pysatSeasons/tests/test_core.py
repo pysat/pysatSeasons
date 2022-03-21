@@ -4,7 +4,7 @@ import xarray as xr
 
 import pysat
 from pysat import instruments as pinsts
-import pysatSeasons as ps
+import pysatSeasons as pyseas
 
 
 class TestCore(object):
@@ -22,7 +22,7 @@ class TestCore(object):
         """Test to_xarray_dataset with inst.data"""
         self.testInst.load(date=self.bounds1)
 
-        self.out = ps.to_xarray_dataset(self.testInst.data)
+        self.out = pyseas.to_xarray_dataset(self.testInst.data)
         assert isinstance(self.out, xr.Dataset)
         assert 'pysat_binning' not in self.out.dims
         return
@@ -32,7 +32,7 @@ class TestCore(object):
 
         self.testInst.load(date=self.bounds1)
 
-        self.out = ps.to_xarray_dataset(self.testInst['mlt'])
+        self.out = pyseas.to_xarray_dataset(self.testInst['mlt'])
         assert isinstance(self.out, xr.Dataset)
         assert 'pysat_binning' not in self.out.dims
         return
@@ -42,7 +42,8 @@ class TestCore(object):
 
         self.testInst.load(date=self.bounds1)
 
-        self.out = ps.to_xarray_dataset(self.testInst['mlt'].values.tolist())
+        vals = self.testInst['mlt'].values.tolist()
+        self.out = pyseas.to_xarray_dataset(vals)
         assert isinstance(self.out, xr.Dataset)
         assert 'pysat_binning' not in self.out.dims
         return
@@ -50,8 +51,8 @@ class TestCore(object):
     def test_comp_form_list_vars(self):
         """Test to_xarray_dataset with [inst[var], inst[var2], ...]"""
         self.testInst.load(date=self.bounds1)
-        self.out = ps.to_xarray_dataset([self.testInst['mlt'],
-                                         self.testInst['longitude']])
+        self.out = pyseas.to_xarray_dataset([self.testInst['mlt'],
+                                             self.testInst['longitude']])
         assert isinstance(self.out, xr.Dataset)
         assert 'pysat_binning' in self.out.dims
         return
@@ -59,8 +60,8 @@ class TestCore(object):
     def test_comp_form_list_data(self):
         """Test to_xarray_dataset with [inst.data, inst.data, ...]"""
         self.testInst.load(date=self.bounds1)
-        self.out = ps.to_xarray_dataset([self.testInst.data,
-                                         self.testInst.data])
+        self.out = pyseas.to_xarray_dataset([self.testInst.data,
+                                             self.testInst.data])
         assert isinstance(self.out, xr.Dataset)
         assert 'pysat_binning' in self.out.dims
         return
