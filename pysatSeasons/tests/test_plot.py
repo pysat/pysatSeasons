@@ -27,7 +27,7 @@ class TestBasics():
         return
 
     def test_scatterplot_w_ioff(self):
-        """Check if scatterplot generates"""
+        """Check if scatterplot generates figures."""
 
         plt.ioff()
         figs = plot.scatterplot(self.testInst, 'longitude', 'latitude',
@@ -41,7 +41,7 @@ class TestBasics():
         return
 
     def test_scatterplot_w_ion(self):
-        """Check if scatterplot generates and resets to interactive mode"""
+        """Check if scatterplot generates and resets to interactive mode."""
 
         plt.ion()
         figs = plot.scatterplot(self.testInst, 'longitude', 'latitude',
@@ -55,7 +55,7 @@ class TestBasics():
         return
 
     def test_scatterplot_w_limits(self):
-        """Check if scatterplot generates with appropriate limits"""
+        """Check if scatterplot generates with appropriate limits."""
 
         figs = plot.scatterplot(self.testInst, 'longitude', 'latitude',
                                 'slt', [0.0, 24.0],
@@ -72,7 +72,7 @@ class TestBasics():
         return
 
     def test_multiple_scatterplots(self):
-        """Check if multiple scatterplots generate"""
+        """Check if multiple scatterplots generate."""
         figs = plot.scatterplot(self.testInst, 'longitude', 'latitude',
                                 ['slt', 'mlt'], [0.0, 24.0])
 
