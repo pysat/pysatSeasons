@@ -10,7 +10,7 @@ import pysat
 
 def scatterplot(const, labelx, labely, data_label, datalim, xlim=None,
                 ylim=None):
-    """Return scatterplot of `data_label` over `label*` for a season.
+    """Return 2D and 3D scatterplot of `data_label` over `label*` for a season.
 
     Parameters
     ----------
@@ -72,32 +72,35 @@ def scatterplot(const, labelx, labely, data_label, datalim, xlim=None,
 
     # Norm method so that data may be scaled to colors appropriately
     norm = mpl.colors.Normalize(vmin=datalim[0], vmax=datalim[1])
-    p = [i for i in np.arange(len(figs))]
-    q = [i for i in np.arange(len(figs))]
+
+    # Prep memory to store figures.
+    figs3d = [i for i in np.arange(len(figs))]
+    figs2d = [i for i in np.arange(len(figs))]
+
+    # Perform plotting while iterating over data season.
     for linst in const.instruments:
         for inst in linst:
             if not inst.empty:
                 for j, (fig, ax) in enumerate(zip(figs, axs)):
-                    check1 = len(inst.data[labelx]) > 0
-                    check2 = len(inst.data[labely]) > 0
-                    check3 = len(inst.data[data_label[j]]) > 0
-                    if check1 & check2 & check3:
-                        p[j] = ax[0].scatter(inst.data[labelx],
-                                             inst.data[labely],
-                                             inst.data[data_label[j]],
-                                             zdir='z',
-                                             c=inst.data[data_label[j]],
-                                             norm=norm,
-                                             linewidth=0, edgecolors=None)
-                        q[j] = ax[1].scatter(inst.data[labelx],
-                                             inst.data[labely],
-                                             c=inst.data[data_label[j]],
-                                             norm=norm, alpha=0.5,
-                                             edgecolor=None)
+                    if (len(inst.data[labelx]) > 0 &
+                            (len(inst.data[labely]) > 0) &
+                            (len(inst.data[data_label[j]]) > 0)):
+                        figs3d[j] = ax[0].scatter(inst.data[labelx],
+                                                  inst.data[labely],
+                                                  inst.data[data_label[j]],
+                                                  zdir='z',
+                                                  c=inst.data[data_label[j]],
+                                                  norm=norm,
+                                                  linewidth=0, edgecolors=None)
+                        figs2d[j] = ax[1].scatter(inst.data[labelx],
+                                                  inst.data[labely],
+                                                  c=inst.data[data_label[j]],
+                                                  norm=norm, alpha=0.5,
+                                                  edgecolor=None)
 
     for j, (fig, ax) in enumerate(zip(figs, axs)):
         try:
-            plt.colorbar(p[j], ax=ax[0], label='Amplitude (m/s)')
+            plt.colorbar(figs3d[j], ax=ax[0], label='Amplitude (m/s)')
         except:
             print('Tried colorbar but failed, thus no colorbar.')
         ax[0].elev = 30.
