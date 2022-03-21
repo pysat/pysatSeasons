@@ -1,4 +1,4 @@
-"""Test pysatSeasons occur_prob object and code.."""
+"""Test pysatSeasons occur_prob object and code."""
 
 import datetime as dt
 import numpy as np
@@ -29,7 +29,7 @@ class TestBasics():
         return
 
     def test_occur_prob_daily_2D_w_bins(self):
-        """Run a basic probability routine daily 2D w/ bins"""
+        """Run a basic probability routine daily 2D w/ bins."""
         ans = occur_prob.daily2D(self.testInst, [0, 24, 2], 'slt',
                                  [-60, 60, 3], 'latitude', ['slt'], [12.],
                                  returnBins=True)

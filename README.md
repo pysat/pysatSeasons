@@ -13,11 +13,11 @@
 
 
 pysatSeasons allows users to run seasonal data analyses over N-dimensional 
-datasets managed through the pysat code.
+data sets managed through the pysat module.
 
 Main Features
 -------------
-- Seasonal averaging binning routine for 1D and 2D distributions of nD data.
+- Seasonal binning and averaging routines for 1D and 2D distributions of nD data.
 - Occurrence probability routines, daily or by orbit.
 - Scatterplot of data_label(s) as functions of labelx,y
     over a season.
