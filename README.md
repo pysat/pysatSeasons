@@ -19,8 +19,7 @@ Main Features
 -------------
 - Seasonal binning and averaging routines for 1D and 2D distributions of nD data.
 - Occurrence probability routines, daily or by orbit.
-- Scatterplot of data_label(s) as functions of labelx,y
-    over a season.
+- Scatterplot of data_label(s) over two dimensions over a season.
 
 
 # Installation
