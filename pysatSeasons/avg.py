@@ -1,14 +1,14 @@
 # -*- coding: utf-8 -*-
 """
-Instrument independent seasonal averaging routine. Supports averaging
-1D and 2D data.
+Instrument independent seasonal averaging routine. Supports bin averaging
+N-dimensional data over 1D and 2D bin distributions.
 """
 
 import numpy as np
 import pandas as pds
 
 import pysat
-import pysatSeasons as ssnl
+import pysatSeasons as pyseas
 
 
 def median1D(const, bin1, label1, data_label, auto_bin=True, returnData=False):
@@ -270,7 +270,7 @@ def _calc_2d_median(ans, data_label, binx, biny, xarr, yarr, zarr, numx,
                 countAns[zk][yj][xi] = len(ans[zk][yj][xi])
 
                 if len(ans[zk][yj][xi]) > 0:
-                    data = ssnl.to_xarray_dataset(ans[zk][yj][xi])
+                    data = pyseas.to_xarray_dataset(ans[zk][yj][xi])
 
                     # Higher order data has the 'pysat_binning' dim
                     if dim in data.dims:
@@ -440,7 +440,7 @@ def _core_mean(inst, data_label, by_orbit=False, by_day=False, by_file=False):
             # Compute mean using xarray functions and store
 
             data = linst[data_label]
-            data = ssnl.to_xarray_dataset(data)
+            data = pyseas.to_xarray_dataset(data)
             if 'time' in data.dims:
                 epoch_dim = 'time'
             elif 'Epoch' in data.dims:
@@ -505,7 +505,7 @@ def _calc_1d_median(ans, data_label, binx, xarr, zarr, numx, numz,
             if len(ans[zk][xi]) > 0:
                 countAns[zk][xi] = len(ans[zk][xi])
 
-                data = ssnl.to_xarray_dataset(ans[zk][xi])
+                data = pyseas.to_xarray_dataset(ans[zk][xi])
 
                 # Higher order data has the 'pysat_binning' dim
                 if dim in data.dims:
