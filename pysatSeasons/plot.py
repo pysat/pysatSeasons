@@ -7,6 +7,8 @@
 
 import matplotlib as mpl
 import matplotlib.pyplot as plt
+# Axes3D import needed to support 3D scatter plot below. Use not apparent
+# but code required when projection='3d' set on an axis.
 from mpl_toolkits.mplot3d import Axes3D  # noqa: F401
 import numpy as np
 
