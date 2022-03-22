@@ -89,9 +89,9 @@ def scatterplot(const, labelx, labely, data_label, datalim, xlim=None,
         for inst in linst:
             if not inst.empty:
                 for j, (fig, ax) in enumerate(zip(figs, axs)):
-                    if (len(inst.data[labelx]) > 0 and
-                            (len(inst.data[labely]) > 0) and
-                            (len(inst.data[data_label[j]]) > 0)):
+                    if (len(inst.data[labelx]) > 0
+                            and (len(inst.data[labely]) > 0)
+                            and (len(inst.data[data_label[j]]) > 0)):
                         figs3d[j] = ax[0].scatter(inst.data[labelx],
                                                   inst.data[labely],
                                                   inst.data[data_label[j]],
