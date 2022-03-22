@@ -14,6 +14,7 @@ such as bin averaging, occurrence probabilities, and scatter plots.
    overview.rst
    installation.rst
    citing.rst
+   api.rst
    examples.rst
    develop_guide.rst
    history.rst
