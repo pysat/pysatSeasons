@@ -1,4 +1,8 @@
+#!/usr/bin/env python
 # -*- coding: utf-8 -*-
+# Copyright (C) 2022, pysat development team
+# Full license can be found in License.md
+# -----------------------------------------------------------------------------
 """
 Instrument independent seasonal averaging routine. Supports bin averaging
 N-dimensional data over 1D and 2D bin distributions.

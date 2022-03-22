@@ -1,3 +1,8 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+# Copyright (C) 2022, pysat development team
+# Full license can be found in License.md
+# -----------------------------------------------------------------------------
 """Occurrence probability routines, daily or by orbit.
 
 Routines calculate the occurrence of an event greater than a supplied gate
