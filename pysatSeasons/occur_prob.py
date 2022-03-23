@@ -20,12 +20,13 @@ object as the season of interest.
 """
 
 import numpy as np
+import warnings
 
 import pysat
 
 
 def daily2D(const, bin1, label1, bin2, label2, data_label, gate,
-            returnBins=False):
+            returnBins=None, return_bins=False):
     """2D Daily Occurrence Probability of `data_label` > `gate` over a season.
 
     If `data_label` is greater than `gate` at least once per day,
@@ -47,9 +48,13 @@ def daily2D(const, bin1, label1, bin2, label2, data_label, gate,
         e.g. inst[data_label].
     gate : list of values
         Values that `data_label` must achieve to be counted as an occurrence.
-    returnBins : bool
+    returnBins : bool or NoneType
+        If True, also return arrays with values of bin edges, useful for pcolor.
+        Deprecated in favor of `return_bins`. (default=None)
+    return_bins : bool
         If True, also return arrays with values of bin edges, useful for pcolor.
         (default=False)
+
 
     Returns
     -------
@@ -67,11 +72,12 @@ def daily2D(const, bin1, label1, bin2, label2, data_label, gate,
     """
 
     return _occurrence2D(const, bin1, label1, bin2, label2, data_label, gate,
-                         by_orbit=False, returnBins=returnBins)
+                         by_orbit=False, returnBins=returnBins,
+                         return_bins=return_bins)
 
 
 def by_orbit2D(const, bin1, label1, bin2, label2, data_label, gate,
-               returnBins=False):
+               returnBins=None, return_bins=False):
     """2D Occurrence Probability of `data_label` orbit-by-orbit over a season.
 
     If `data_label` is greater than `gate` at least once per orbit, then a
@@ -92,8 +98,11 @@ def by_orbit2D(const, bin1, label1, bin2, label2, data_label, gate,
         Data product label(s) to calculate occurrence probability.
     gate : list of values
         Values that `data_label` must achieve to be counted as an occurrence.
-    returnBins : bool
-        If True, return arrays with values of bin edges, useful for pcolor.
+    returnBins : bool or NoneType
+        If True, also return arrays with values of bin edges, useful for pcolor.
+        Deprecated in favor of `return_bins`. (default=None)
+    return_bins : bool
+        If True, also return arrays with values of bin edges, useful for pcolor.
         (default=False)
 
     Returns
@@ -112,11 +121,12 @@ def by_orbit2D(const, bin1, label1, bin2, label2, data_label, gate,
     """
 
     return _occurrence2D(const, bin1, label1, bin2, label2, data_label, gate,
-                         by_orbit=True, returnBins=returnBins)
+                         by_orbit=True, returnBins=returnBins,
+                         return_bins=return_bins)
 
 
 def _occurrence2D(const, bin1, label1, bin2, label2, data_label, gate,
-                  by_orbit=False, returnBins=False):
+                  by_orbit=False, returnBins=None, return_bins=False):
     """2D Occurrence Probability of `data_label` orbit-by-orbit over a season.
 
     If `data_label` is greater than `gate` at least once per orbit, then a
@@ -140,8 +150,11 @@ def _occurrence2D(const, bin1, label1, bin2, label2, data_label, gate,
     by_orbit : bool
         If True, then occurrence probability determined by orbit rather than
         by day. (default=False)
-    returnBins : bool
-        If True, return arrays with values of bin edges, useful for pcolor.
+    returnBins : bool or NoneType
+        If True, also return arrays with values of bin edges, useful for pcolor.
+        Deprecated in favor of `return_bins`. (default=None)
+    return_bins : bool
+        If True, also return arrays with values of bin edges, useful for pcolor.
         (default=False)
 
     Returns
@@ -163,6 +176,13 @@ def _occurrence2D(const, bin1, label1, bin2, label2, data_label, gate,
         const = pysat.Constellation(instruments=[const])
     elif not isinstance(const, pysat.Constellation):
         raise ValueError("Parameter must be an Instrument or a Constellation.")
+
+    if returnBins is not None:
+        return_bins = returnBins
+        warnings.warn(''.join(['"returnBins" has been deprecated in favor of ',
+                               '"return_bins". Assigning input "returnBins" ',
+                               'to "return_bins". ']), DeprecationWarning,
+                      stacklevel=2)
 
     # Ensure inputs are list-like
     data_label = pysat.utils.listify(data_label)
@@ -231,7 +251,7 @@ def _occurrence2D(const, bin1, label1, bin2, label2, data_label, gate,
     output = {}
     for i, label in enumerate(data_label):
         output[label] = {'prob': prob[i, :, :], 'count': total[i, :, :]}
-        if returnBins:
+        if return_bins:
             output[label]['bin_x'] = binx
             output[label]['bin_y'] = biny
 
@@ -241,7 +261,7 @@ def _occurrence2D(const, bin1, label1, bin2, label2, data_label, gate,
 
 
 def daily3D(const, bin1, label1, bin2, label2, bin3, label3,
-            data_label, gate, returnBins=False):
+            data_label, gate, returnBins=None, return_bins=False):
     """3D Daily Occurrence Probability of `data_label` > `gate` over a season.
 
     If `data_label` is greater than `gate` at least once per day,
@@ -263,7 +283,10 @@ def daily3D(const, bin1, label1, bin2, label2, bin3, label3,
         e.g. inst[data_label].
     gate : list of values
         Values that `data_label` must achieve to be counted as an occurrence.
-    returnBins : bool
+    returnBins : bool or NoneType
+        If True, also return arrays with values of bin edges, useful for pcolor.
+        Deprecated in favor of `return_bins`. (default=None)
+    return_bins : bool
         If True, also return arrays with values of bin edges, useful for pcolor.
         (default=False)
 
@@ -283,11 +306,11 @@ def daily3D(const, bin1, label1, bin2, label2, bin3, label3,
 
     return _occurrence3D(const, bin1, label1, bin2, label2, bin3, label3,
                          data_label, gate, returnBins=returnBins,
-                         by_orbit=False)
+                         return_bins=return_bins, by_orbit=False)
 
 
 def by_orbit3D(const, bin1, label1, bin2, label2, bin3, label3,
-               data_label, gate, returnBins=False):
+               data_label, gate, returnBins=None, return_bins=False):
     """3D Occurrence Probability of `data_label` orbit-by-orbit over a season.
 
     If `data_label` is greater than `gate` at least once per orbit, then a
@@ -309,7 +332,10 @@ def by_orbit3D(const, bin1, label1, bin2, label2, bin3, label3,
         e.g. inst[data_label].
     gate : list of values
         Values that `data_label` must achieve to be counted as an occurrence.
-    returnBins : bool
+    returnBins : bool or NoneType
+        If True, also return arrays with values of bin edges, useful for pcolor.
+        Deprecated in favor of `return_bins`. (default=None)
+    return_bins : bool
         If True, also return arrays with values of bin edges, useful for pcolor.
         (default=False)
 
@@ -329,11 +355,12 @@ def by_orbit3D(const, bin1, label1, bin2, label2, bin3, label3,
 
     return _occurrence3D(const, bin1, label1, bin2, label2, bin3, label3,
                          data_label, gate, returnBins=returnBins,
-                         by_orbit=True)
+                         return_bins=return_bins, by_orbit=True)
 
 
 def _occurrence3D(const, bin1, label1, bin2, label2, bin3, label3,
-                  data_label, gate, returnBins=False, by_orbit=False):
+                  data_label, gate, returnBins=None, return_bins=False,
+                  by_orbit=False):
     """3D Occurrence Probability of `data_label` orbit-by-orbit over a season.
 
     If `data_label` is greater than `gate` at least once per iteration, then a
@@ -354,8 +381,11 @@ def _occurrence3D(const, bin1, label1, bin2, label2, bin3, label3,
         Data product label(s) to calculate occurrence probability.
     gate: list of values
         Values that `data_label` must achieve to be counted as an occurrence.
-    returnBins: bool
-        If True, return arrays with values of bin edges, useful for pcolor.
+    returnBins : bool or NoneType
+        If True, also return arrays with values of bin edges, useful for pcolor.
+        Deprecated in favor of `return_bins`. (default=None)
+    return_bins : bool
+        If True, also return arrays with values of bin edges, useful for pcolor.
         (default=False)
     by_orbit : bool
         If True, then occurrence probability determined by orbit rather than
@@ -379,6 +409,13 @@ def _occurrence3D(const, bin1, label1, bin2, label2, bin3, label3,
         const = pysat.Constellation(instruments=[const])
     elif not isinstance(const, pysat.Constellation):
         raise ValueError("Parameter must be an Instrument or a Constellation.")
+
+    if returnBins is not None:
+        return_bins = returnBins
+        warnings.warn(''.join(['"returnBins" has been deprecated in favor of ',
+                               '"return_bins". Assigning input "returnBins" ',
+                               'to "return_bins". ']), DeprecationWarning,
+                      stacklevel=2)
 
     # Ensure inputs are list-like
     data_label = pysat.utils.listify(data_label)
@@ -460,7 +497,7 @@ def _occurrence3D(const, bin1, label1, bin2, label2, bin3, label3,
     output = {}
     for i, label in enumerate(data_label):
         output[label] = {'prob': prob[i, :, :, :], 'count': total[i, :, :, :]}
-        if returnBins:
+        if return_bins:
             output[label]['bin_x'] = binx
             output[label]['bin_y'] = biny
             output[label]['bin_z'] = binz
