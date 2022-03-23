@@ -7,6 +7,7 @@
 
 import datetime as dt
 import numpy as np
+from packaging import version as pack_version
 import pytest
 import warnings
 
@@ -231,6 +232,10 @@ class TestXarrayConstellationBasics(TestBasics):
         return
 
 
+@pytest.mark.skipif(pack_version.Version(pysat.__version__)
+                    < pack_version.Version('3.0.2'),
+                    reason=''.join(('Requires testing functions in pysat ',
+                                    ' v3.0.2 or later.')))
 class TestDeprecation(object):
     """Unit test for deprecation warnings."""
 
