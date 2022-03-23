@@ -10,12 +10,14 @@ N-dimensional data over 1D and 2D bin distributions.
 
 import numpy as np
 import pandas as pds
+import warnings
 
 import pysat
 import pysatSeasons as pyseas
 
 
-def median1D(const, bin1, label1, data_label, auto_bin=True, returnData=False):
+def median1D(const, bin1, label1, data_label, auto_bin=True, returnData=None,
+             return_data=False):
     """Return a 1D median of nD `data_label` over a season and `label1`.
 
     Parameters
@@ -33,7 +35,12 @@ def median1D(const, bin1, label1, data_label, auto_bin=True, returnData=False):
         If True, function will create bins from the min, max and
         number of bins. If false, bin edges must be manually entered in `bin1`.
         (default=True)
-    returnData : bool
+    returnData : bool or NoneType
+        If True, also return binned data used to calculate the average in
+        the output dictionary as 'data', in addition to the statistical outputs.
+        Deprecated in favor of `return_data`.
+        (default=None)
+    return_data : bool
         If True, also return binned data used to calculate the average in
         the output dictionary as 'data', in addition to the statistical outputs.
         (default=False)
@@ -107,11 +114,11 @@ def median1D(const, bin1, label1, data_label, auto_bin=True, returnData=False):
 
     # Calculate the 1D median
     return _calc_1d_median(ans, data_label, binx, xarr, zarr, numx, numz,
-                           returnData)
+                           returnData, return_data)
 
 
 def median2D(const, bin1, label1, bin2, label2, data_label,
-             returnData=False, auto_bin=True):
+             returnData=None, auto_bin=True, return_data=False):
     """Return a 2D average of nD `data_label` over season and `label1` `label2`.
 
     Parameters
@@ -124,7 +131,12 @@ def median2D(const, bin1, label1, bin2, label2, data_label,
         Identifies data product for binning.
     data_label : list-like
         Strings identifying data product(s) to be averaged.
-    returnData : bool
+    returnData : bool or NoneType
+        If True, also return binned data used to calculate the average in
+        the output dictionary as 'data', in addition to the statistical outputs.
+        Deprecated in favor of `return_data`.
+        (default=None)
+    return_data : bool
         If True, also return binned data used to calculate the average in
         the output dictionary as 'data', in addition to the statistical outputs.
         (default=False)
@@ -224,11 +236,11 @@ def median2D(const, bin1, label1, bin2, label2, data_label,
                                         yinst[yindex, data_label[zk]])
 
     return _calc_2d_median(ans, data_label, binx, biny, xarr, yarr, zarr,
-                           numx, numy, numz, returnData)
+                           numx, numy, numz, returnData, return_data)
 
 
 def _calc_2d_median(ans, data_label, binx, biny, xarr, yarr, zarr, numx,
-                    numy, numz, returnData=False):
+                    numy, numz, returnData=None, return_data=False):
     """Return a 2D average of nD `data_label` over season and `label1` `label2`.
 
     Parameters
@@ -244,7 +256,12 @@ def _calc_2d_median(ans, data_label, binx, biny, xarr, yarr, zarr, numx,
         Indexing array along bin directions x, y, and data dimension z.
     numx, numy, numz : int
         Number of elements along xarr, yarr, zarr.
-    returnData : bool
+    returnData : bool or NoneType
+        If True, also return binned data used to calculate the average in
+        the output dictionary as 'data', in addition to the statistical outputs.
+        Deprecated in favor of `return_data`.
+        (default=None)
+    return_data : bool
         If True, also return binned data used to calculate the average in
         the output dictionary as 'data', in addition to the statistical outputs.
         (default=False)
@@ -258,6 +275,14 @@ def _calc_2d_median(ans, data_label, binx, biny, xarr, yarr, zarr, numx,
         values of the bin edges in 'bin_x' and 'bin_y'.
 
     """
+
+    if returnData is not None:
+        return_data = returnData
+        warnings.warn(''.join(['"returnData" has been deprecated in favor of ',
+                               '"return_data". Assigning input "returnData" ',
+                               'to "return_data". ']), DeprecationWarning,
+                      stacklevel=2)
+
     # set up output arrays
     medianAns = [[[[] for i in xarr] for j in yarr] for k in zarr]
     countAns = [[[[] for i in xarr] for j in yarr] for k in zarr]
@@ -322,7 +347,7 @@ def _calc_2d_median(ans, data_label, binx, biny, xarr, yarr, zarr, numx,
                          'bin_x': binx,
                          'bin_y': biny}
 
-        if returnData:
+        if return_data:
             output[label]['data'] = ans[i]
 
     return output
@@ -465,7 +490,7 @@ def _core_mean(inst, data_label, by_orbit=False, by_day=False, by_file=False):
 
 
 def _calc_1d_median(ans, data_label, binx, xarr, zarr, numx, numz,
-                    returnData=False):
+                    returnData=None, return_data=False):
     """Return a 1D average of nD `data_label` over season.
 
     Parameters
@@ -481,7 +506,12 @@ def _calc_1d_median(ans, data_label, binx, xarr, zarr, numx, numz,
         Indexing array along bin direction x and data dimension z.
     numx, numz: int
         Number of elements along xarr, zarr.
-    returnData : bool
+    returnData : bool or NoneType
+        If True, also return binned data used to calculate the average in
+        the output dictionary as 'data', in addition to the statistical outputs.
+        Deprecated in favor of `return_data`.
+        (default=None)
+    return_data : bool
         If True, also return binned data used to calculate the average in
         the output dictionary as 'data', in addition to the statistical outputs.
         (default=False)
@@ -495,6 +525,14 @@ def _calc_1d_median(ans, data_label, binx, xarr, zarr, numx, numz,
         values of the bin edges in 'bin_x' and 'bin_y'.
 
     """
+
+    if returnData is not None:
+        return_data = returnData
+        warnings.warn(''.join(['"returnData" has been deprecated in favor of ',
+                               '"return_data". Assigning input "returnData" ',
+                               'to "return_data". ']), DeprecationWarning,
+                      stacklevel=2)
+
     # Set up output arrays
     medianAns = [[None for i in xarr] for k in zarr]
     countAns = [[None for i in xarr] for k in zarr]
@@ -555,7 +593,7 @@ def _calc_1d_median(ans, data_label, binx, xarr, zarr, numx, numz,
                          'avg_abs_dev': devAns[i],
                          'bin_x': binx}
 
-        if returnData:
+        if return_data:
             output[label]['data'] = ans[i]
 
     return output
