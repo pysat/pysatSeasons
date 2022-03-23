@@ -9,8 +9,10 @@ import datetime as dt
 import numpy as np
 import pandas as pds
 import pytest
+import warnings
 
 import pysat
+from pysat.utils import testing
 from pysatSeasons import avg
 
 
@@ -750,4 +752,83 @@ class TestInstMed1D():
         estr = 'median2D() missing 2 required positional arguments'
         assert str(verr).find(estr) >= 0
 
+        return
+
+
+class TestDeprecation(object):
+    """Unit test for deprecation warnings."""
+
+    def setup(self):
+        """Set up the unit test environment for each method."""
+
+        warnings.simplefilter("always", DeprecationWarning)
+
+        orbit_info = {'index': 'slt', 'kind': 'lt'}
+        self.tinst = pysat.Instrument('pysat', 'testing', orbit_info=orbit_info)
+        self.tinst.bounds = (dt.datetime(2008, 1, 1), dt.datetime(2008, 1, 2))
+
+        self.warn_msgs = []
+        self.war = ""
+        return
+
+    def teardown(self):
+        """Clean up the unit test environment after each method."""
+        # self.in_kwargs, self.ref_time,
+        del self.warn_msgs, self.war
+        return
+
+    def eval_warnings(self):
+        """Evaluate the number and message of the raised warnings."""
+
+        # Ensure the minimum number of warnings were raised.
+        assert len(self.war) >= len(self.warn_msgs)
+
+        # Test the warning messages, ensuring each attribute is present.
+        testing.eval_warnings(self.war, self.warn_msgs)
+        return
+
+    @pytest.mark.parametrize("func,dim_set", [(avg.median1D, 1),
+                                              (avg.median2D, 2),
+                                              ])
+    @pytest.mark.parametrize("return_flag", [True, False])
+    def test_returnData_kwarg_ndimensional(self, func, dim_set, return_flag):
+        """Test deprecation of kwarg `returnData`.
+
+        Parameters
+        ----------
+        func : function
+            Function under test.
+        dim_set : int
+            Number of dimensions for function call.
+        return_flag : bool
+            Setting to be applied to returnBins.
+
+        """
+        # Set up function calls
+        bin = [0, 24, 10]
+        if dim_set == 1:
+            bin_axes = ['data']
+            args = (self.tinst, bin, 'longitude', ['slt'])
+        elif dim_set == 2:
+            bin_axes = ['data']
+            args = (self.tinst, bin, 'longitude', bin, 'latitude', ['slt'])
+
+        # Catch the warnings
+        with warnings.catch_warnings(record=True) as self.war:
+            data = func(*args, returnData=return_flag)
+
+        # Ensure bins are returned or not, as directed
+        for var in data.keys():
+            for bin_ax in bin_axes:
+                flag = bin_ax in data[var].keys()
+                if not return_flag:
+                    flag = not flag
+
+                assert flag
+
+        estr = '"returnData" has been deprecated in favor of '
+        self.warn_msgs = np.array([estr])
+
+        # Evaluate the warning output
+        self.eval_warnings()
         return
