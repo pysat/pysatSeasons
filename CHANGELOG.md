@@ -10,6 +10,8 @@ This project adheres to [Semantic Versioning](http://semver.org/).
   - Added support for Constellations in `pysatSeasons.plot`
   - Renamed `computational_form` to `to_xarray_dataset` and refocused.
 - Deprecations
+  - Deprecated `returnBins` keyword in favor of `return_bins` in `pysatSeasons.occur_prob`.
+  - Deprecated `returnData` keyword in favor of `return_data` in `pysatSeasons.avg`.
 - Documentation
   - Improved docstrings throughout.
   - Updated documentation examples.
