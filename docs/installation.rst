@@ -11,10 +11,10 @@ The following instructions will allow you to install pysatSeasons.
 Prerequisites
 -------------
 
-.. image:: images/poweredbypysat.png
+.. image:: images/logo.png
     :width: 150px
     :align: right
-    :alt: powered by pysat Logo, blue planet with orbiting python
+    :alt: pysatSeasons Logo, Calendar Icon with pysat logo and SEASONS at top.
 
 
 pysatSeasons uses common Python modules, as well as modules developed by and for
