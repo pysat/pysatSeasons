@@ -1,12 +1,15 @@
-"""
-Demonstrates iterating over an instrument data set by orbit and determining
+"""Seasonal occurence by orbit demo code.
+
+Demonstrate iteration over an instrument data set by orbit and determining
 the occurrence probability of an event occurring.
+
 """
 
 import datetime as dt
-import os
-import matplotlib.pyplot as plt
 import numpy as np
+import os
+
+import matplotlib.pyplot as plt
 
 import pysat
 import pysatNASA
@@ -29,6 +32,8 @@ vefi = pysat.Instrument(platform='cnofs', name='vefi', tag='dc_b',
 
 # Define function to remove flagged values
 def filter_vefi(inst):
+    """Filter all instrument data by flag criteria."""
+
     idx, = np.where(inst['B_flag'] == 0)
     inst.data = inst[idx]
     return

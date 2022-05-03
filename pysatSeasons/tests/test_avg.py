@@ -17,7 +17,7 @@ from pysat.utils import testing
 from pysatSeasons import avg
 
 
-class TestBasics():
+class TestBasics(object):
     """Test basic functions using pandas 1D data sources."""
 
     def setup(self):
@@ -132,7 +132,7 @@ class TestXarrayBasics(TestBasics):
         return
 
 
-class TestBasicsMeanBy():
+class TestBasicsMeanBy(object):
     """Test basic functions using pandas 1D data sources."""
 
     def setup(self):
@@ -199,7 +199,7 @@ class TestXarrayBasicsMeanBy(TestBasicsMeanBy):
         return
 
 
-class TestFrameProfileAverages():
+class TestFrameProfileAverages(object):
     """Test bin averaging dataframes from pandas data sources."""
 
     def setup(self):
@@ -259,11 +259,11 @@ class TestFrameProfileAverages():
         return
 
 
-class TestSeriesProfileAverages():
+class TestSeriesProfileAverages(object):
     """Test bin averaging series profile data from pandas data sources."""
 
     def setup(self):
-        """Runs before every method to create a clean testing setup."""
+        """Run before every method to create a clean testing setup."""
         self.testInst = pysat.Instrument('pysat', 'testing2D',
                                          clean_level='clean')
         self.testInst.bounds = (dt.datetime(2008, 1, 1),
@@ -298,6 +298,7 @@ class TestSeriesProfileAverages():
 
     def test_basic_seasonal_median1D(self):
         """Test basic seasonal 1D median."""
+
         results = avg.median1D(self.testInst, [0., 24., 24], 'mlt',
                                [self.dname])
 
@@ -312,11 +313,12 @@ class TestSeriesProfileAverages():
         return
 
 
-class TestXarrayProfileAverages():
+class TestXarrayProfileAverages(object):
     """Test bin averaging profile data from xarray data sources."""
 
     def setup(self):
         """Run before every method to create a clean testing setup."""
+
         self.testInst = pysat.Instrument('pysat', 'testing2D_xarray',
                                          clean_level='clean')
         self.testInst.bounds = (dt.datetime(2008, 1, 1),
@@ -412,7 +414,9 @@ class TestXarrayImageAverages(TestXarrayProfileAverages):
         return
 
 
-class TestConstellation():
+class TestConstellation(object):
+    """Test seasonal analysis for constellations."""
+
     def setup(self):
         """Run before every method to create a clean testing setup."""
         insts = []
@@ -487,6 +491,7 @@ class TestConstellation():
 
 class TestHeterogenousConstellation(TestConstellation):
     """Test with a Constellation of Instruments with different parameters."""
+
     def setup(self):
         """Run before every method to create a clean testing setup."""
         insts = []
@@ -520,9 +525,11 @@ class TestHeterogenousConstellation(TestConstellation):
 
 
 class Test2DConstellation(TestSeriesProfileAverages):
+    """Test seasonal analysis for 2D pandas constellations."""
 
     def setup(self):
         """Run before every method to create a clean testing setup."""
+
         self.insts = []
         self.testInst = pysat.Instrument('pysat', 'testing2D',
                                          clean_level='clean')
@@ -540,14 +547,18 @@ class Test2DConstellation(TestSeriesProfileAverages):
 
     def teardown(self):
         """Run after every method to clean up previous testing."""
+
         del self.testC, self.insts, self.testInst, self.dname, self.test_vals
 
         return
 
 
 class TestSeasonalAverageUnevenBins(TestBasics):
+    """Test seasonal analysis for uneven bins."""
+
     def setup(self):
         """Run before every method to create a clean testing setup."""
+
         self.testInst = pysat.Instrument('pysat', 'testing',
                                          clean_level='clean')
         self.testInst.bounds = (dt.datetime(2008, 1, 1),
@@ -565,6 +576,7 @@ class TestSeasonalAverageUnevenBins(TestBasics):
 
     def teardown(self):
         """Run after every method to clean up previous testing."""
+
         del self.testInst, self.bounds1, self.bounds2, self.long_bins
         del self.mlt_bins
 
@@ -572,6 +584,7 @@ class TestSeasonalAverageUnevenBins(TestBasics):
 
     def test_nonmonotonic_bins(self):
         """Test 2D median failure when provided with a non-monotonic bins."""
+
         with pytest.raises(ValueError) as verr:
             avg.median2D(self.testInst, np.array([0., 300., 100.]), 'longitude',
                          np.array([0., 24., 13.]), 'mlt',
@@ -584,6 +597,7 @@ class TestSeasonalAverageUnevenBins(TestBasics):
 
     def test_bin_data_depth(self):
         """Test failure when an array-like of length 1 is given to median2D."""
+
         with pytest.raises(TypeError) as verr:
             avg.median2D(self.testInst, 1, 'longitude', 24, 'mlt',
                          ['dummy1', 'dummy2', 'dummy3'], auto_bin=False)
@@ -595,6 +609,7 @@ class TestSeasonalAverageUnevenBins(TestBasics):
 
     def test_bin_data_type(self):
         """Test failure when a non array-like is given to median2D."""
+
         with pytest.raises(TypeError) as verr:
             avg.median2D(self.testInst, ['1', 'a', '23', '10'], 'longitude',
                          ['0', 'd', '24', 'c'], 'mlt',
@@ -606,8 +621,8 @@ class TestSeasonalAverageUnevenBins(TestBasics):
         return
 
     def test_median2D_bad_input(self):
-        """Test failure of median2D with non Constellation or Instrument input.
-        """
+        """Test failure of median2D with empty input."""
+
         with pytest.raises(ValueError) as verr:
             avg.median2D([], [0., 360., 24], 'longitude', [0., 24., 24], 'mlt',
                          ['longitude'])
@@ -617,9 +632,12 @@ class TestSeasonalAverageUnevenBins(TestBasics):
         return
 
 
-class TestInstMed1D():
+class TestInstMed1D(object):
+    """Test one-dimensional medians."""
+
     def setup(self):
-        """Run before every method to create a clean testing setup"""
+        """Run before every method to create a clean testing setup."""
+
         self.testInst = pysat.Instrument('pysat', 'testing',
                                          clean_level='clean',
                                          update_files=True)
@@ -653,6 +671,7 @@ class TestInstMed1D():
 
     def teardown(self):
         """Run after every method to clean up previous testing."""
+
         del self.testInst, self.test_bins, self.test_label, self.test_data
         del self.out_keys, self.out_data
 
@@ -691,6 +710,7 @@ class TestInstMed1D():
 
     def test_median1D_bad_data(self):
         """Test failure of median1D with string data instead of list."""
+
         with pytest.raises(KeyError) as verr:
             avg.median1D(self.testInst, self.test_bins, self.test_label,
                          self.test_data[0])
@@ -701,8 +721,8 @@ class TestInstMed1D():
         return
 
     def test_median1D_bad_input(self):
-        """Test failure of median1D with non Constellation or Instrument input.
-        """
+        """Test that median1D fails with empty input."""
+
         with pytest.raises(ValueError) as verr:
             avg.median1D([], self.test_bins, self.test_label,
                          self.test_data[0])
@@ -713,6 +733,7 @@ class TestInstMed1D():
 
     def test_median1D_bad_label(self):
         """Test failure of median1D with unknown label."""
+
         with pytest.raises(KeyError) as verr:
             avg.median1D(self.testInst, self.test_bins, "bad_label",
                          self.test_data)
@@ -724,6 +745,7 @@ class TestInstMed1D():
 
     def test_nonmonotonic_bins(self):
         """Test median1D failure when provided with a non-monotonic bins."""
+
         with pytest.raises(ValueError) as verr:
             avg.median1D(self.testInst, [0, 13, 5], self.test_label,
                          self.test_data, auto_bin=False)
@@ -735,6 +757,7 @@ class TestInstMed1D():
 
     def test_bin_data_depth(self):
         """Test failure when array-like of length 1 is given to median1D."""
+
         with pytest.raises(TypeError) as verr:
             avg.median1D(self.testInst, 24, self.test_label, self.test_data,
                          auto_bin=False)
@@ -746,6 +769,7 @@ class TestInstMed1D():
 
     def test_bin_data_type(self):
         """Test failure when median 1D is given non array-like bins."""
+
         with pytest.raises(TypeError) as verr:
             avg.median2D(self.testInst, ['0', 'd', '24', 'c'], self.test_label,
                          self.test_data, auto_bin=False)
