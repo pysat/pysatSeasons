@@ -22,8 +22,10 @@ This project adheres to [Semantic Versioning](http://semver.org/).
   - Removed old `__future__` imports.
   - Removed use of `collections.deque` in `pysatSeasons.avg`.
   - Migrated to GitHub Workflows for CI testing.
-  - Migrated from noses to pytest.
+  - Migrated from nose to pytest.
   - Adopted setup.cfg
+  - Updated style standards
+  - Added automated style and docstring testing
 
 ## [0.1.3] - 2021-06-18
 - Updates style to match pysat 3.0.0 release candidate
