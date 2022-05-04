@@ -29,6 +29,10 @@ def daily2D(const, bin1, label1, bin2, label2, data_label, gate,
             returnBins=None, return_bins=False):
     """2D Daily Occurrence Probability of `data_label` > `gate` over a season.
 
+    .. deprecated:: 0.2.0
+              `returnBins` will be removed in v0.3.0, it is replaced by
+              `return_bins` because it has standards compliant case.
+
     If `data_label` is greater than `gate` at least once per day,
     then a 100% occurrence probability results. Season delineated by the bounds
     attached to Instrument object.
@@ -80,6 +84,10 @@ def by_orbit2D(const, bin1, label1, bin2, label2, data_label, gate,
                returnBins=None, return_bins=False):
     """2D Occurrence Probability of `data_label` orbit-by-orbit over a season.
 
+    .. deprecated:: 0.2.0
+              `returnBins` will be removed in v0.3.0, it is replaced by
+              `return_bins` because it has standards compliant case.
+
     If `data_label` is greater than `gate` at least once per orbit, then a
     100% occurrence probability results. Season delineated by the bounds
     attached to Instrument object.
@@ -128,6 +136,10 @@ def by_orbit2D(const, bin1, label1, bin2, label2, data_label, gate,
 def _occurrence2D(const, bin1, label1, bin2, label2, data_label, gate,
                   by_orbit=False, returnBins=None, return_bins=False):
     """2D Occurrence Probability of `data_label` orbit-by-orbit over a season.
+
+    .. deprecated:: 0.2.0
+              `returnBins` will be removed in v0.3.0, it is replaced by
+              `return_bins` because it has standards compliant case.
 
     If `data_label` is greater than `gate` at least once per orbit, then a
     100% occurrence probability results. Season delineated by the bounds
@@ -264,6 +276,10 @@ def daily3D(const, bin1, label1, bin2, label2, bin3, label3,
             data_label, gate, returnBins=None, return_bins=False):
     """3D Daily Occurrence Probability of `data_label` > `gate` over a season.
 
+    .. deprecated:: 0.2.0
+              `returnBins` will be removed in v0.3.0, it is replaced by
+              `return_bins` because it has standards compliant case.
+
     If `data_label` is greater than `gate` at least once per day,
     then a 100% occurrence probability results. Season delineated by
     the bounds attached to Instrument object.
@@ -312,6 +328,10 @@ def daily3D(const, bin1, label1, bin2, label2, bin3, label3,
 def by_orbit3D(const, bin1, label1, bin2, label2, bin3, label3,
                data_label, gate, returnBins=None, return_bins=False):
     """3D Occurrence Probability of `data_label` orbit-by-orbit over a season.
+
+    .. deprecated:: 0.2.0
+              `returnBins` will be removed in v0.3.0, it is replaced by
+              `return_bins` because it has standards compliant case.
 
     If `data_label` is greater than `gate` at least once per orbit, then a
     100% occurrence probability results. Season delineated by the bounds
@@ -362,6 +382,10 @@ def _occurrence3D(const, bin1, label1, bin2, label2, bin3, label3,
                   data_label, gate, returnBins=None, return_bins=False,
                   by_orbit=False):
     """3D Occurrence Probability of `data_label` orbit-by-orbit over a season.
+
+    .. deprecated:: 0.2.0
+              `returnBins` will be removed in v0.3.0, it is replaced by
+              `return_bins` because it has standards compliant case.
 
     If `data_label` is greater than `gate` at least once per iteration, then a
     100% occurrence probability results. Season delineated by the bounds
