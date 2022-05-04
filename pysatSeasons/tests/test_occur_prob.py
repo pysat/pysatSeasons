@@ -25,8 +25,10 @@ class TestBasics():
         self.testInst = pysat.Instrument('pysat', 'testing',
                                          clean_level='clean',
                                          orbit_info=orbit_info)
-        self.testInst.bounds = (dt.datetime(2008, 1, 1),
-                                dt.datetime(2008, 1, 2))
+
+        # Assign short bounds.
+        test_date = self.testInst.inst_module._test_dates['']['']
+        self.testInst.bounds = (test_date, test_date + dt.timedelta(days=1))
 
         return
 
@@ -178,8 +180,10 @@ class TestXarrayBasics(TestBasics):
         self.testInst = pysat.Instrument('pysat', 'testing_xarray',
                                          clean_level='clean',
                                          orbit_info=orbit_info)
-        self.testInst.bounds = (dt.datetime(2008, 1, 1),
-                                dt.datetime(2008, 1, 2))
+
+        # Assign short bounds.
+        test_date = self.testInst.inst_module._test_dates['']['']
+        self.testInst.bounds = (test_date, test_date + dt.timedelta(days=1))
 
         return
 
@@ -193,8 +197,10 @@ class TestConstellationBasics(TestBasics):
         self.rawInst = pysat.Instrument('pysat', 'testing',
                                         clean_level='clean',
                                         orbit_info=orbit_info)
-        self.rawInst.bounds = (dt.datetime(2008, 1, 1),
-                               dt.datetime(2008, 1, 2))
+
+        # Assign short bounds.
+        test_date = self.rawInst.inst_module._test_dates['']['']
+        self.rawInst.bounds = (test_date, test_date + dt.timedelta(days=1))
 
         self.testInst = pysat.Constellation(instruments=[self.rawInst,
                                                          self.rawInst.copy()])
@@ -217,8 +223,10 @@ class TestXarrayConstellationBasics(TestBasics):
         self.rawInst = pysat.Instrument('pysat', 'testing_xarray',
                                         clean_level='clean',
                                         orbit_info=orbit_info)
-        self.rawInst.bounds = (dt.datetime(2008, 1, 1),
-                               dt.datetime(2008, 1, 2))
+
+        # Assign short bounds.
+        test_date = self.rawInst.inst_module._test_dates['']['']
+        self.rawInst.bounds = (test_date, test_date + dt.timedelta(days=1))
 
         self.testInst = pysat.Constellation(instruments=[self.rawInst,
                                                          self.rawInst.copy()])
