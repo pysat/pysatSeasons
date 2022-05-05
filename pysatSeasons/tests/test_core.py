@@ -13,18 +13,23 @@ import pysatSeasons as pyseas
 
 
 class TestCore(object):
+    """Test the core code for prepping seasonal analysis."""
+
     def setup(self):
         """Run before every method to create a clean testing setup."""
+
         self.testInst = pysat.Instrument(inst_module=pinsts.pysat_testing,
                                          clean_level='clean')
         self.bounds1 = self.testInst.inst_module._test_dates['']['']
 
     def teardown(self):
         """Run after every method to clean up previous testing."""
+
         del self.testInst, self.bounds1
 
     def test_comp_form_simple_data(self):
-        """Test to_xarray_dataset with inst.data"""
+        """Test to_xarray_dataset with `inst.data`."""
+
         self.testInst.load(date=self.bounds1)
 
         self.out = pyseas.to_xarray_dataset(self.testInst.data)
@@ -33,7 +38,7 @@ class TestCore(object):
         return
 
     def test_comp_form_instrument_variable(self):
-        """Test to_xarray_dataset with inst[var]."""
+        """Test to_xarray_dataset with `inst[var]`."""
 
         self.testInst.load(date=self.bounds1)
 
@@ -55,6 +60,7 @@ class TestCore(object):
 
     def test_comp_form_list_vars(self):
         """Test to_xarray_dataset with [inst[var], inst[var2], ...]."""
+
         self.testInst.load(date=self.bounds1)
         self.out = pyseas.to_xarray_dataset([self.testInst['mlt'],
                                              self.testInst['longitude']])
@@ -64,6 +70,7 @@ class TestCore(object):
 
     def test_comp_form_list_data(self):
         """Test to_xarray_dataset with [inst.data, inst.data, ...]."""
+
         self.testInst.load(date=self.bounds1)
         self.out = pyseas.to_xarray_dataset([self.testInst.data,
                                              self.testInst.data])
@@ -73,6 +80,8 @@ class TestCore(object):
 
 
 class TestCoreXarray(TestCore):
+    """Test the core code for prepping seasonal analysis for xarray."""
+
     def setup(self):
         """Run before every method to create a clean testing setup."""
         self.testInst = pysat.Instrument(inst_module=pinsts.pysat_testing_xarray,
