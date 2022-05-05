@@ -27,7 +27,7 @@ class TestBasics():
                                          orbit_info=orbit_info)
 
         # Assign short bounds.
-        test_date = self.testInst.inst_module._test_dates['']['']
+        test_date = pysat.instruments.pysat_testing._test_dates['']['']
         self.testInst.bounds = (test_date, test_date + dt.timedelta(days=1))
 
         return
@@ -182,7 +182,7 @@ class TestXarrayBasics(TestBasics):
                                          orbit_info=orbit_info)
 
         # Assign short bounds.
-        test_date = self.testInst.inst_module._test_dates['']['']
+        test_date = pysat.instruments.pysat_testing_xarray._test_dates['']['']
         self.testInst.bounds = (test_date, test_date + dt.timedelta(days=1))
 
         return
@@ -199,7 +199,7 @@ class TestConstellationBasics(TestBasics):
                                         orbit_info=orbit_info)
 
         # Assign short bounds.
-        test_date = self.rawInst.inst_module._test_dates['']['']
+        test_date = pysat.instruments.pysat_testing._test_dates['']['']
         self.rawInst.bounds = (test_date, test_date + dt.timedelta(days=1))
 
         self.testInst = pysat.Constellation(instruments=[self.rawInst,
@@ -225,7 +225,7 @@ class TestXarrayConstellationBasics(TestBasics):
                                         orbit_info=orbit_info)
 
         # Assign short bounds.
-        test_date = self.rawInst.inst_module._test_dates['']['']
+        test_date = pysat.instruments.pysat_testing_xarray._test_dates['']['']
         self.rawInst.bounds = (test_date, test_date + dt.timedelta(days=1))
 
         self.testInst = pysat.Constellation(instruments=[self.rawInst,
