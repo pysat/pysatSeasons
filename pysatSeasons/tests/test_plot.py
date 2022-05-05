@@ -13,7 +13,8 @@ import pysat
 from pysatSeasons import plot
 
 
-class TestBasics():
+class TestBasics(object):
+    """Tests to ensure the plot objects work as expected."""
 
     def setup(self):
         """Run before every method to create a clean testing setup."""
@@ -104,6 +105,7 @@ class TestXarrayBasics(TestBasics):
 
 
 class TestConstellationBasics(TestBasics):
+    """Reapply basic tests with Constellation data source."""
 
     def setup(self):
         """Run before every method to create a clean testing setup."""
@@ -126,6 +128,7 @@ class TestConstellationBasics(TestBasics):
 
 
 class TestXarrayConstellationBasics(TestXarrayBasics):
+    """Reapply basic tests with Constellation xarray data source."""
 
     def setup(self):
         """Run before every method to create a clean testing setup."""

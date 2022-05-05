@@ -16,7 +16,7 @@ from pysat.utils import testing
 from pysatSeasons import occur_prob
 
 
-class TestBasics():
+class TestBasics(object):
     """Basic tests using pandas data source."""
 
     def setup(self):

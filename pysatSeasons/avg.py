@@ -3,9 +3,10 @@
 # Copyright (C) 2022, pysat development team
 # Full license can be found in License.md
 # -----------------------------------------------------------------------------
-"""
-Instrument independent seasonal averaging routine. Supports bin averaging
-N-dimensional data over 1D and 2D bin distributions.
+"""Instrument independent seasonal averaging routine.
+
+Supports bin averaging N-dimensional data over 1D and 2D bin distributions.
+
 """
 
 import numpy as np
@@ -354,7 +355,7 @@ def _calc_2d_median(ans, data_label, binx, biny, xarr, yarr, zarr, numx,
 
 
 def mean_by_day(inst, data_label):
-    """Mean of `data_label` by day over Instrument.bounds
+    """Mean of `data_label` by day over `Instrument.bounds`.
 
     Parameters
     ----------

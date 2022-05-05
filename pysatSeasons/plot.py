@@ -108,7 +108,7 @@ def scatterplot(const, labelx, labely, data_label, datalim, xlim=None,
     for j, (fig, ax) in enumerate(zip(figs, axs)):
         try:
             plt.colorbar(figs3d[j], ax=ax[0], label='Amplitude (m/s)')
-        except:
+        except Exception:
             print('Tried colorbar but failed, thus no colorbar.')
         ax[0].elev = 30.
 

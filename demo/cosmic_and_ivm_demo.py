@@ -1,8 +1,14 @@
+"""Seasonal analysis demo using COSMIC RO profiles and IVM in situ data.
+
+"""
+
 import datetime as dt
 import numpy as np
 import numpy.ma as ma
-import matplotlib.pyplot as plt
 import pandas as pds
+
+import matplotlib.pyplot as plt
+from scipy.stats import mode
 
 import apexpy
 import pysat
@@ -22,6 +28,7 @@ def add_magnetic_coordinates(inst):
         'COSMIC' Instrument object
 
     """
+
     apex = apexpy.Apex(date=inst.date)
 
     # Convert geographic profile location to magnetic location
@@ -71,6 +78,7 @@ def restrict_abs_values(inst, label, max_val):
         than `max_val` are removed from `inst`.
 
     """
+
     inst.data = inst[np.abs(inst[label]) <= max_val]
     return
 
@@ -130,7 +138,6 @@ def add_scale_height(inst):
         'COSMIC' 'GPS' Instrument.
 
     """
-    from scipy.stats import mode
 
     output = inst['edmaxlon'].copy()
 
