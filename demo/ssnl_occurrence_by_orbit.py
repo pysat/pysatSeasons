@@ -58,7 +58,7 @@ vefi.bounds = (start, stop)
 # Any data added by custom functions is available within analysis below.
 ans = pysatSeasons.occur_prob.by_orbit2D(vefi, [0, 360, 144], 'longitude',
                                          [-13, 13, 104], 'latitude',
-                                         ['dB_mer'], [0.], returnBins=True)
+                                         ['dB_mer'], [0.], return_bins=True)
 
 # A dict indexed by data_label is returned.
 ans = ans['dB_mer']
