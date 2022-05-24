@@ -3,18 +3,28 @@
 """
 
 import datetime as dt
+import matplotlib.pyplot as plt
 import numpy as np
 import numpy.ma as ma
+from packaging import version as pack_version
 import pandas as pds
-
-import matplotlib.pyplot as plt
 from scipy.stats import mode
+
 
 import apexpy
 import pysat
 import pysatCDAAC
 import pysatNASA
 import pysatSeasons
+
+
+if pack_version(pysatCDAAC.__version__) <= pack_version('0.0.2'):
+    estr = ' '.join(['This demo is written expecting xarray support for ',
+                     'COSMIC data. Unfortunately, this is not supported by ',
+                     'the currently installed version. Please see the demo ',
+                     'code in pysatSeasons v0.1.3 for COSMIC support when in ',
+                     'pandas data format.'])
+    raise(ValueError, estr)
 
 
 def add_magnetic_coordinates(inst):
