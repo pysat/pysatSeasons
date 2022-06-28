@@ -196,9 +196,9 @@ pysat.utils.registry.register_by_module(pysatCDAAC.instruments)
 pysat.utils.registry.register_by_module(pysatNASA.instruments)
 
 # Dates for demo
-ssnDays = 67
-startDate = dt.datetime(2009, 12, 21) - pds.DateOffset(days=ssnDays)
-stopDate = dt.datetime(2009, 12, 21) + pds.DateOffset(days=ssnDays)
+ssn_days = 67
+startDate = dt.datetime(2009, 12, 21) - pds.DateOffset(days=ssn_days)
+stopDate = dt.datetime(2009, 12, 21) + pds.DateOffset(days=ssn_days)
 
 # Instantiate IVM Object
 ivm = pysat.Instrument(platform='cnofs', name='ivm', tag='',
