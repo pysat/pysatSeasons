@@ -137,14 +137,14 @@ def median2D(const, bin1, label1, bin2, label2, data_label,
         the output dictionary as 'data', in addition to the statistical outputs.
         Deprecated in favor of `return_data`.
         (default=None)
-    return_data : bool
-        If True, also return binned data used to calculate the average in
-        the output dictionary as 'data', in addition to the statistical outputs.
-        (default=False)
     auto_bin : bool
         If True, function will create bins from the min, max and
         number of bins. If false, bin edges must be manually entered in `bin*`.
         (default=True)
+    return_data : bool
+        If True, also return binned data used to calculate the average in
+        the output dictionary as 'data', in addition to the statistical outputs.
+        (default=False)
 
     Returns
     -------
@@ -285,9 +285,9 @@ def _calc_2d_median(ans, data_label, binx, biny, xarr, yarr, zarr, numx,
                       stacklevel=2)
 
     # set up output arrays
-    medianAns = [[[[] for i in xarr] for j in yarr] for k in zarr]
-    countAns = [[[[] for i in xarr] for j in yarr] for k in zarr]
-    devAns = [[[[] for i in xarr] for j in yarr] for k in zarr]
+    median_ans = [[[[] for i in xarr] for j in yarr] for k in zarr]
+    count_ans = [[[[] for i in xarr] for j in yarr] for k in zarr]
+    dev_ans = [[[[] for i in xarr] for j in yarr] for k in zarr]
 
     # All of the loading and storing data is done, though the data
     # could be of different types. Make all of them xarray datasets.
@@ -297,7 +297,7 @@ def _calc_2d_median(ans, data_label, binx, biny, xarr, yarr, zarr, numx,
         for yj in yarr:
             for xi in xarr:
 
-                countAns[zk][yj][xi] = len(ans[zk][yj][xi])
+                count_ans[zk][yj][xi] = len(ans[zk][yj][xi])
 
                 if len(ans[zk][yj][xi]) > 0:
                     data = pyseas.to_xarray_dataset(ans[zk][yj][xi])
@@ -307,44 +307,45 @@ def _calc_2d_median(ans, data_label, binx, biny, xarr, yarr, zarr, numx,
                         if len(data.dims) > 1:
                             scalar_avg = False
                         # All data is prepped. Perform calculations.
-                        medianAns[zk][yj][xi] = data.median(dim=dim)
+                        median_ans[zk][yj][xi] = data.median(dim=dim)
 
-                        devAns[zk][yj][xi] = data - medianAns[zk][yj][xi]
-                        devAns[zk][yj][xi] = devAns[zk][yj][xi].map(np.abs)
-                        devAns[zk][yj][xi] = devAns[zk][yj][xi].median(dim=dim)
+                        dev_ans[zk][yj][xi] = data - median_ans[zk][yj][xi]
+                        dev_ans[zk][yj][xi] = dev_ans[zk][yj][xi].map(np.abs)
+                        dev_ans[zk][yj][xi] = dev_ans[zk][yj][xi].median(
+                            dim=dim)
                     else:
-                        medianAns[zk][yj][xi] = data.median()
+                        median_ans[zk][yj][xi] = data.median()
 
-                        devAns[zk][yj][xi] = data - medianAns[zk][yj][xi]
-                        devAns[zk][yj][xi] = devAns[zk][yj][xi].map(np.abs)
-                        devAns[zk][yj][xi] = devAns[zk][yj][xi].median()
+                        dev_ans[zk][yj][xi] = data - median_ans[zk][yj][xi]
+                        dev_ans[zk][yj][xi] = dev_ans[zk][yj][xi].map(np.abs)
+                        dev_ans[zk][yj][xi] = dev_ans[zk][yj][xi].median()
 
         if scalar_avg:
             # Store current structure
-            temp_median = medianAns[zk]
-            temp_count = countAns[zk]
-            temp_dev = devAns[zk]
+            temp_median = median_ans[zk]
+            temp_count = count_ans[zk]
+            temp_dev = dev_ans[zk]
 
             # Create 2D numpy arrays for new storage
-            medianAns[zk] = np.full((numy, numx), np.nan)
-            countAns[zk] = np.full((numy, numx), np.nan)
-            devAns[zk] = np.full((numy, numx), np.nan)
+            median_ans[zk] = np.full((numy, numx), np.nan)
+            count_ans[zk] = np.full((numy, numx), np.nan)
+            dev_ans[zk] = np.full((numy, numx), np.nan)
 
             # Store data
             for yj in yarr:
                 for xi in xarr:
                     if len(temp_median[yj][xi]) > 0:
                         key = [name for name in temp_median[yj][xi].data_vars]
-                        medianAns[zk][yj, xi] = temp_median[yj][xi][key[0]]
-                        countAns[zk][yj, xi] = temp_count[yj][xi]
-                        devAns[zk][yj, xi] = temp_dev[yj][xi][key[0]]
+                        median_ans[zk][yj, xi] = temp_median[yj][xi][key[0]]
+                        count_ans[zk][yj, xi] = temp_count[yj][xi]
+                        dev_ans[zk][yj, xi] = temp_dev[yj][xi][key[0]]
 
     # Prepare output
     output = {}
     for i, label in enumerate(data_label):
-        output[label] = {'median': medianAns[i],
-                         'count': countAns[i],
-                         'avg_abs_dev': devAns[i],
+        output[label] = {'median': median_ans[i],
+                         'count': count_ans[i],
+                         'avg_abs_dev': dev_ans[i],
                          'bin_x': binx,
                          'bin_y': biny}
 
@@ -535,9 +536,9 @@ def _calc_1d_median(ans, data_label, binx, xarr, zarr, numx, numz,
                       stacklevel=2)
 
     # Set up output arrays
-    medianAns = [[None for i in xarr] for k in zarr]
-    countAns = [[None for i in xarr] for k in zarr]
-    devAns = [[None for i in xarr] for k in zarr]
+    median_ans = [[None for i in xarr] for k in zarr]
+    count_ans = [[None for i in xarr] for k in zarr]
+    dev_ans = [[None for i in xarr] for k in zarr]
 
     # All of the loading and storing data is done, though the data
     # could be of different types. Make all of them xarray datasets.
@@ -546,7 +547,7 @@ def _calc_1d_median(ans, data_label, binx, xarr, zarr, numx, numz,
         scalar_avg = True
         for xi in xarr:
             if len(ans[zk][xi]) > 0:
-                countAns[zk][xi] = len(ans[zk][xi])
+                count_ans[zk][xi] = len(ans[zk][xi])
 
                 data = pyseas.to_xarray_dataset(ans[zk][xi])
 
@@ -555,43 +556,43 @@ def _calc_1d_median(ans, data_label, binx, xarr, zarr, numx, numz,
                     if len(data.dims) > 1:
                         scalar_avg = False
                     # All data is prepped. Perform calculations.
-                    medianAns[zk][xi] = data.median(dim=dim)
+                    median_ans[zk][xi] = data.median(dim=dim)
 
-                    devAns[zk][xi] = data - medianAns[zk][xi]
-                    devAns[zk][xi] = devAns[zk][xi].map(np.abs)
-                    devAns[zk][xi] = devAns[zk][xi].median(dim=dim)
+                    dev_ans[zk][xi] = data - median_ans[zk][xi]
+                    dev_ans[zk][xi] = dev_ans[zk][xi].map(np.abs)
+                    dev_ans[zk][xi] = dev_ans[zk][xi].median(dim=dim)
                 else:
-                    medianAns[zk][xi] = data.median()
+                    median_ans[zk][xi] = data.median()
 
-                    devAns[zk][xi] = data - medianAns[zk][xi]
-                    devAns[zk][xi] = devAns[zk][xi].map(np.abs)
-                    devAns[zk][xi] = devAns[zk][xi].median()
+                    dev_ans[zk][xi] = data - median_ans[zk][xi]
+                    dev_ans[zk][xi] = dev_ans[zk][xi].map(np.abs)
+                    dev_ans[zk][xi] = dev_ans[zk][xi].median()
 
         if scalar_avg:
             # Store current structure
-            temp_median = medianAns[zk]
-            temp_count = countAns[zk]
-            temp_dev = devAns[zk]
+            temp_median = median_ans[zk]
+            temp_count = count_ans[zk]
+            temp_dev = dev_ans[zk]
 
             # Create 1D numpy arrays for new storage
-            medianAns[zk] = np.full((numx), np.nan)
-            countAns[zk] = np.full((numx), np.nan)
-            devAns[zk] = np.full((numx), np.nan)
+            median_ans[zk] = np.full((numx), np.nan)
+            count_ans[zk] = np.full((numx), np.nan)
+            dev_ans[zk] = np.full((numx), np.nan)
 
             # Store data
             for xi in xarr:
                 if len(temp_median[xi]) > 0:
                     key = [name for name in temp_median[xi].data_vars]
-                    medianAns[zk][xi] = temp_median[xi][key[0]]
-                    countAns[zk][xi] = temp_count[xi]
-                    devAns[zk][xi] = temp_dev[xi][key[0]]
+                    median_ans[zk][xi] = temp_median[xi][key[0]]
+                    count_ans[zk][xi] = temp_count[xi]
+                    dev_ans[zk][xi] = temp_dev[xi][key[0]]
 
     # Prepare output
     output = {}
     for i, label in enumerate(data_label):
-        output[label] = {'median': medianAns[i],
-                         'count': countAns[i],
-                         'avg_abs_dev': devAns[i],
+        output[label] = {'median': median_ans[i],
+                         'count': count_ans[i],
+                         'avg_abs_dev': dev_ans[i],
                          'bin_x': binx}
 
         if return_data:
