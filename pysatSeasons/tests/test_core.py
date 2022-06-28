@@ -9,6 +9,7 @@ import xarray as xr
 
 import pysat
 from pysat import instruments as pinsts
+
 import pysatSeasons as pyseas
 
 
@@ -21,11 +22,13 @@ class TestCore(object):
         self.testInst = pysat.Instrument(inst_module=pinsts.pysat_testing,
                                          clean_level='clean')
         self.bounds1 = self.testInst.inst_module._test_dates['']['']
+        return
 
     def teardown(self):
         """Run after every method to clean up previous testing."""
 
         del self.testInst, self.bounds1
+        return
 
     def test_comp_form_simple_data(self):
         """Test to_xarray_dataset with `inst.data`."""
@@ -87,7 +90,9 @@ class TestCoreXarray(TestCore):
         self.testInst = pysat.Instrument(inst_module=pinsts.pysat_testing_xarray,
                                          clean_level='clean')
         self.bounds1 = self.testInst.inst_module._test_dates['']['']
+        return
 
     def teardown(self):
         """Run after every method to clean up previous testing."""
         del self.testInst, self.bounds1
+        return

@@ -13,8 +13,7 @@ How often does a particular thing occur on a orbit-by-orbit basis? As an example
 let us calculate the occurrence of a positive perturbation in the meridional
 component of the geomagnetic field as measured by the Vector Electric Field
 Instrument (VEFI) onboard the Communication/Navigation Outage Forecasting
-System (C/NOFS) satellite.
-The full code can be found at
+System (C/NOFS) satellite.  The full code can be found at:
 `<https://github.com/pysat/pysatSeasons/blob/main/demo/ssnl_occurrence_by_orbit.py>`_
 
 .. code:: python

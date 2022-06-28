@@ -185,18 +185,17 @@ def median2D(const, bin1, label1, bin2, label2, data_label,
     # How many different data products
     numz = len(data_label)
 
-    # Create array to store all values before taking median
+    # Create array to store all values before taking median.
     # The indices of the bins/data products. Used for looping.
     yarr = np.arange(numy)
     xarr = np.arange(numx)
     zarr = np.arange(numz)
 
-    # 3d array:  stores the data that is sorted into each bin - in a list.
+    # 3D array:  stores the data that is sorted into each bin - in a list.
     ans = [[[[] for i in xarr] for j in yarr] for k in zarr]
 
     # Iterate over Instruments
     for inst1 in const.instruments:
-
         # Copy instrument to provide data source independent access
         yinst = inst1.copy()
 
@@ -207,6 +206,7 @@ def median2D(const, bin1, label1, bin2, label2, data_label,
                 # Sort the data into bins (x) based on label 1
                 # (stores bin indexes in xind)
                 xind = np.digitize(inst[label1], binx) - 1
+
                 # For each possible x index
                 for xi in xarr:
                     # Get the indices of those pieces of data in that bin.
