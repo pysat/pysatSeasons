@@ -23,7 +23,7 @@ return_data_dep_str = ''.join(['"returnData" has been deprecated in favor of ',
 
 def median1D(const, bin1, label1, data_label, auto_bin=True, returnData=None,
              return_data=False):
-    """Calculate a 1D median of nD `data_label` over a season and `label1`.
+    """Calculate a 1D median of nD `data_label` over time binned by `label1`.
 
     Parameters
     ----------
