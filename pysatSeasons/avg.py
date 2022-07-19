@@ -23,7 +23,7 @@ return_data_dep_str = ''.join(['"returnData" has been deprecated in favor of ',
 
 def median1D(const, bin1, label1, data_label, auto_bin=True, returnData=None,
              return_data=False):
-    """Cacluate a 1D median of nD `data_label` over a season and `label1`.
+    """Calculate a 1D median of nD `data_label` over a season and `label1`.
 
     Parameters
     ----------
@@ -357,7 +357,7 @@ def _calc_2d_median(ans, data_label, binx, biny, xarr, yarr, zarr, numx,
 
 
 def mean_by_day(inst, data_label):
-    """Mean of `data_label` by day over `Instrument.bounds`.
+    """Calculate mean of `data_label` by day over `Instrument.bounds`.
 
     Parameters
     ----------
@@ -381,7 +381,7 @@ def mean_by_day(inst, data_label):
 
 
 def mean_by_orbit(inst, data_label):
-    """Mean of `data_label` by orbit over Instrument.bounds.
+    """Calculate mean of `data_label` by orbit over Instrument.bounds.
 
     Parameters
     ----------
@@ -405,7 +405,7 @@ def mean_by_orbit(inst, data_label):
 
 
 def mean_by_file(inst, data_label):
-    """Mean of `data_label` by orbit over Instrument.bounds.
+    """Calculate mean of `data_label` by orbit over Instrument.bounds.
 
     Parameters
     ----------
@@ -429,7 +429,7 @@ def mean_by_file(inst, data_label):
 
 
 def _core_mean(inst, data_label, by_orbit=False, by_day=False, by_file=False):
-    """Mean of `data_label` by different iterations over `inst.bounds`.
+    """Calculate `data_label` mean via variety of iterations over `inst.bounds`.
 
     Parameters
     ----------
