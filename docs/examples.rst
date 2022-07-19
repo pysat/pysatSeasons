@@ -200,7 +200,7 @@ added using the nano-kernel.
    cosmic.custom_attach(add_magnetic_coordinates)
 
 call runs a routine that adds the needed information using the community
-package ``Apexpy``. Similarly, using custom functions, locations away from the
+package ``apexpy``. Similarly, using custom functions, locations away from the
 magnetic equator are filtered out and a couple new quantities are added.
 
 There is a strong correspondence between the distribution of downward drifts

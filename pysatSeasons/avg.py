@@ -19,7 +19,7 @@ import pysatSeasons as pyseas
 
 def median1D(const, bin1, label1, data_label, auto_bin=True, returnData=None,
              return_data=False):
-    """Return a 1D median of nD `data_label` over a season and `label1`.
+    """Cacluate a 1D median of nD `data_label` over a season and `label1`.
 
     Parameters
     ----------
@@ -88,7 +88,7 @@ def median1D(const, bin1, label1, data_label, auto_bin=True, returnData=None,
     xarr = np.arange(numx)
     zarr = np.arange(numz)
 
-    # 3d array:  stores the data that is sorted into each bin - in a list.
+    # 3D array:  stores the data that is sorted into each bin - in a list.
     ans = [[[] for i in xarr] for k in zarr]
 
     for inst1 in const.instruments:
