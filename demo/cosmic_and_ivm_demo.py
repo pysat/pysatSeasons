@@ -43,7 +43,7 @@ def add_magnetic_coordinates(inst):
 
     # Convert geographic profile location to magnetic location
     lats, lons = apex.geo2qd(inst['edmaxlat'], inst['edmaxlon'],
-                             inst['edmaxalt'])
+                             inst['edmax_alt'])
 
     # Longitudes between 0 - 360.
     idx, = np.where(lons < 0)
@@ -154,16 +154,16 @@ def add_scale_height(inst):
     for i, profile in enumerate(inst['ELEC_dens']):
         profile = profile[(profile
                           >= (1. / np.e) * inst[i, 'edmax'])
-                          & (profile.coords["MSL_alt"] >= inst[i, 'edmaxalt'])]
+                          & (profile.coords["MSL_alt"] >= inst[i, 'edmax_alt'])]
 
         # Want the first altitude where density drops below NmF2/e.
         if len(profile) > 10:
             i1 = profile.coords["MSL_alt"][1:]
             i2 = profile.coords["MSL_alt"][0:-1]
-            modeDiff = mode(i1.values - i2.values)[0][0]
+            mode_diff = mode(i1.values - i2.values)[0][0]
 
             # Ensure there are no gaps, if so, remove all data above gap
-            idx, = np.where((i1.values - i2.values) > 2 * modeDiff)
+            idx, = np.where((i1.values - i2.values) > 2 * mode_diff)
             if len(idx) > 0:
                 profile = profile[0:idx[0]]
 
@@ -197,8 +197,8 @@ pysat.utils.registry.register_by_module(pysatNASA.instruments)
 
 # Dates for demo
 ssn_days = 67
-startDate = dt.datetime(2009, 12, 21) - pds.DateOffset(days=ssn_days)
-stopDate = dt.datetime(2009, 12, 21) + pds.DateOffset(days=ssn_days)
+start_date = dt.datetime(2009, 12, 21) - pds.DateOffset(days=ssn_days)
+stop_date = dt.datetime(2009, 12, 21) + pds.DateOffset(days=ssn_days)
 
 # Instantiate IVM Object
 ivm = pysat.Instrument(platform='cnofs', name='ivm', tag='',
@@ -208,10 +208,10 @@ ivm = pysat.Instrument(platform='cnofs', name='ivm', tag='',
 ivm.custom_attach(restrict_abs_values, args=['mlat', 25.])
 
 # Perform seasonal average
-ivm.bounds = (startDate, stopDate)
-ivmResults = pysatSeasons.avg.median2D(ivm, [0, 360, 24], 'alon',
-                                       [0, 24, 24], 'mlt',
-                                       ['ionVelmeridional'])
+ivm.bounds = (start_date, stop_date)
+ivm_results = pysatSeasons.avg.median2D(ivm, [0, 360, 24], 'alon',
+                                        [0, 24, 24], 'mlt',
+                                        ['ionVelmeridional'])
 
 # Create COSMIC instrument object. Engage supported keyword `altitude_bin`
 # to bin all altitude profiles into 3 km increments.
@@ -230,27 +230,27 @@ cosmic.custom_attach(add_log_density)
 # Calculates the height above hmF2 to reach Ne < NmF2/e
 cosmic.custom_attach(add_scale_height)
 
-# Perform a bin average of multiple COSMIC data products, from startDate
-# through stopDate. A mixture of 1D and 2D data is averaged.
-cosmic.bounds = (startDate, stopDate)
-cosmicResults = pysatSeasons.avg.median2D(cosmic, [0, 360, 24], 'edmax_qd_lon',
-                                          [0, 24, 24], 'edmaxlct',
-                                          ['ELEC_dens', 'edmaxalt',
-                                           'lognm', 'thf2'])
+# Perform a bin average of multiple COSMIC data products, from start_date
+# through stop_date. A mixture of 1D and 2D data is averaged.
+cosmic.bounds = (start_date, stop_date)
+cosmic_results = pysatSeasons.avg.median2D(cosmic, [0, 360, 24], 'edmax_qd_lon',
+                                           [0, 24, 24], 'edmaxlct',
+                                           ['ELEC_dens', 'edmax_alt',
+                                            'lognm', 'thf2'])
 
 # The work is done, plot the results!
 
 # Make IVM and COSMIC plots
-f, axarr = plt.subplots(4, sharex=True, sharey=True, figsize=(8.5, 11))
+fig, axarr = plt.subplots(4, sharex=True, sharey=True, figsize=(8.5, 11))
 cax = []
 
 # Meridional ion drift average
-merDrifts = ivmResults['ionVelmeridional']['median']
-x_arr = ivmResults['ionVelmeridional']['bin_x']
-y_arr = ivmResults['ionVelmeridional']['bin_y']
+mer_drifts = ivm_results['ionVelmeridional']['median']
+x_arr = ivm_results['ionVelmeridional']['bin_x']
+y_arr = ivm_results['ionVelmeridional']['bin_y']
 
 # Mask out NaN values
-masked = np.ma.array(merDrifts, mask=np.isnan(merDrifts))
+masked = np.ma.array(mer_drifts, mask=np.isnan(mer_drifts))
 
 # Plot, NaN values are white.
 # Note how the data returned from the median function is in plot order.
@@ -263,15 +263,15 @@ axarr[0].set_xlim(0, 360)
 axarr[0].set_xticks(np.arange(0, 420, 60))
 axarr[0].set_ylabel('Magnetic Local Time')
 axarr[0].set_title('IVM Meridional Ion Drifts')
-cbar0 = f.colorbar(cax[0], ax=axarr[0])
+cbar0 = fig.colorbar(cax[0], ax=axarr[0])
 cbar0.set_label('Ion Drift (m/s)')
 
-maxDens = cosmicResults['lognm']['median']
-cx_arr = cosmicResults['lognm']['bin_x']
-cy_arr = cosmicResults['lognm']['bin_y']
+max_dens = cosmic_results['lognm']['median']
+cx_arr = cosmic_results['lognm']['bin_x']
+cy_arr = cosmic_results['lognm']['bin_y']
 
 # Mask out NaN values
-masked = np.ma.array(maxDens, mask=np.isnan(maxDens))
+masked = np.ma.array(max_dens, mask=np.isnan(max_dens))
 
 # Plot, NaN values are white
 cax.append(axarr[1].pcolor(cx_arr, cy_arr,
@@ -279,13 +279,13 @@ cax.append(axarr[1].pcolor(cx_arr, cy_arr,
            edgecolors='none'))
 axarr[1].set_title('COSMIC Log Density Maximum')
 axarr[1].set_ylabel('Solar Local Time')
-cbar1 = f.colorbar(cax[1], ax=axarr[1])
+cbar1 = fig.colorbar(cax[1], ax=axarr[1])
 cbar1.set_label('Log Density')
 
-maxAlt = cosmicResults['edmaxalt']['median']
+max_alt = cosmic_results['edmax_alt']['median']
 
 # Mask out NaN values
-masked = np.ma.array(maxAlt, mask=np.isnan(maxAlt))
+masked = np.ma.array(max_alt, mask=np.isnan(max_alt))
 
 # Plot, NaN values are white
 cax.append(axarr[2].pcolor(cx_arr, cy_arr,
@@ -293,34 +293,34 @@ cax.append(axarr[2].pcolor(cx_arr, cy_arr,
            edgecolors='none'))
 axarr[2].set_title('COSMIC Altitude Density Maximum')
 axarr[2].set_ylabel('Solar Local Time')
-cbar = f.colorbar(cax[2], ax=axarr[2])
+cbar = fig.colorbar(cax[2], ax=axarr[2])
 cbar.set_label('Altitude (km)')
 
 
-maxTh = cosmicResults['thf2']['median']
+max_th = cosmic_results['thf2']['median']
 
 # Mask out NaN values
-masked = np.ma.array(maxTh, mask=np.isnan(maxTh))
+masked = np.ma.array(max_th, mask=np.isnan(max_th))
 
 # Plot, NaN values are white
 cax.append(axarr[3].pcolor(cx_arr, cy_arr, masked,
                            vmax=225., vmin=75., edgecolors='none'))
 axarr[3].set_title('COSMIC Topside Scale Height')
 axarr[3].set_ylabel('Solar Local Time')
-cbar = f.colorbar(cax[3], ax=axarr[3])
+cbar = fig.colorbar(cax[3], ax=axarr[3])
 cbar.set_label('Scale Height (km)')
 axarr[3].set_xlabel('Apex Longitude')
-f.tight_layout()
-f.savefig('ssnl_median_ivm_cosmic_1d.png')
+fig.tight_layout()
+fig.savefig('ssnl_median_ivm_cosmic_1d.png')
 
 
 # Make COSMIC profile plots
 # 6 pages of plots, 4 plots per page
 for k in np.arange(6):
-    f, axarr = plt.subplots(4, sharex=True, figsize=(8.5, 11))
+    fig, axarr = plt.subplots(4, sharex=True, figsize=(8.5, 11))
     # Iterate over a group of four sectors at a time (4 plots per page)
-    for (j, sector) in enumerate(list(zip(*cosmicResults['ELEC_dens']['median']))
-                                 [k * 4:(k + 1) * 4]):
+    for (j, sector) in enumerate(list(
+            zip(*cosmic_results['ELEC_dens']['median']))[k * 4:(k + 1) * 4]):
         # Iterate over all local times within longitude sector.
         # Data is returned from the median routine in plot order, [y, x]
         # instead of [x,y].
@@ -338,7 +338,7 @@ for k in np.arange(6):
                 graph = axarr[j].pcolormesh(xx, yy, filtered,
                                             vmin=3., vmax=6.5)
 
-        cbar = f.colorbar(graph, ax=axarr[j])
+        cbar = fig.colorbar(graph, ax=axarr[j])
         cbar.set_label('Log Density')
         axarr[j].set_xlim(0, 24)
         axarr[j].set_ylim(0., 300.)
@@ -350,5 +350,5 @@ for k in np.arange(6):
 
     axarr[-1].set_xticks([0., 6., 12., 18., 24.])
     axarr[-1].set_xlabel('Solar Local Time of Profile Maximum Density')
-    f.tight_layout()
-    f.savefig('cosmic_part{}.png'.format(k))
+    fig.tight_layout()
+    fig.savefig('cosmic_part{}.png'.format(k))
