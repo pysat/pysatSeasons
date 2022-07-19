@@ -261,7 +261,7 @@ axarr[0].set_ylim(0, 24)
 axarr[0].set_yticks([0, 6, 12, 18, 24])
 axarr[0].set_xlim(0, 360)
 axarr[0].set_xticks(np.arange(0, 420, 60))
-axarr[0].set_ylabel('Magnetic Local Time')
+axarr[0].set_ylabel('Magnetic Local Time (Hours)')
 axarr[0].set_title('IVM Meridional Ion Drifts')
 cbar0 = fig.colorbar(cax[0], ax=axarr[0])
 cbar0.set_label('Ion Drift (m/s)')
@@ -278,9 +278,9 @@ cax.append(axarr[1].pcolor(cx_arr, cy_arr,
            masked, vmax=6.1, vmin=4.8,
            edgecolors='none'))
 axarr[1].set_title('COSMIC Log Density Maximum')
-axarr[1].set_ylabel('Solar Local Time')
+axarr[1].set_ylabel('Solar Local Time (Hours)')
 cbar1 = fig.colorbar(cax[1], ax=axarr[1])
-cbar1.set_label('Log Density')
+cbar1.set_label('Log Density (N/cc)')
 
 max_alt = cosmic_results['edmax_alt']['median']
 
@@ -292,7 +292,7 @@ cax.append(axarr[2].pcolor(cx_arr, cy_arr,
            masked, vmax=375., vmin=200.,
            edgecolors='none'))
 axarr[2].set_title('COSMIC Altitude Density Maximum')
-axarr[2].set_ylabel('Solar Local Time')
+axarr[2].set_ylabel('Solar Local Time (Hours)')
 cbar = fig.colorbar(cax[2], ax=axarr[2])
 cbar.set_label('Altitude (km)')
 
@@ -306,10 +306,10 @@ masked = np.ma.array(max_th, mask=np.isnan(max_th))
 cax.append(axarr[3].pcolor(cx_arr, cy_arr, masked,
                            vmax=225., vmin=75., edgecolors='none'))
 axarr[3].set_title('COSMIC Topside Scale Height')
-axarr[3].set_ylabel('Solar Local Time')
+axarr[3].set_ylabel('Solar Local Time (Hours)')
 cbar = fig.colorbar(cax[3], ax=axarr[3])
 cbar.set_label('Scale Height (km)')
-axarr[3].set_xlabel('Apex Longitude')
+axarr[3].set_xlabel('Apex Longitude (Degrees)')
 fig.tight_layout()
 fig.savefig('ssnl_median_ivm_cosmic_1d.png')
 
@@ -339,7 +339,7 @@ for k in np.arange(6):
                                             vmin=3., vmax=6.5)
 
         cbar = fig.colorbar(graph, ax=axarr[j])
-        cbar.set_label('Log Density')
+        cbar.set_label('Log Density (N/cc)')
         axarr[j].set_xlim(0, 24)
         axarr[j].set_ylim(0., 300.)
         axarr[j].set_yticks([50., 100., 150., 200., 250.],
