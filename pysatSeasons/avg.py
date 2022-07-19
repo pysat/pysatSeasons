@@ -16,6 +16,10 @@ import warnings
 import pysat
 import pysatSeasons as pyseas
 
+return_data_dep_str = ''.join(['"returnData" has been deprecated in favor of ',
+                               '"return_data". Assigning input "returnData" ',
+                               'to "return_data". '])
+
 
 def median1D(const, bin1, label1, data_label, auto_bin=True, returnData=None,
              return_data=False):
@@ -120,7 +124,7 @@ def median1D(const, bin1, label1, data_label, auto_bin=True, returnData=None,
 
 def median2D(const, bin1, label1, bin2, label2, data_label,
              returnData=None, auto_bin=True, return_data=False):
-    """Return a 2D average of nD `data_label` over season and `label1` `label2`.
+    """Calculate 2D median of nD `data_label` over time and `label1` `label2`.
 
     Parameters
     ----------
@@ -242,7 +246,7 @@ def median2D(const, bin1, label1, bin2, label2, data_label,
 
 def _calc_2d_median(ans, data_label, binx, biny, xarr, yarr, zarr, numx,
                     numy, numz, returnData=None, return_data=False):
-    """Return a 2D average of nD `data_label` over season and `label1` `label2`.
+    """Calculate 2D median of nD `data_label` over time and `binx` `biny`.
 
     Parameters
     ----------
@@ -252,7 +256,7 @@ def _calc_2d_median(ans, data_label, binx, biny, xarr, yarr, zarr, numx,
         Label for data to be binned and averaged.
     binx, biny : array-like
         List holding [min, max, number of bins] or array-like containing
-        bin edges, where * = 1, 2.
+        bin edges
     xarr, yarr, zarr : list-like
         Indexing array along bin directions x, y, and data dimension z.
     numx, numy, numz : int
@@ -279,10 +283,7 @@ def _calc_2d_median(ans, data_label, binx, biny, xarr, yarr, zarr, numx,
 
     if returnData is not None:
         return_data = returnData
-        warnings.warn(''.join(['"returnData" has been deprecated in favor of ',
-                               '"return_data". Assigning input "returnData" ',
-                               'to "return_data". ']), DeprecationWarning,
-                      stacklevel=2)
+        warnings.warn(return_data_dep_str, DeprecationWarning, stacklevel=2)
 
     # set up output arrays
     median_ans = [[[[] for i in xarr] for j in yarr] for k in zarr]
@@ -493,7 +494,7 @@ def _core_mean(inst, data_label, by_orbit=False, by_day=False, by_file=False):
 
 def _calc_1d_median(ans, data_label, binx, xarr, zarr, numx, numz,
                     returnData=None, return_data=False):
-    """Return a 1D average of nD `data_label` over season.
+    """Calculate a 1D median of nD `data_label` over time and `binx`.
 
     Parameters
     ----------
@@ -530,10 +531,7 @@ def _calc_1d_median(ans, data_label, binx, xarr, zarr, numx, numz,
 
     if returnData is not None:
         return_data = returnData
-        warnings.warn(''.join(['"returnData" has been deprecated in favor of ',
-                               '"return_data". Assigning input "returnData" ',
-                               'to "return_data". ']), DeprecationWarning,
-                      stacklevel=2)
+        warnings.warn(return_data_dep_str, DeprecationWarning, stacklevel=2)
 
     # Set up output arrays
     median_ans = [[None for i in xarr] for k in zarr]
