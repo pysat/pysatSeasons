@@ -1,6 +1,6 @@
 <div align="left">
         <img height="0" width="0px">
-        <img width="20%" src="https://raw.githubusercontent.com/pysat/pysatSeasons/main/docs/images/logo.png" alt="pysat" title="pysatSeasons"</img>
+        <img width="20%" src="https://raw.githubusercontent.com/pysat/pysatSeasons/main/docs/images/logo.png" alt="The pysatSeasons logo: A calendar page featuring a snake orbiting a blue planet" title="pysatSeasons"</img>
 </div>
 
 # pysatSeasons
