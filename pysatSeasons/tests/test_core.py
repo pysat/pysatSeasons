@@ -20,7 +20,7 @@ class TestCore(object):
         """Run before every method to create a clean testing setup."""
 
         self.testInst = pysat.Instrument(inst_module=pinsts.pysat_testing,
-                                         clean_level='clean')
+                                         clean_level='clean', use_header=True)
         self.bounds1 = self.testInst.inst_module._test_dates['']['']
         return
 
@@ -88,7 +88,7 @@ class TestCoreXarray(TestCore):
     def setup(self):
         """Run before every method to create a clean testing setup."""
         self.testInst = pysat.Instrument(inst_module=pinsts.pysat_testing_xarray,
-                                         clean_level='clean')
+                                         clean_level='clean', use_header=True)
         self.bounds1 = self.testInst.inst_module._test_dates['']['']
         return
 
