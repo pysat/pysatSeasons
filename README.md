@@ -31,7 +31,7 @@ and for the Space Physics community.
 
 | Common modules | Community modules |
 | -------------- | ----------------- |
-| matplotlib     | pysat             |
+| matplotlib     | pysat >= 3.0.1    |
 | numpy          |                   |
 | pandas         |                   |
 | xarray         |                   |
