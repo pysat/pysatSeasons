@@ -84,7 +84,7 @@ def median1D(const, bin1, label1, data_label, auto_bin=True, returnData=None,
     # How many bins are used
     numx = len(binx) - 1
 
-    # How many different data products
+    # Determine how many different data products are included
     numz = len(data_label)
 
     # Create array to store all values before taking median.
@@ -117,7 +117,7 @@ def median1D(const, bin1, label1, data_label, auto_bin=True, returnData=None,
                             # data, put it in a list, and extend the list.
                             ans[zk][xi].extend(inst[xindex, data_label[zk]])
 
-    # Calculate the 1D median
+    # Calculate and return the 1D median
     return _calc_1d_median(ans, data_label, binx, xarr, zarr, numx, numz,
                            returnData, return_data)
 

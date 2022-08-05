@@ -75,7 +75,7 @@ def add_magnetic_coordinates(inst):
 
 
 def restrict_abs_values(inst, label, max_val):
-    """Restrict absolute qd_lat values.
+    """Restrict absolute quasi-dipole latitude values.
 
     Parameters
     ----------
