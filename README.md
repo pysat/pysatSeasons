@@ -29,12 +29,12 @@ Main Features
 pysatSeasons uses common Python modules, as well as modules developed by
 and for the Space Physics community.  
 
-| Common modules | Community modules |
-| -------------- | ----------------- |
-| matplotlib     | pysat >= 3.0.1    |
-| numpy          |                   |
-| pandas         |                   |
-| xarray         |                   |
+| Common modules   | Community modules |
+| --------------   | ----------------- |
+| matplotlib       | pysat >= 3.0.2    |
+| numpy            |                   |
+| pandas           |                   |
+| xarray<2022.06.0 |                   |
 
 ## GitHub Installation
 
