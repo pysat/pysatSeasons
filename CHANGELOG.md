@@ -2,7 +2,7 @@
 All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
-## [0.2.0] - 2022-08-05
+## [0.2.0] - 2022-08-12
 - New Features
   - Added support for xarray data in the seasonal averaging functions in `pysatSeasons.avg`
   - Added support for xarray data in the occurrence probability functions in `pysatSeasons.occur_prob`
