@@ -31,10 +31,10 @@ and for the Space Physics community.
 
 | Common modules   | Community modules |
 | --------------   | ----------------- |
-| matplotlib       | pysat >= 3.0.2    |
+| matplotlib       | pysat >= 3.0.4    |
 | numpy            |                   |
 | pandas           |                   |
-| xarray<2022.06.0 |                   |
+| xarray           |                   |
 
 ## GitHub Installation
 
