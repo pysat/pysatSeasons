@@ -1,8 +1,13 @@
-"""
-pysatSeasons is a pysat module that provides
-the interface to perform seasonal analysis on
-data managed by pysat.  These analysis methods
-are independent of instrument type.
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+# Copyright (C) 2022, pysat development team
+# Full license can be found in License.md
+# -----------------------------------------------------------------------------
+"""pysatSeasons.
+
+pysatSeasons is a pysat module that provides the interface to perform seasonal
+analysis on data managed by pysat.  These analysis methods are independent of
+instrument type.
 
 Main Features
 -------------
@@ -16,10 +21,10 @@ Main Features
 import os
 
 # Import key modules and skip F401 testing in flake8
-from pysatSeasons import occur_prob  # noqa: F401
+from pysatSeasons._core import to_xarray_dataset  # noqa: F401
 from pysatSeasons import avg  # noqa: F401
+from pysatSeasons import occur_prob  # noqa: F401
 from pysatSeasons import plot  # noqa: F401
-from pysatSeasons._core import computational_form  # noqa: F401
 
 # set version
 here = os.path.abspath(os.path.dirname(__file__))

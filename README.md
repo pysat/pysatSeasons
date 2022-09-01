@@ -1,26 +1,25 @@
 <div align="left">
         <img height="0" width="0px">
-        <img width="20%" src="https://raw.githubusercontent.com/pysat/pysatSeasons/main/poweredbypysat.png" alt="pysat" title="pysat"</img>
+        <img width="20%" src="https://raw.githubusercontent.com/pysat/pysatSeasons/main/docs/images/logo.png" alt="The pysatSeasons logo: A calendar page featuring a snake orbiting a blue planet" title="pysatSeasons"</img>
 </div>
 
 # pysatSeasons
+[![Documentation Status](https://readthedocs.org/projects/pysatseasons/badge/?version=latest)](https://pysatseasons.readthedocs.io/en/latest/?badge=latest)
 [![PyPI Package latest release](https://img.shields.io/pypi/v/pysatSeasons.svg)](https://pypi.python.org/pypi/pysatSeasons)
-[![Build Status](https://github.com/github/docs/actions/workflows/main.yml/badge.svg)](https://github.com/github/docs/actions/workflows/main.yml/badge.svg)
+[![Build Status](https://github.com/pysat/pysatSeasons/actions/workflows/main.yml/badge.svg)](https://github.com/pysat/pysatSeasons/actions/workflows/main.yml/badge.svg)
 [![Coverage Status](https://coveralls.io/repos/github/pysat/pysatSeasons/badge.svg?branch=main)](https://coveralls.io/github/pysat/pysatSeasons?branch=main)
 [![DOI](https://zenodo.org/badge/209365329.svg)](https://zenodo.org/badge/latestdoi/209365329)
 
 
 
-This code will handle the seasonal analysis routines for pysat.  It is currently a work in progress, and will eventually replace the pysat.ssnl module in pysat.
-
-pysatSeasons allows users to run basic seasonal analysis over N-dimensional datasets managed through the pysat code.
+pysatSeasons allows users to run seasonal data analyses over N-dimensional 
+data sets managed through the pysat module.
 
 Main Features
 -------------
-- Seasonal averaging routine for 1D and 2D data.
+- Seasonal binning and averaging routines for 1D and 2D distributions of nD data.
 - Occurrence probability routines, daily or by orbit.
-- Scatterplot of data_label(s) as functions of labelx,y
-    over a season.
+- Scatterplot of data_label(s) over two dimensions over a season.
 
 
 # Installation
@@ -28,19 +27,14 @@ Main Features
 ### Prerequisites
 
 pysatSeasons uses common Python modules, as well as modules developed by
-and for the Space Physics community.  This module officially supports
-Python 3.7.  Note that the current release is based on archived routines from
-pysat 2.0.  This currently requires the deprecated `Panel` from pandas.
-The caps on numpy and python stem from compatibility with the maximum
-supported pandas version.  Version 0.2.0 will rewrite the routines to remove
-`Panel`.
+and for the Space Physics community.  
 
-| Common modules | Community modules |
-| -------------- | ----------------- |
-| matplotlib     | pysat             |
-| numpy<1.20     |                   |
-| pandas<0.24    |                   |
-
+| Common modules   | Community modules |
+| --------------   | ----------------- |
+| matplotlib       | pysat >= 3.0.4    |
+| numpy            |                   |
+| pandas           |                   |
+| xarray           |                   |
 
 ## GitHub Installation
 
