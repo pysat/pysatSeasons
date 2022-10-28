@@ -1,3 +1,8 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+# Copyright (C) 2022, pysat development team
+# Full license can be found in License.md
+# -----------------------------------------------------------------------------
 import pandas as pds
 import xarray as xr
 
@@ -16,10 +21,9 @@ def to_xarray_dataset(data):
 
     Parameters
     ----------
-    data : pds.Series, pds.DataFrame, xr.DataArray, xr.DataSet, or list-like
-           of the same or numbers.
-        List-like of numbers, Series, DataFrames, or Datasets to be combined
-        into a single Dataset.
+    data : list-like
+        List-like (including ndarray, Series, DataFrames, Datasets or list-like of these object) to be converted
+        or combined into a single Dataset.
 
     Returns
     -------
@@ -79,6 +83,6 @@ def to_xarray_dataset(data):
                                      for item in data], 'pysat_binning')
     else:
         output = xr.Dataset()
-        output['data'] = data
+        output['data'] = xr.DataArray(data)
 
     return output

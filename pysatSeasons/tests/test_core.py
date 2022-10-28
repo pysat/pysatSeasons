@@ -1,79 +1,98 @@
-"""
-tests the pysat _core code
-"""
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+# Copyright (C) 2022, pysat development team
+# Full license can be found in License.md
+# -----------------------------------------------------------------------------
+"""Test the pysat _core code."""
+
 import xarray as xr
 
 import pysat
 from pysat import instruments as pinsts
-import pysatSeasons as ps
+
+import pysatSeasons as pyseas
 
 
 class TestCore(object):
+    """Test the core code for prepping seasonal analysis."""
+
     def setup(self):
-        """Runs before every method to create a clean testing setup."""
+        """Run before every method to create a clean testing setup."""
+
         self.testInst = pysat.Instrument(inst_module=pinsts.pysat_testing,
-                                         clean_level='clean')
+                                         clean_level='clean', use_header=True)
         self.bounds1 = self.testInst.inst_module._test_dates['']['']
+        return
 
     def teardown(self):
-        """Runs after every method to clean up previous testing."""
+        """Run after every method to clean up previous testing."""
+
         del self.testInst, self.bounds1
+        return
 
     def test_comp_form_simple_data(self):
-        """Test to_xarray_dataset with inst.data"""
+        """Test to_xarray_dataset with `inst.data`."""
+
         self.testInst.load(date=self.bounds1)
 
-        self.out = ps.to_xarray_dataset(self.testInst.data)
+        self.out = pyseas.to_xarray_dataset(self.testInst.data)
         assert isinstance(self.out, xr.Dataset)
         assert 'pysat_binning' not in self.out.dims
         return
 
     def test_comp_form_instrument_variable(self):
-        """Test to_xarray_dataset with inst[var]"""
+        """Test to_xarray_dataset with `inst[var]`."""
 
         self.testInst.load(date=self.bounds1)
 
-        self.out = ps.to_xarray_dataset(self.testInst['mlt'])
+        self.out = pyseas.to_xarray_dataset(self.testInst['mlt'])
         assert isinstance(self.out, xr.Dataset)
         assert 'pysat_binning' not in self.out.dims
         return
 
     def test_comp_form_numbers(self):
-        """Test to_xarray_dataset with [float1, float2, ...., floatn]"""
+        """Test to_xarray_dataset with [float1, float2, ...., floatn]."""
 
         self.testInst.load(date=self.bounds1)
 
-        self.out = ps.to_xarray_dataset(self.testInst['mlt'].values.tolist())
+        vals = self.testInst['mlt'].values.tolist()
+        self.out = pyseas.to_xarray_dataset(vals)
         assert isinstance(self.out, xr.Dataset)
         assert 'pysat_binning' not in self.out.dims
         return
 
     def test_comp_form_list_vars(self):
-        """Test to_xarray_dataset with [inst[var], inst[var2], ...]"""
+        """Test to_xarray_dataset with [inst[var], inst[var2], ...]."""
+
         self.testInst.load(date=self.bounds1)
-        self.out = ps.to_xarray_dataset([self.testInst['mlt'],
-                                         self.testInst['longitude']])
+        self.out = pyseas.to_xarray_dataset([self.testInst['mlt'],
+                                             self.testInst['longitude']])
         assert isinstance(self.out, xr.Dataset)
         assert 'pysat_binning' in self.out.dims
         return
 
     def test_comp_form_list_data(self):
-        """Test to_xarray_dataset with [inst.data, inst.data, ...]"""
+        """Test to_xarray_dataset with [inst.data, inst.data, ...]."""
+
         self.testInst.load(date=self.bounds1)
-        self.out = ps.to_xarray_dataset([self.testInst.data,
-                                         self.testInst.data])
+        self.out = pyseas.to_xarray_dataset([self.testInst.data,
+                                             self.testInst.data])
         assert isinstance(self.out, xr.Dataset)
         assert 'pysat_binning' in self.out.dims
         return
 
 
 class TestCoreXarray(TestCore):
+    """Test the core code for prepping seasonal analysis for xarray."""
+
     def setup(self):
-        """Runs before every method to create a clean testing setup."""
+        """Run before every method to create a clean testing setup."""
         self.testInst = pysat.Instrument(inst_module=pinsts.pysat_testing_xarray,
-                                         clean_level='clean')
+                                         clean_level='clean', use_header=True)
         self.bounds1 = self.testInst.inst_module._test_dates['']['']
+        return
 
     def teardown(self):
-        """Runs after every method to clean up previous testing."""
+        """Run after every method to clean up previous testing."""
         del self.testInst, self.bounds1
+        return

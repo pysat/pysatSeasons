@@ -4,6 +4,14 @@
 # Full license can be found in License.md
 # -----------------------------------------------------------------------------
 
+"""Setup routine for pysatSeasons.
+
+Note
+----
+package metadata stored in setup.cfg
+
+"""
+
 from setuptools import setup
 
 
