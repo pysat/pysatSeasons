@@ -16,7 +16,7 @@ import pysatSeasons as pyseas
 class TestCore(object):
     """Test the core code for prepping seasonal analysis."""
 
-    def setup(self):
+    def setup_method(self):
         """Run before every method to create a clean testing setup."""
 
         self.testInst = pysat.Instrument(inst_module=pinsts.pysat_testing,
@@ -24,7 +24,7 @@ class TestCore(object):
         self.bounds1 = self.testInst.inst_module._test_dates['']['']
         return
 
-    def teardown(self):
+    def teardown_method(self):
         """Run after every method to clean up previous testing."""
 
         del self.testInst, self.bounds1
@@ -85,14 +85,14 @@ class TestCore(object):
 class TestCoreXarray(TestCore):
     """Test the core code for prepping seasonal analysis for xarray."""
 
-    def setup(self):
+    def setup_method(self):
         """Run before every method to create a clean testing setup."""
         self.testInst = pysat.Instrument(inst_module=pinsts.pysat_testing_xarray,
                                          clean_level='clean', use_header=True)
         self.bounds1 = self.testInst.inst_module._test_dates['']['']
         return
 
-    def teardown(self):
+    def teardown_method(self):
         """Run after every method to clean up previous testing."""
         del self.testInst, self.bounds1
         return
