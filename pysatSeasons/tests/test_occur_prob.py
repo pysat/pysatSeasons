@@ -19,7 +19,7 @@ from pysatSeasons import occur_prob
 class TestBasics(object):
     """Basic tests using pandas data source."""
 
-    def setup(self):
+    def setup_method(self):
         """Run before every method to create a clean testing setup."""
         orbit_info = {'index': 'longitude', 'kind': 'longitude'}
         self.testInst = pysat.Instrument('pysat', 'testing',
@@ -32,7 +32,7 @@ class TestBasics(object):
 
         return
 
-    def teardown(self):
+    def teardown_method(self):
         """Run after every method to clean up previous testing."""
         del self.testInst
 
@@ -174,7 +174,7 @@ class TestBasics(object):
 class TestXarrayBasics(TestBasics):
     """Reapply basic tests with xarray data source."""
 
-    def setup(self):
+    def setup_method(self):
         """Run before every method to create a clean testing setup."""
         orbit_info = {'index': 'longitude', 'kind': 'longitude'}
         self.testInst = pysat.Instrument('pysat', 'testing_xarray',
@@ -191,7 +191,7 @@ class TestXarrayBasics(TestBasics):
 class TestConstellationBasics(TestBasics):
     """Basic tests using Constellations and pandas data source."""
 
-    def setup(self):
+    def setup_method(self):
         """Run before every method to create a clean testing setup."""
         orbit_info = {'index': 'longitude', 'kind': 'longitude'}
         self.rawInst = pysat.Instrument('pysat', 'testing',
@@ -207,7 +207,7 @@ class TestConstellationBasics(TestBasics):
 
         return
 
-    def teardown(self):
+    def teardown_method(self):
         """Run after every method to clean up previous testing."""
         del self.testInst, self.rawInst
 
@@ -217,7 +217,7 @@ class TestConstellationBasics(TestBasics):
 class TestXarrayConstellationBasics(TestBasics):
     """Basic tests using Constellations and xarray data source."""
 
-    def setup(self):
+    def setup_method(self):
         """Run before every method to create a clean testing setup."""
         orbit_info = {'index': 'longitude', 'kind': 'longitude'}
         self.rawInst = pysat.Instrument('pysat', 'testing_xarray',
@@ -233,7 +233,7 @@ class TestXarrayConstellationBasics(TestBasics):
 
         return
 
-    def teardown(self):
+    def teardown_method(self):
         """Run after every method to clean up previous testing."""
         del self.testInst, self.rawInst
 
@@ -247,7 +247,7 @@ class TestXarrayConstellationBasics(TestBasics):
 class TestDeprecation(object):
     """Unit test for deprecation warnings."""
 
-    def setup(self):
+    def setup_method(self):
         """Set up the unit test environment for each method."""
 
         warnings.simplefilter("always", DeprecationWarning)
@@ -260,7 +260,7 @@ class TestDeprecation(object):
         self.war = ""
         return
 
-    def teardown(self):
+    def teardown_method(self):
         """Clean up the unit test environment after each method."""
         # self.in_kwargs, self.ref_time,
         del self.warn_msgs, self.war
