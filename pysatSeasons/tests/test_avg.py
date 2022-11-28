@@ -20,7 +20,7 @@ from pysatSeasons import avg
 class TestBasics(object):
     """Test basic functions using pandas 1D data sources."""
 
-    def setup(self):
+    def setup_method(self):
         """Run before every method to create a clean testing setup."""
         self.testInst = pysat.Instrument('pysat', 'testing',
                                          clean_level='clean')
@@ -33,7 +33,7 @@ class TestBasics(object):
 
         return
 
-    def teardown(self):
+    def teardown_method(self):
         """Run after every method to clean up previous testing."""
         del self.testInst, self.bounds1, self.bounds2, self.long_bins
         del self.mlt_bins
@@ -118,7 +118,7 @@ class TestBasics(object):
 class TestXarrayBasics(TestBasics):
     """Reapply basic tests to 1D xarray data sources."""
 
-    def setup(self):
+    def setup_method(self):
         """Run before every method to create a clean testing setup."""
         self.testInst = pysat.Instrument('pysat', 'testing_xarray',
                                          clean_level='clean')
@@ -135,7 +135,7 @@ class TestXarrayBasics(TestBasics):
 class TestBasicsMeanBy(object):
     """Test basic functions using pandas 1D data sources."""
 
-    def setup(self):
+    def setup_method(self):
         """Run before every method to create a clean testing setup."""
         self.testInst = pysat.Instrument('pysat', 'testing',
                                          clean_level='clean')
@@ -144,7 +144,7 @@ class TestBasicsMeanBy(object):
 
         return
 
-    def teardown(self):
+    def teardown_method(self):
         """Run after every method to clean up previous testing."""
         del self.testInst, self.bounds1, self.bounds2
 
@@ -189,7 +189,7 @@ class TestBasicsMeanBy(object):
 class TestXarrayBasicsMeanBy(TestBasicsMeanBy):
     """Reapply basic tests to 1D xarray data sources."""
 
-    def setup(self):
+    def setup_method(self):
         """Run before every method to create a clean testing setup."""
         self.testInst = pysat.Instrument('pysat', 'testing_xarray',
                                          clean_level='clean')
@@ -202,7 +202,7 @@ class TestXarrayBasicsMeanBy(TestBasicsMeanBy):
 class TestFrameProfileAverages(object):
     """Test bin averaging dataframes from pandas data sources."""
 
-    def setup(self):
+    def setup_method(self):
         """Run before every method to create a clean testing setup."""
         self.testInst = pysat.Instrument('pysat', 'testing2D',
                                          clean_level='clean')
@@ -214,7 +214,7 @@ class TestFrameProfileAverages(object):
 
         return
 
-    def teardown(self):
+    def teardown_method(self):
         """Run after every method to clean up previous testing."""
         del self.testInst, self.dname, self.test_vals, self.test_fracs
 
@@ -262,7 +262,7 @@ class TestFrameProfileAverages(object):
 class TestSeriesProfileAverages(object):
     """Test bin averaging series profile data from pandas data sources."""
 
-    def setup(self):
+    def setup_method(self):
         """Run before every method to create a clean testing setup."""
         self.testInst = pysat.Instrument('pysat', 'testing2D',
                                          clean_level='clean')
@@ -273,7 +273,7 @@ class TestSeriesProfileAverages(object):
 
         return
 
-    def teardown(self):
+    def teardown_method(self):
         """Run after every method to clean up previous testing."""
         del self.testInst, self.dname
 
@@ -316,7 +316,7 @@ class TestSeriesProfileAverages(object):
 class TestXarrayProfileAverages(object):
     """Test bin averaging profile data from xarray data sources."""
 
-    def setup(self):
+    def setup_method(self):
         """Run before every method to create a clean testing setup."""
 
         self.testInst = pysat.Instrument('pysat', 'testing2D_xarray',
@@ -328,7 +328,7 @@ class TestXarrayProfileAverages(object):
 
         return
 
-    def teardown(self):
+    def teardown_method(self):
         """Run after every method to clean up previous testing."""
         del self.testInst, self.dname, self.test_val_length
 
@@ -381,7 +381,7 @@ class TestXarrayProfileAverages(object):
 class TestXarrayVariableProfileAverages(TestXarrayProfileAverages):
     """Test bin averaging variable profile data from xarray data sources."""
 
-    def setup(self):
+    def setup_method(self):
         """Run before every method to create a clean testing setup."""
         self.testInst = pysat.Instrument('pysat', 'testing2D_xarray',
                                          clean_level='clean')
@@ -396,7 +396,7 @@ class TestXarrayVariableProfileAverages(TestXarrayProfileAverages):
 class TestXarrayImageAverages(TestXarrayProfileAverages):
     """Test bin averaging image data from xarray data sources."""
 
-    def setup(self):
+    def setup_method(self):
         """Run before every method to create a clean testing setup."""
         self.testInst = pysat.Instrument('pysat', 'testing2D_xarray',
                                          clean_level='clean')
@@ -407,7 +407,7 @@ class TestXarrayImageAverages(TestXarrayProfileAverages):
 
         return
 
-    def teardown(self):
+    def teardown_method(self):
         """Run after every method to clean up previous testing."""
         del self.testInst, self.dname, self.test_val_length
 
@@ -417,7 +417,7 @@ class TestXarrayImageAverages(TestXarrayProfileAverages):
 class TestConstellation(object):
     """Test seasonal analysis for constellations."""
 
-    def setup(self):
+    def setup_method(self):
         """Run before every method to create a clean testing setup."""
         insts = []
         for i in range(5):
@@ -437,7 +437,7 @@ class TestConstellation(object):
 
         return
 
-    def teardown(self):
+    def teardown_method(self):
         """Run after every method to clean up previous testing."""
         del self.testC, self.testI, self.bounds
 
@@ -492,7 +492,7 @@ class TestConstellation(object):
 class TestHeterogenousConstellation(TestConstellation):
     """Test with a Constellation of Instruments with different parameters."""
 
-    def setup(self):
+    def setup_method(self):
         """Run before every method to create a clean testing setup."""
         insts = []
         for i in range(2):
@@ -516,7 +516,7 @@ class TestHeterogenousConstellation(TestConstellation):
 
         return
 
-    def teardown(self):
+    def teardown_method(self):
         """Run after every method to clean up previous testing."""
         del self.testC, self.bounds, self.one_d_vars, self.unequal_one_d_vars
         del self.testI
@@ -527,7 +527,7 @@ class TestHeterogenousConstellation(TestConstellation):
 class Test2DConstellation(TestSeriesProfileAverages):
     """Test seasonal analysis for 2D pandas constellations."""
 
-    def setup(self):
+    def setup_method(self):
         """Run before every method to create a clean testing setup."""
 
         self.insts = []
@@ -545,7 +545,7 @@ class Test2DConstellation(TestSeriesProfileAverages):
 
         return
 
-    def teardown(self):
+    def teardown_method(self):
         """Run after every method to clean up previous testing."""
 
         del self.testC, self.insts, self.testInst, self.dname, self.test_vals
@@ -556,7 +556,7 @@ class Test2DConstellation(TestSeriesProfileAverages):
 class TestSeasonalAverageUnevenBins(TestBasics):
     """Test seasonal analysis for uneven bins."""
 
-    def setup(self):
+    def setup_method(self):
         """Run before every method to create a clean testing setup."""
 
         self.testInst = pysat.Instrument('pysat', 'testing',
@@ -574,7 +574,7 @@ class TestSeasonalAverageUnevenBins(TestBasics):
 
         return
 
-    def teardown(self):
+    def teardown_method(self):
         """Run after every method to clean up previous testing."""
 
         del self.testInst, self.bounds1, self.bounds2, self.long_bins
@@ -635,7 +635,7 @@ class TestSeasonalAverageUnevenBins(TestBasics):
 class TestInstMed1D(object):
     """Test one-dimensional medians."""
 
-    def setup(self):
+    def setup_method(self):
         """Run before every method to create a clean testing setup."""
 
         self.testInst = pysat.Instrument('pysat', 'testing',
@@ -669,7 +669,7 @@ class TestInstMed1D(object):
                                      12., 11., 12., 11., 11., 11., 11., 12.]}}
         return
 
-    def teardown(self):
+    def teardown_method(self):
         """Run after every method to clean up previous testing."""
 
         del self.testInst, self.test_bins, self.test_label, self.test_data
@@ -787,7 +787,7 @@ class TestInstMed1D(object):
 class TestDeprecation(object):
     """Unit test for deprecation warnings."""
 
-    def setup(self):
+    def setup_method(self):
         """Set up the unit test environment for each method."""
 
         warnings.simplefilter("always", DeprecationWarning)
@@ -800,7 +800,7 @@ class TestDeprecation(object):
         self.war = ""
         return
 
-    def teardown(self):
+    def teardown_method(self):
         """Clean up the unit test environment after each method."""
         # self.in_kwargs, self.ref_time,
         del self.warn_msgs, self.war
