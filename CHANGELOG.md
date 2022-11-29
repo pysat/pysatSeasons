@@ -6,6 +6,7 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 - Maintenance
   - Update pytest syntax
   - Update Github Actions workflows
+  - Add workflow for testing with pysat RC
 
 ## [0.2.0] - 2022-08-12
 - New Features
