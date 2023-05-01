@@ -7,6 +7,7 @@ This project adheres to [Semantic Versioning](http://semver.org/).
   - Update pytest syntax
   - Update Github Actions workflows
   - Add workflow for testing with pysat RC
+  - Add workflow for testing the install of pysatSeasons RC from pip
 
 ## [0.2.0] - 2022-08-12
 - New Features
