@@ -4,7 +4,7 @@
 
 name: Test install of latest RC from pip
 
-on: [workflow_dispatch]
+on: [push]
 
 jobs:
   build:
@@ -35,4 +35,6 @@ jobs:
         python -c "import pysat; pysat.params['data_dirs'] = 'pysatData'"
 
     - name: Check that install imports correctly
-      run: python -c "import pysatSeasons"
+      run: |
+        cd ..
+        python -c "import pysatSeasons; print(pysatSeasons.__version__)"
