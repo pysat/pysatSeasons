@@ -210,13 +210,13 @@ class TestXarrayProfileAverages(object):
         self.testInst.bounds = (dt.datetime(2008, 1, 1),
                                 dt.datetime(2008, 2, 1))
         self.dname = 'profiles'
-        self.test_val_length = 15
+        self.test_name = 'z'
 
         return
 
     def teardown_method(self):
         """Run after every method to clean up previous testing."""
-        del self.testInst, self.dname, self.test_val_length
+        del self.testInst, self.dname, self.test_name
 
         return
 
@@ -245,10 +245,11 @@ class TestXarrayProfileAverages(object):
         results = avg.median1D(self.testInst, [0., 24., 24], 'mlt',
                                [self.dname])
 
+        test_val_length = self.testInst.data.coords[self.test_name].shape[0]
         for i, row in enumerate(results[self.dname]['median']):
             # Define truth values. There is a variation in value based on
             # longitude, at thousands level. MLT only shows at ones/tens level.
-            test_vals = [i] * self.test_val_length
+            test_vals = [i] * test_val_length
             vals = []
             for val in row[self.dname].values:
                 if not isinstance(val, np.float64):
@@ -274,7 +275,7 @@ class TestXarrayVariableProfileAverages(TestXarrayProfileAverages):
         self.testInst.bounds = (dt.datetime(2008, 1, 1),
                                 dt.datetime(2008, 2, 1))
         self.dname = 'variable_profiles'
-        self.test_val_length = 15
+        self.test_name = 'z'
 
         return
 
@@ -289,13 +290,13 @@ class TestXarrayImageAverages(TestXarrayProfileAverages):
         self.testInst.bounds = (dt.datetime(2008, 1, 1),
                                 dt.datetime(2008, 2, 1))
         self.dname = 'images'
-        self.test_val_length = 17
+        self.test_name = 'x'
 
         return
 
     def teardown_method(self):
         """Run after every method to clean up previous testing."""
-        del self.testInst, self.dname, self.test_val_length
+        del self.testInst, self.dname, self.test_name
 
         return
 
