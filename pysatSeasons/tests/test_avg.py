@@ -120,8 +120,8 @@ class TestXarrayBasics(TestBasics):
 
     def setup_method(self):
         """Run before every method to create a clean testing setup."""
-        self.testInst = pysat.Instrument('pysat', 'testing_xarray',
-                                         clean_level='clean')
+        self.testInst = pysat.Instrument('pysat', 'ndtesting',
+                                         num_samples=86400, clean_level='clean')
         self.bounds1 = (dt.datetime(2008, 1, 1), dt.datetime(2008, 1, 3))
         self.bounds2 = (dt.datetime(2009, 1, 1), dt.datetime(2009, 1, 2))
 
@@ -191,8 +191,8 @@ class TestXarrayBasicsMeanBy(TestBasicsMeanBy):
 
     def setup_method(self):
         """Run before every method to create a clean testing setup."""
-        self.testInst = pysat.Instrument('pysat', 'testing_xarray',
-                                         clean_level='clean')
+        self.testInst = pysat.Instrument('pysat', 'ndtesting',
+                                         num_samples=86400, clean_level='clean')
         self.bounds1 = (dt.datetime(2008, 1, 1), dt.datetime(2008, 1, 3))
         self.bounds2 = (dt.datetime(2009, 1, 1), dt.datetime(2009, 1, 2))
 
@@ -206,7 +206,7 @@ class TestXarrayProfileAverages(object):
         """Run before every method to create a clean testing setup."""
 
         self.testInst = pysat.Instrument('pysat', 'ndtesting',
-                                         clean_level='clean')
+                                         num_samples=86400, clean_level='clean')
         self.testInst.bounds = (dt.datetime(2008, 1, 1),
                                 dt.datetime(2008, 2, 1))
         self.dname = 'profiles'
