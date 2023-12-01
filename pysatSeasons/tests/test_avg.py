@@ -120,7 +120,7 @@ class TestXarrayBasics(TestBasics):
 
     def setup_method(self):
         """Run before every method to create a clean testing setup."""
-        self.testInst = pysat.Instrument('pysat', 'testing_xarray',
+        self.testInst = pysat.Instrument('pysat', 'ndtesting',
                                          clean_level='clean')
         self.bounds1 = (dt.datetime(2008, 1, 1), dt.datetime(2008, 1, 3))
         self.bounds2 = (dt.datetime(2009, 1, 1), dt.datetime(2009, 1, 2))
@@ -191,124 +191,10 @@ class TestXarrayBasicsMeanBy(TestBasicsMeanBy):
 
     def setup_method(self):
         """Run before every method to create a clean testing setup."""
-        self.testInst = pysat.Instrument('pysat', 'testing_xarray',
-                                         clean_level='clean')
+        self.testInst = pysat.Instrument('pysat', 'ndtesting', sample_rate='1S',
+                                         num_samples=86400, clean_level='clean')
         self.bounds1 = (dt.datetime(2008, 1, 1), dt.datetime(2008, 1, 3))
         self.bounds2 = (dt.datetime(2009, 1, 1), dt.datetime(2009, 1, 2))
-
-        return
-
-
-class TestFrameProfileAverages(object):
-    """Test bin averaging dataframes from pandas data sources."""
-
-    def setup_method(self):
-        """Run before every method to create a clean testing setup."""
-        self.testInst = pysat.Instrument('pysat', 'testing2D',
-                                         clean_level='clean')
-        self.testInst.bounds = (dt.datetime(2008, 1, 1),
-                                dt.datetime(2008, 1, 3))
-        self.dname = 'alt_profiles'
-        self.test_vals = np.arange(50) * 1.2
-        self.test_fracs = np.arange(50) / 50.0
-
-        return
-
-    def teardown_method(self):
-        """Run after every method to clean up previous testing."""
-        del self.testInst, self.dname, self.test_vals, self.test_fracs
-
-        return
-
-    def test_basic_seasonal_2Dmedian(self):
-        """Test the basic seasonal 2D median."""
-
-        results = avg.median2D(self.testInst, [0., 360., 24], 'longitude',
-                               [0., 24., 24], 'mlt', [self.dname])
-
-        # Test medians.
-        for i, row in enumerate(results[self.dname]['median']):
-            for j, item in enumerate(row):
-                assert np.all(item['density'] == self.test_vals)
-                assert np.all(item['fraction'] == self.test_fracs)
-
-        # No variation in the median, all values should be the same
-        for i, row in enumerate(results[self.dname]['avg_abs_dev']):
-            for j, item in enumerate(row):
-                assert np.all(item['density'] == 0)
-                assert np.all(item['fraction'] == 0)
-
-        return
-
-    def test_basic_seasonal_1Dmedian(self):
-        """Test the basic seasonal 1D median."""
-
-        results = avg.median1D(self.testInst, [0., 24, 24], 'mlt',
-                               [self.dname])
-
-        # Test medians.
-        for i, row in enumerate(results[self.dname]['median']):
-            assert np.all(row['density'] == self.test_vals)
-            assert np.all(row['fraction'] == self.test_fracs)
-
-        # No variation in the median, all values should be the same.
-        for i, row in enumerate(results[self.dname]['avg_abs_dev']):
-            assert np.all(row['density'] == 0)
-            assert np.all(row['fraction'] == 0)
-
-        return
-
-
-class TestSeriesProfileAverages(object):
-    """Test bin averaging series profile data from pandas data sources."""
-
-    def setup_method(self):
-        """Run before every method to create a clean testing setup."""
-        self.testInst = pysat.Instrument('pysat', 'testing2D',
-                                         clean_level='clean')
-        self.testInst.bounds = (dt.datetime(2008, 1, 1),
-                                dt.datetime(2008, 2, 1))
-        self.dname = 'series_profiles'
-        self.test_vals = np.arange(50) * 1.2
-
-        return
-
-    def teardown_method(self):
-        """Run after every method to clean up previous testing."""
-        del self.testInst, self.dname
-
-        return
-
-    def test_basic_seasonal_median2D(self):
-        """Test basic seasonal 2D median."""
-        results = avg.median2D(self.testInst, [0., 360., 24], 'longitude',
-                               [0., 24., 24], 'mlt', [self.dname])
-
-        # Test medians.
-        for i, row in enumerate(results[self.dname]['median']):
-            for j, item in enumerate(row):
-                assert np.all(item[self.dname] == self.test_vals)
-
-        # No variation in the median, all values should be the same.
-        for i, row in enumerate(results[self.dname]['avg_abs_dev']):
-            for j, item in enumerate(row):
-                assert np.all(item[self.dname] == 0)
-
-        return
-
-    def test_basic_seasonal_median1D(self):
-        """Test basic seasonal 1D median."""
-
-        results = avg.median1D(self.testInst, [0., 24., 24], 'mlt',
-                               [self.dname])
-
-        # Test medians.
-        for i, row in enumerate(results[self.dname]['median']):
-            assert np.all(row[self.dname] == self.test_vals)
-
-        # No variation in the median, all values should be the same.
-        for i, row in enumerate(results[self.dname]['avg_abs_dev']):
-            assert np.all(row[self.dname] == 0)
 
         return
 
@@ -319,18 +205,18 @@ class TestXarrayProfileAverages(object):
     def setup_method(self):
         """Run before every method to create a clean testing setup."""
 
-        self.testInst = pysat.Instrument('pysat', 'testing2D_xarray',
+        self.testInst = pysat.Instrument('pysat', 'ndtesting',
                                          clean_level='clean')
         self.testInst.bounds = (dt.datetime(2008, 1, 1),
                                 dt.datetime(2008, 2, 1))
         self.dname = 'profiles'
-        self.test_val_length = 15
+        self.test_name = 'z'
 
         return
 
     def teardown_method(self):
         """Run after every method to clean up previous testing."""
-        del self.testInst, self.dname, self.test_val_length
+        del self.testInst, self.dname, self.test_name
 
         return
 
@@ -359,10 +245,11 @@ class TestXarrayProfileAverages(object):
         results = avg.median1D(self.testInst, [0., 24., 24], 'mlt',
                                [self.dname])
 
+        test_val_length = self.testInst.data.coords[self.test_name].shape[0]
         for i, row in enumerate(results[self.dname]['median']):
             # Define truth values. There is a variation in value based on
             # longitude, at thousands level. MLT only shows at ones/tens level.
-            test_vals = [i] * self.test_val_length
+            test_vals = [i] * test_val_length
             vals = []
             for val in row[self.dname].values:
                 if not isinstance(val, np.float64):
@@ -383,12 +270,12 @@ class TestXarrayVariableProfileAverages(TestXarrayProfileAverages):
 
     def setup_method(self):
         """Run before every method to create a clean testing setup."""
-        self.testInst = pysat.Instrument('pysat', 'testing2D_xarray',
+        self.testInst = pysat.Instrument('pysat', 'ndtesting',
                                          clean_level='clean')
         self.testInst.bounds = (dt.datetime(2008, 1, 1),
                                 dt.datetime(2008, 2, 1))
         self.dname = 'variable_profiles'
-        self.test_val_length = 15
+        self.test_name = 'z'
 
         return
 
@@ -398,18 +285,18 @@ class TestXarrayImageAverages(TestXarrayProfileAverages):
 
     def setup_method(self):
         """Run before every method to create a clean testing setup."""
-        self.testInst = pysat.Instrument('pysat', 'testing2D_xarray',
+        self.testInst = pysat.Instrument('pysat', 'ndtesting',
                                          clean_level='clean')
         self.testInst.bounds = (dt.datetime(2008, 1, 1),
                                 dt.datetime(2008, 2, 1))
         self.dname = 'images'
-        self.test_val_length = 17
+        self.test_name = 'x'
 
         return
 
     def teardown_method(self):
         """Run after every method to clean up previous testing."""
-        del self.testInst, self.dname, self.test_val_length
+        del self.testInst, self.dname, self.test_name
 
         return
 
@@ -520,35 +407,6 @@ class TestHeterogenousConstellation(TestConstellation):
         """Run after every method to clean up previous testing."""
         del self.testC, self.bounds, self.one_d_vars, self.unequal_one_d_vars
         del self.testI
-
-        return
-
-
-class Test2DConstellation(TestSeriesProfileAverages):
-    """Test seasonal analysis for 2D pandas constellations."""
-
-    def setup_method(self):
-        """Run before every method to create a clean testing setup."""
-
-        self.insts = []
-        self.testInst = pysat.Instrument('pysat', 'testing2D',
-                                         clean_level='clean')
-        self.testInst.bounds = (dt.datetime(2008, 1, 1),
-                                dt.datetime(2008, 1, 3))
-        self.insts.append(self.testInst)
-        self.insts.append(self.testInst)
-
-        self.dname = 'series_profiles'
-        self.test_vals = np.arange(50) * 1.2
-
-        self.testC = pysat.Constellation(instruments=self.insts)
-
-        return
-
-    def teardown_method(self):
-        """Run after every method to clean up previous testing."""
-
-        del self.testC, self.insts, self.testInst, self.dname, self.test_vals
 
         return
 

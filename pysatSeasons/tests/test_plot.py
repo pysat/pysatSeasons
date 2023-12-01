@@ -96,7 +96,7 @@ class TestXarrayBasics(TestBasics):
 
     def setup_method(self):
         """Run before every method to create a clean testing setup."""
-        self.testInst = pysat.Instrument('pysat', 'testing_xarray',
+        self.testInst = pysat.Instrument('pysat', 'ndtesting',
                                          clean_level='clean')
         self.testInst.bounds = (dt.datetime(2008, 1, 1),
                                 dt.datetime(2008, 1, 1))
@@ -132,7 +132,7 @@ class TestXarrayConstellationBasics(TestXarrayBasics):
 
     def setup_method(self):
         """Run before every method to create a clean testing setup."""
-        self.rawInst = pysat.Instrument('pysat', 'testing_xarray',
+        self.rawInst = pysat.Instrument('pysat', 'ndtesting',
                                         clean_level='clean')
         self.rawInst.bounds = (dt.datetime(2008, 1, 1),
                                dt.datetime(2008, 1, 31))
