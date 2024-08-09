@@ -15,7 +15,7 @@ jobs:
         numpy_ver: [latest]
         include:
            - python-version: "3.9"
-             numpy_ver: "1.22"
+             numpy_ver: "1.24"
              os: "ubuntu-latest"
 
     name: Python ${{ matrix.python-version }} on ${{ matrix.os }}
