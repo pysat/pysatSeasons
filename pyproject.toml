@@ -1,0 +1,88 @@
+[build-system]
+requires = ["setuptools >= 38.6", "pip >= 10"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "pysatSeasons"
+version = "0.2.0"
+description = "Seasonal analysis routines for pysat"
+readme = "README.md"
+requires-python = ">=3.10"
+license = {file = "LICENSE"}
+authors = [
+    {name = "Russell Stoneback, et al.", email = "pysat.developers@gmail.com"},
+]
+classifiers = [
+  "Development Status :: 3 - Alpha",
+  "Topic :: Scientific/Engineering :: Astronomy",
+  "Topic :: Scientific/Engineering :: Physics",
+  "Topic :: Scientific/Engineering :: Atmospheric Science",
+  "Intended Audience :: Science/Research",
+  "License :: OSI Approved :: BSD License",
+  "Natural Language :: English",
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3.6",
+  "Programming Language :: Python :: 3.10",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Operating System :: POSIX :: Linux",
+  "Operating System :: MacOS :: MacOS X",
+  "Operating System :: Microsoft :: Windows"
+]
+keywords = [
+  "pysat",
+  "ionosphere",
+  "magnetosphere",
+  "solar wind",
+  "thermosphere",
+  "average",
+  "analysis",
+  "season",
+  "climatology"
+]
+dependencies = [
+  "matplotlib",
+  "numpy",
+  "pandas",
+  "pysat >= 3.0.4",
+  "xarray"
+]
+
+[project.optional-dependencies]
+pysatcdf = ["pysatCDF"]
+test = [
+  "coveralls",
+  "flake8",
+  "flake8-docstrings",
+  "hacking >= 1.0",
+  "pytest",
+  "pytest-cov",
+  "pytest-ordering"
+]
+doc = [
+  "extras_require",
+  "ipython",
+  "m2r2",
+  "numpydoc",
+  "sphinx",
+  "sphinx_rtd_theme >= 1.2.2, < 2.0.0"
+]
+
+[project.urls]
+Documentation = "https://pysatseasons.readthedocs.io/en/latest/"
+Source = "https://github.com/pysat/pysatSeasons"
+
+[tool.coverage.report]
+omit = ["*/instruments/templates/"]
+
+[tool.pytest.ini_options]
+addopts = "--cov=pysatSeasons --cov-report xml"
+markers = [
+  "all_inst",
+  "download",
+  "no_download",
+  "load_options",
+  "new_tests",
+  "first",
+  "second"
+]
