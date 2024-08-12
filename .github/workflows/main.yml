@@ -11,8 +11,8 @@ jobs:
       fail-fast: false
       matrix:
         python-version: ["3.11", "3.12"]
-        os: [ubuntu-latest, macos-latest, windows-latest]
-        numpy_ver: [latest]
+        os: ["ubuntu-latest", "macos-latest", "windows-latest"]
+        numpy_ver: ["latest"]
         include:
            - python-version: "3.10"
              numpy_ver: "1.24"
@@ -21,26 +21,22 @@ jobs:
     name: Python ${{ matrix.python-version }} on ${{ matrix.os }}
     runs-on: ${{ matrix.os }}
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
     - name: Set up Python ${{ matrix.python-version }}
-      uses: actions/setup-python@v4
+      uses: actions/setup-python@v5
       with:
         python-version: ${{ matrix.python-version }}
 
-    - name: Install requirements for testing setup
-      run: |
-        pip install -r test_requirements.txt
-
     - name: Install NEP29 dependencies
-      if: ${{ matrix.numpy_ver != 'latest'}}
+      if: ${{ matrix.test_config == 'NEP29'}}
       run: |
-        pip install --no-binary :numpy: numpy==${{ matrix.numpy_ver }}
-        # Need to force a version of pandas compliant with NEP29
-        pip install "pandas<1.5"
+        pip install numpy==${{ matrix.numpy_ver }}
+        pip install --upgrade-strategy only-if-needed .[test]
 
-    - name: Install dependencies
+    - name: Install standard dependencies
+      if: ${{ matrix.test_config == 'latest'}}
       run: |
-        pip install -r requirements.txt
+        pip install .[test]
 
     - name: Set up pysat
       run: |
@@ -54,22 +50,44 @@ jobs:
       run: flake8 . --count --exit-zero --max-complexity=10 --statistics
 
     - name: Test with pytest
-      run: pytest --cov=pysatSeasons/
+      run: pytest
 
-    - name: Publish results to coveralls
+    - name: Coveralls Parallel (Ubuntu)
+      if: startsWith(matrix.os, 'ubuntu')
       env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        COVERALLS_REPO_TOKEN: ${{ secrets.COVERALLS_REPO_TOKEN }}
         COVERALLS_PARALLEL: true
-      run: coveralls --rcfile=setup.cfg --service=github
+      run: |
+        curl -sL https://coveralls.io/coveralls-linux.tar.gz | tar -xz
+        ./coveralls report --parallel --repo-token=${{ secrets.COVERALLS_REPO_TOKEN }} --build-number ${{ github.run_number }}
 
+    - name: Coveralls Parallel (Windows)
+      if: startsWith(matrix.os, 'windows')
+      env:
+        COVERALLS_REPO_TOKEN: ${{ secrets.COVERALLS_REPO_TOKEN }}
+        COVERALLS_PARALLEL: true
+      run: |
+        curl -L https://github.com/coverallsapp/coverage-reporter/releases/latest/download/coveralls-windows.exe -o coveralls.exe
+        ./coveralls.exe report --parallel --repo-token=${{ secrets.COVERALLS_REPO_TOKEN }} --build-number ${{ github.run_number }}
+
+    - name: Coveralls Parallel (MacOS)
+      if: startsWith(matrix.os, 'macos')
+      env:
+        COVERALLS_REPO_TOKEN: ${{ secrets.COVERALLS_REPO_TOKEN }}
+        COVERALLS_PARALLEL: true
+      run: |
+        coveralls --rcfile=pyproject.toml --service=github
+        
   finish:
     name: Finish Coverage Analysis
     needs: build
-    runs-on: ubuntu-latest
+    if: always()
+    runs-on: "ubuntu-latest"
     steps:
-    - name: Coveralls Finished
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      run: |
-        pip install --upgrade coveralls
-        coveralls --service=github --finish
+      - name: Coveralls Finish
+        env:
+          COVERALLS_REPO_TOKEN: ${{ secrets.COVERALLS_REPO_TOKEN }}
+          COVERALLS_PARALLEL: true
+        run: |
+          curl -sL https://coveralls.io/coveralls-linux.tar.gz | tar -xz
+          ./coveralls done --build-number ${{ github.run_number }}
