@@ -18,7 +18,7 @@ jobs:
            - python-version: "3.10"
              numpy_ver: "1.24"
              os: "ubuntu-latest"
-             test_config: ["NEP29"]
+             test_config: "NEP29"
 
     name: Python ${{ matrix.python-version }} on ${{ matrix.os }}
     runs-on: ${{ matrix.os }}
@@ -79,7 +79,7 @@ jobs:
         COVERALLS_PARALLEL: true
       run: |
         coveralls --rcfile=pyproject.toml --service=github
-        
+
   finish:
     name: Finish Coverage Analysis
     needs: build
