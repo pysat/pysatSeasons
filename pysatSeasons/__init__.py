@@ -30,4 +30,4 @@ from pysatSeasons import occur_prob  # noqa: F401
 from pysatSeasons import plot  # noqa: F401
 
 # set version
-__version__ = metadata.version('pysatNASA')
+__version__ = metadata.version('pysatSeasons')
