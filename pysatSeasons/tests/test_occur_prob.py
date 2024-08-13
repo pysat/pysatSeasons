@@ -177,12 +177,12 @@ class TestXarrayBasics(TestBasics):
     def setup_method(self):
         """Run before every method to create a clean testing setup."""
         orbit_info = {'index': 'longitude', 'kind': 'longitude'}
-        self.testInst = pysat.Instrument('pysat', 'testing_xarray',
+        self.testInst = pysat.Instrument('pysat', 'ndtesting',
                                          clean_level='clean',
                                          orbit_info=orbit_info)
 
         # Assign short bounds.
-        test_date = pysat.instruments.pysat_testing_xarray._test_dates['']['']
+        test_date = pysat.instruments.pysat_ndtesting._test_dates['']['']
         self.testInst.bounds = (test_date, test_date + dt.timedelta(days=1))
 
         return
@@ -220,12 +220,12 @@ class TestXarrayConstellationBasics(TestBasics):
     def setup_method(self):
         """Run before every method to create a clean testing setup."""
         orbit_info = {'index': 'longitude', 'kind': 'longitude'}
-        self.rawInst = pysat.Instrument('pysat', 'testing_xarray',
+        self.rawInst = pysat.Instrument('pysat', 'ndtesting',
                                         clean_level='clean',
                                         orbit_info=orbit_info)
 
         # Assign short bounds.
-        test_date = pysat.instruments.pysat_testing_xarray._test_dates['']['']
+        test_date = pysat.instruments.pysat_ndtesting._test_dates['']['']
         self.rawInst.bounds = (test_date, test_date + dt.timedelta(days=1))
 
         self.testInst = pysat.Constellation(instruments=[self.rawInst,
