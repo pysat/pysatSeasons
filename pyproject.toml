@@ -52,7 +52,6 @@ dependencies = [
 ]
 
 [project.optional-dependencies]
-pysatcdf = ["pysatCDF"]
 test = [
   "flake8",
   "flake8-docstrings",
