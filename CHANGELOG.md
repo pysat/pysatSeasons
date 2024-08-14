@@ -10,6 +10,7 @@ This project adheres to [Semantic Versioning](http://semver.org/).
   - Add workflow for testing the install of pysatSeasons RC from pip
   - Dropped tests for deprecated pysat instruments
   - Implement pyproject.toml
+  - Implement coveralls app for GitHub Actions
 
 ## [0.2.0] - 2022-08-12
 - New Features

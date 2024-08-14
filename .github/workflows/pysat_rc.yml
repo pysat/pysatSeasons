@@ -34,22 +34,22 @@ jobs:
         python -c "import pysat; pysat.params['data_dirs'] = 'pysatData'"
 
     - name: Test with pytest
-      run: pytest -vs --cov=pysatSeasons/
+      run: pytest
 
-    - name: Publish results to coveralls
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        COVERALLS_PARALLEL: true
-      run: coveralls --rcfile=setup.cfg --service=github
+    - name: Coveralls Parallel
+      uses: coverallsapp/github-action@v2
+      with:
+        flag-name: run-${{ join(matrix.*, '-') }}
+        parallel: true
 
   finish:
     name: Finish Coverage Analysis
     needs: build
+    if: ${{ always() }}
     runs-on: ubuntu-latest
     steps:
     - name: Coveralls Finished
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      run: |
-        pip install --upgrade coveralls
-        coveralls --service=github --finish
+      uses: coverallsapp/github-action@v2
+      with:
+        parallel-finished: true
+
