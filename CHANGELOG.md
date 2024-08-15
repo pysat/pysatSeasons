@@ -11,6 +11,8 @@ This project adheres to [Semantic Versioning](http://semver.org/).
   - Dropped tests for deprecated pysat instruments
   - Implement pyproject.toml
   - Implement coveralls app for GitHub Actions
+  - Update contributing document and issue templates
+  - Add Acknowledgements doc
 
 ## [0.2.0] - 2022-08-12
 - New Features
