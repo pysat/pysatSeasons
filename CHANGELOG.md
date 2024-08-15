@@ -12,6 +12,7 @@ This project adheres to [Semantic Versioning](http://semver.org/).
   - Implement pyproject.toml
   - Implement coveralls app for GitHub Actions
   - Update contributing document
+  - Add Acknowledgements doc
 
 ## [0.2.0] - 2022-08-12
 - New Features
