@@ -2,6 +2,10 @@
 # -*- coding: utf-8 -*-
 # Copyright (C) 2022, pysat development team
 # Full license can be found in License.md
+# DOI:10.5281/zenodo.3475493
+#
+# DISTRIBUTION STATEMENT A: Approved for public release. Distribution is
+# unlimited.
 # -----------------------------------------------------------------------------
 """Test the pysat averaging code."""
 
