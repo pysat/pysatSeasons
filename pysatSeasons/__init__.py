@@ -2,6 +2,10 @@
 # -*- coding: utf-8 -*-
 # Copyright (C) 2022, pysat development team
 # Full license can be found in License.md
+# DOI:10.5281/zenodo.3475493
+#
+# DISTRIBUTION STATEMENT A: Approved for public release. Distribution is
+# unlimited.
 # -----------------------------------------------------------------------------
 """pysatSeasons.
 
@@ -18,7 +22,10 @@ Main Features
 
 """
 
-import os
+try:
+    from importlib import metadata
+except ImportError:
+    import importlib_metadata as metadata
 
 # Import key modules and skip F401 testing in flake8
 from pysatSeasons._core import to_xarray_dataset  # noqa: F401
@@ -27,6 +34,4 @@ from pysatSeasons import occur_prob  # noqa: F401
 from pysatSeasons import plot  # noqa: F401
 
 # set version
-here = os.path.abspath(os.path.dirname(__file__))
-with open(os.path.join(here, 'version.txt')) as version_file:
-    __version__ = version_file.read().strip()
+__version__ = metadata.version('pysatSeasons')

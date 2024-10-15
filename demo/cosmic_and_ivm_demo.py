@@ -24,7 +24,7 @@ if pack_version(pysatCDAAC.__version__) <= pack_version('0.0.2'):
                      'the currently installed version. Please see the demo ',
                      'code in pysatSeasons v0.1.3 for COSMIC support when in ',
                      'pandas data format.'])
-    raise(ValueError, estr)
+    raise (ValueError, estr)
 
 
 def add_magnetic_coordinates(inst):

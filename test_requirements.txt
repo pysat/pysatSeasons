@@ -9,4 +9,4 @@ pytest-cov
 pytest-flake8
 pytest-ordering
 sphinx
-sphinx_rtd_theme
+sphinx_rtd_theme>=1.2.2,<2.0.0
