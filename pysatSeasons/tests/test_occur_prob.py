@@ -2,6 +2,10 @@
 # -*- coding: utf-8 -*-
 # Copyright (C) 2022, pysat development team
 # Full license can be found in License.md
+# DOI:10.5281/zenodo.3475493
+#
+# DISTRIBUTION STATEMENT A: Approved for public release. Distribution is
+# unlimited.
 # -----------------------------------------------------------------------------
 """Test pysatSeasons occur_prob object and code."""
 
@@ -19,7 +23,7 @@ from pysatSeasons import occur_prob
 class TestBasics(object):
     """Basic tests using pandas data source."""
 
-    def setup(self):
+    def setup_method(self):
         """Run before every method to create a clean testing setup."""
         orbit_info = {'index': 'longitude', 'kind': 'longitude'}
         self.testInst = pysat.Instrument('pysat', 'testing',
@@ -32,7 +36,7 @@ class TestBasics(object):
 
         return
 
-    def teardown(self):
+    def teardown_method(self):
         """Run after every method to clean up previous testing."""
         del self.testInst
 
@@ -174,15 +178,15 @@ class TestBasics(object):
 class TestXarrayBasics(TestBasics):
     """Reapply basic tests with xarray data source."""
 
-    def setup(self):
+    def setup_method(self):
         """Run before every method to create a clean testing setup."""
         orbit_info = {'index': 'longitude', 'kind': 'longitude'}
-        self.testInst = pysat.Instrument('pysat', 'testing_xarray',
+        self.testInst = pysat.Instrument('pysat', 'ndtesting',
                                          clean_level='clean',
                                          orbit_info=orbit_info)
 
         # Assign short bounds.
-        test_date = pysat.instruments.pysat_testing_xarray._test_dates['']['']
+        test_date = pysat.instruments.pysat_ndtesting._test_dates['']['']
         self.testInst.bounds = (test_date, test_date + dt.timedelta(days=1))
 
         return
@@ -191,7 +195,7 @@ class TestXarrayBasics(TestBasics):
 class TestConstellationBasics(TestBasics):
     """Basic tests using Constellations and pandas data source."""
 
-    def setup(self):
+    def setup_method(self):
         """Run before every method to create a clean testing setup."""
         orbit_info = {'index': 'longitude', 'kind': 'longitude'}
         self.rawInst = pysat.Instrument('pysat', 'testing',
@@ -207,7 +211,7 @@ class TestConstellationBasics(TestBasics):
 
         return
 
-    def teardown(self):
+    def teardown_method(self):
         """Run after every method to clean up previous testing."""
         del self.testInst, self.rawInst
 
@@ -217,15 +221,15 @@ class TestConstellationBasics(TestBasics):
 class TestXarrayConstellationBasics(TestBasics):
     """Basic tests using Constellations and xarray data source."""
 
-    def setup(self):
+    def setup_method(self):
         """Run before every method to create a clean testing setup."""
         orbit_info = {'index': 'longitude', 'kind': 'longitude'}
-        self.rawInst = pysat.Instrument('pysat', 'testing_xarray',
+        self.rawInst = pysat.Instrument('pysat', 'ndtesting',
                                         clean_level='clean',
                                         orbit_info=orbit_info)
 
         # Assign short bounds.
-        test_date = pysat.instruments.pysat_testing_xarray._test_dates['']['']
+        test_date = pysat.instruments.pysat_ndtesting._test_dates['']['']
         self.rawInst.bounds = (test_date, test_date + dt.timedelta(days=1))
 
         self.testInst = pysat.Constellation(instruments=[self.rawInst,
@@ -233,7 +237,7 @@ class TestXarrayConstellationBasics(TestBasics):
 
         return
 
-    def teardown(self):
+    def teardown_method(self):
         """Run after every method to clean up previous testing."""
         del self.testInst, self.rawInst
 
@@ -247,7 +251,7 @@ class TestXarrayConstellationBasics(TestBasics):
 class TestDeprecation(object):
     """Unit test for deprecation warnings."""
 
-    def setup(self):
+    def setup_method(self):
         """Set up the unit test environment for each method."""
 
         warnings.simplefilter("always", DeprecationWarning)
@@ -260,7 +264,7 @@ class TestDeprecation(object):
         self.war = ""
         return
 
-    def teardown(self):
+    def teardown_method(self):
         """Clean up the unit test environment after each method."""
         # self.in_kwargs, self.ref_time,
         del self.warn_msgs, self.war

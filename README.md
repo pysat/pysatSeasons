@@ -12,7 +12,7 @@
 
 
 
-pysatSeasons allows users to run seasonal data analyses over N-dimensional 
+pysatSeasons allows users to run seasonal data analyses over N-dimensional
 data sets managed through the pysat module.
 
 Main Features
@@ -27,11 +27,11 @@ Main Features
 ### Prerequisites
 
 pysatSeasons uses common Python modules, as well as modules developed by
-and for the Space Physics community.  
+and for the Space Physics community.
 
 | Common modules   | Community modules |
 | --------------   | ----------------- |
-| matplotlib       | pysat >= 3.0.4    |
+| matplotlib       | pysat >= 3.2.0    |
 | numpy            |                   |
 | pandas           |                   |
 | xarray           |                   |

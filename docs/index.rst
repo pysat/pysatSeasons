@@ -1,4 +1,4 @@
-.. pysatModels documentation main file.  Remember that it should at least
+.. pysatSeasons documentation main file.  Remember that it should at least
    contain the root `toctree` directive.
 
 Welcome to the pysatSeasons documentation
@@ -18,6 +18,11 @@ such as bin averaging, occurrence probabilities, and scatter plots.
    examples.rst
    develop_guide.rst
    history.rst
+   acknowledgements.rst
+
+
+.. admonition:: DISTRIBUTION STATEMENT A: Approved for public release.
+		Distribution is unlimited.
 
 
 Indices and tables

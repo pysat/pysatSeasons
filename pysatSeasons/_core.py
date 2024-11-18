@@ -2,6 +2,10 @@
 # -*- coding: utf-8 -*-
 # Copyright (C) 2022, pysat development team
 # Full license can be found in License.md
+# DOI:10.5281/zenodo.3475493
+#
+# DISTRIBUTION STATEMENT A: Approved for public release. Distribution is
+# unlimited.
 # -----------------------------------------------------------------------------
 import pandas as pds
 import xarray as xr
@@ -22,8 +26,8 @@ def to_xarray_dataset(data):
     Parameters
     ----------
     data : list-like
-        List-like (including ndarray, Series, DataFrames, Datasets or list-like of these object) to be converted
-        or combined into a single Dataset.
+        List-like (including ndarray, Series, DataFrames, Datasets or list-like
+        of these object) to be converted or combined into a single Dataset.
 
     Returns
     -------

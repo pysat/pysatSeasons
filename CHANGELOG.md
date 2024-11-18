@@ -2,6 +2,19 @@
 All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+## [0.2.1] - 2024-11-08
+- Maintenance
+  - Update pytest syntax
+  - Update Github Actions workflows
+  - Add workflow for testing with pysat RC
+  - Add workflow for testing the install of pysatSeasons RC from pip
+  - Dropped tests for deprecated pysat instruments
+  - Implement pyproject.toml
+  - Implement coveralls app for GitHub Actions
+  - Update contributing document and issue templates
+  - Add Acknowledgements doc
+  - Set minimum pysat to 3.2.0
+
 ## [0.2.0] - 2022-08-12
 - New Features
   - Added support for xarray data in the seasonal averaging functions in `pysatSeasons.avg`
