@@ -46,7 +46,7 @@ dependencies = [
   "matplotlib",
   "numpy",
   "pandas",
-  "pysat >= 3.0.4",
+  "pysat >= 3.2.0",
   "xarray"
 ]
 

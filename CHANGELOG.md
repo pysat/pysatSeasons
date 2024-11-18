@@ -2,7 +2,7 @@
 All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
-## [0.2.1] - 2024-11-01
+## [0.2.1] - 2024-11-08
 - Maintenance
   - Update pytest syntax
   - Update Github Actions workflows
@@ -13,6 +13,7 @@ This project adheres to [Semantic Versioning](http://semver.org/).
   - Implement coveralls app for GitHub Actions
   - Update contributing document and issue templates
   - Add Acknowledgements doc
+  - Set minimum pysat to 3.2.0
 
 ## [0.2.0] - 2022-08-12
 - New Features
