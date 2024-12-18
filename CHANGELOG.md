@@ -2,6 +2,10 @@
 All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+## [0.2.2] - 2025-XX-XX
+- Maintenance
+  - Update controlled information statement for clarity and accuracy
+
 ## [0.2.1] - 2024-11-08
 - Maintenance
   - Update pytest syntax
