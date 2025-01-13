@@ -21,8 +21,10 @@ such as bin averaging, occurrence probabilities, and scatter plots.
    acknowledgements.rst
 
 
-.. admonition:: DISTRIBUTION STATEMENT A: Approved for public release.
-		Distribution is unlimited.
+.. admonition:: Review Status for Classified or Controlled Information by NRL
+
+   DISTRIBUTION STATEMENT A: Approved for public release.
+   Distribution is unlimited.
 
 
 Indices and tables
