@@ -6,6 +6,7 @@ name: Pytest with Flake8
 on: [push, pull_request]
 env:
   COVERALLS_SERVICE_NUMBER: ${{ github.run_id }}-${{ github.run_attempt }}
+  MPLBACKEND: Agg #non-interactive backend for matplotlib
 
 jobs:
   build:
