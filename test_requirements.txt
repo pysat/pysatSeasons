@@ -3,7 +3,7 @@ flake8
 flake8-docstrings
 hacking>=1.0
 ipython
-m2r2
+myst_parser
 numpydoc
 pytest-cov
 pytest-flake8

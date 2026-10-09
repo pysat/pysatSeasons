@@ -2,9 +2,12 @@
 All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
-## [0.2.2] - 2025-XX-XX
+## [0.2.2] - 2026-10-??
 - Maintenance
   - Update controlled information statement for clarity and accuracy
+  - Added support for Python 3.14
+  - Expanded online unit testing range
+  - Switched from `m2r2` to `myst_parser`
 
 ## [0.2.1] - 2024-11-08
 - Maintenance
