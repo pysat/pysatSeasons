@@ -83,34 +83,6 @@ jobs:
       if: ${{ matrix.numpy_ver == 'latest'}}
       run: pip install .[test]
 
-    - name: Install aacgmv2
-      # Optional package, continue with tests if install fails
-      continue-on-error: true
-      run: pip install aacgmv2 --no-binary==aacgmv2
-
-    - name: Install apexpy for MacOS X
-      # Only test apexpy for NEP29 tests
-      if: ${{ matrix.numpy_ver != 'latest' && matrix.os == 'macos-latest' }}
-      # Optional package, continue with tests if install fails
-      continue-on-error: true
-      run: |
-          brew reinstall gcc
-          /opt/homebrew/bin/gfortran --version
-          /opt/homebrew/bin/gcc-14 --version
-          CC=/opt/homebrew/bin/gcc-14 FC=/opt/homebrew/bin/gfortran pip install apexpy --no-binary==apexpy
-
-    - name: Install apexpy for Unix/Windows
-      # Only test apexpy for NEP29 tests
-      if: ${{ matrix.numpy_ver != 'latest' && matrix.os != 'macos-latest' }}
-      # Optional package, continue with tests if install fails
-      continue-on-error: true
-      run: pip install apexpy --no-binary==apexpy
-
-    - name: Install OMMBV
-      # Optional package, continue with tests if install fails
-      continue-on-error: true
-      run: pip install OMMBV --no-binary==OMMBV
-
     - name: Set up pysat
       run: |
         mkdir pysatData
