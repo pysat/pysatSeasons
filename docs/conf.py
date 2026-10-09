@@ -65,7 +65,7 @@ extensions = ['sphinx.ext.autodoc',
               'sphinx.ext.napoleon',
               'numpydoc',
               'IPython.sphinxext.ipython_console_highlighting',
-              'm2r2']
+              'myst_parser']
 
 numpydoc_show_class_members = False
 
