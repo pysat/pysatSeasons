@@ -122,13 +122,20 @@ jobs:
       run: flake8 . --count --exit-zero --max-complexity=10 --statistics
 
     - name: Test with pytest
-      run: pytest
+      run: pytest --cov=pysatSeasons --cov-report xml
 
-    - name: Publish results to coveralls
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        COVERALLS_PARALLEL: true
-      run: coveralls --rcfile=pyproject.toml --service=github
+    - name: Trust Coveralls Homebrew tap (Homebrew 6 requirement)
+      if: runner.os == 'macOS'
+      run: brew trust coverallsapp/coveralls
+
+    - name: Coveralls Parallel
+      uses: coverallsapp/github-action@v2
+      with:
+        github-token: ${{ secrets.GITHUB_TOKEN }}
+        flag-name: run=${{ join(matrix.*, '-') }}
+        parallel: true
+        format: cobertura
+        debug: true
 
   finish:
     name: Finish Coverage Analysis
